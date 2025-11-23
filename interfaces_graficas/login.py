@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import ttk
+
 color_oscuro = "#2B303A"
 color_claro = "#EEE5E9"
 
@@ -23,6 +25,15 @@ def mostrar_login():
 
     frame_login_derecha = tk.Frame(ventana_login, bg=color_claro)
     frame_login_derecha.place(relx=0.6, y=0, relwidth=0.4, relheight=1)
+
+    opciones = ["Administrador", "Usuario"]
+    opciones_usuario = ttk.Combobox(ventana_login, values=opciones, state="readonly")
+    opciones_usuario.config(font="Arial, 14")
+    opciones_usuario.current(1)
+    opciones_usuario.place(x=650, y=300)
+
+    entry_contrasenia = tk.Entry(ventana_login, font="Arial, 14")
+    entry_contrasenia.place(x=650, y=350)
 
     ventana_login.mainloop()
 
