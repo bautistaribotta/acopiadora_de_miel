@@ -1,5 +1,5 @@
 import tkinter as tk
-from main import color_principal, color_secundario, color_terciario
+from utilidades.configuracion import *
 
 
 def pantalla_principal():
@@ -7,11 +7,15 @@ def pantalla_principal():
     ventana_principal.configure(bg=color_principal)
     ventana_principal.state("zoomed")
     ventana_principal.title("Menu principal")
+    ventana_principal.resizable(False, False)
 
     opciones_top = tk.Frame(ventana_principal)
-    opciones_top.configure(bg=color_secundario)
-    opciones_top.pack()
+    opciones_top.configure(bg=color_secundario, height=60)
+    # fill x hace que ocupes todo el ancho y side top que vaya arriba
+    opciones_top.pack(fill="x", side="top")
 
     ventana_principal.mainloop()
 
-#pantalla_principal()
+
+if __name__ == "__main__":
+    pantalla_principal()

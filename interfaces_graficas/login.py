@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from main import color_principal, color_secundario, color_terciario
+from utilidades.configuracion import *
 
 
 fuente1 = "Arial", 14
@@ -48,4 +48,5 @@ def mostrar_login():
 
     ventana_login.mainloop()
 
-mostrar_login()
+if __name__ == "__main__":
+    mostrar_login()
