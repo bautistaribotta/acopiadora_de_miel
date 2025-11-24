@@ -3,9 +3,6 @@ from tkinter import ttk
 from utilidades.configuracion import *
 
 
-fuente1 = "Arial", 14
-
-
 def centrar_ventana(ventana, aplicacion_ancho, aplicacion_alto):
     ancho = ventana.winfo_screenwidth()
     alto = ventana.winfo_screenheight()
@@ -31,7 +28,7 @@ def mostrar_login():
     frame_login_derecha = tk.Frame(ventana_login, bg=color_secundario)
     frame_login_derecha.place(relx=0.6, y=0, relwidth=0.4, relheight=1)
 
-    label_cartel_bienvenida = tk.Label(frame_login_derecha, text="BIENVENIDO", font="Arial, 40", bg=color_secundario)
+    label_cartel_bienvenida = tk.Label(frame_login_derecha, text="Inicio de sesion", font="Arial, 35", bg=color_secundario)
     label_cartel_bienvenida.place(x=30, y=150)
 
     opciones = ["Administrador", "Usuario"]
@@ -43,8 +40,8 @@ def mostrar_login():
     entry_contrasenia = ttk.Entry(frame_login_derecha, width=21, font=fuente1, show="*")
     entry_contrasenia.place(x=76, y=350)
 
-    boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Inicio de sesion")
-    boton_inicio_sesion.place(x=152, y=400)
+    boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar")
+    boton_inicio_sesion.place(x=165, y=400)
 
     ventana_login.mainloop()
 
