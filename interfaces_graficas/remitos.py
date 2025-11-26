@@ -1,5 +1,5 @@
 import tkinter as tk
-from utilidades import *
+from utilidades.configuracion import *
 
 def remitos():
     ventana_remitos = tk.Toplevel()
