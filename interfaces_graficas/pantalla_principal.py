@@ -2,6 +2,7 @@ import tkinter as tk
 from utilidades.configuracion import *
 from interfaces_graficas.proveedores import *
 from interfaces_graficas.clientes import *
+from interfaces_graficas.productos import *
 
 
 def pantalla_principal():
@@ -27,11 +28,11 @@ def pantalla_principal():
     boton_proveedores.grid(row=0, column=0, padx=20, pady=15)
 
     boton_clientes = tk.Button(opciones_top, text="CLIENTES")
-    boton_clientes.configure(bg=color_principal, fg=color_secundario, command=clientes())
+    boton_clientes.configure(bg=color_principal, fg=color_secundario, command=clientes)
     boton_clientes.grid(row=0, column=1, padx=20, pady=15)
 
     boton_productos = tk.Button(opciones_top, text="PRODUCTOS")
-    boton_productos.configure(bg=color_principal, fg=color_secundario)
+    boton_productos.configure(bg=color_principal, fg=color_secundario, command=productos)
     boton_productos.grid(row=0, column=2, padx=20, pady=15)
 
     boton_remitos = tk.Button(opciones_top, text="REMITOS")
