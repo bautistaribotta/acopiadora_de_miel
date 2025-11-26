@@ -1,5 +1,7 @@
 import tkinter as tk
 from utilidades.configuracion import *
+from interfaces_graficas.proveedores import *
+from interfaces_graficas.clientes import *
 
 
 def pantalla_principal():
@@ -21,7 +23,7 @@ def pantalla_principal():
 
     # BOTONES
     boton_proveedores = tk.Button(opciones_top, text="PROVEEDORES")
-    boton_proveedores.configure(bg=color_principal, fg=color_secundario)
+    boton_proveedores.configure(bg=color_principal, fg=color_secundario, command=proveedores)
     boton_proveedores.grid(row=0, column=0, padx=20, pady=15)
 
     boton_clientes = tk.Button(opciones_top, text="CLIENTES")
