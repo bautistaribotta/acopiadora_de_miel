@@ -8,7 +8,6 @@ from interfaces_graficas.remitos import *
 
 def pantalla_principal():
     ventana_principal = tk.Tk()
-    ventana_principal.iconbitmap(f"C:/Users/bauti/PycharmProjects/Acopiadora_de_miel/recursos/colmena.ico")
     ventana_principal.configure(bg=color_principal)
     ventana_principal.state("zoomed")
     ventana_principal.title("Menu principal")

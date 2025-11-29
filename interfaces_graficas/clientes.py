@@ -1,6 +1,7 @@
 import tkinter as tk
 from utilidades.configuracion import *
 
+
 def clientes():
     ventana_clientes = tk.Toplevel()
     ventana_clientes.title("Clientes")
@@ -9,6 +10,7 @@ def clientes():
 
     # GEOMETRIA Y POSICION
     ventana_clientes.grid()
+
 
 if __name__ == "__main__":
     clientes()
