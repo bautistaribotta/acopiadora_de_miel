@@ -76,13 +76,20 @@ def productos():
 
 def nuevo_producto():
     ventana_nuevo_producto = tk.Toplevel()
-    ventana_nuevo_producto.configure(bg=color_primario)
     ventana_nuevo_producto.title("Nuevo producto")
+    ventana_nuevo_producto.configure(bg=color_primario)
+    ventana_nuevo_producto.geometry("400x600+850+85")
+
+
+    # BOTONES
+
+
+    ventana_nuevo_producto.mainloop()
 
 
 if __name__ == "__main__":
     # ESTO ES SOLO A MODO DE PRUEBA, PARA NO ABRIR TODO EL TIEMPO LA PANTALLA PRINCIPAL
     root = tk.Tk() # Crea una ventana principal oculta
-    #root.withdraw() # La oculta (porque no la necesito visible)
+    root.withdraw() # La oculta (porque no la necesito visible)
     productos() # Abre la ventana Toplevel de productos
     root.mainloop() # Mantiene la aplicación corriendo
