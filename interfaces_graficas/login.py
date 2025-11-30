@@ -16,17 +16,16 @@ def mostrar_login():
     ventana_login.title("Login")
     ventana_login.resizable(False, False)
 
+
     # LLAMO A LA FUNCION PARA DEJAR LA VENTANA CENTRADA Y CONFIGURO EL GRID
     centrar_ventana(ventana_login, 960, 600)
     ventana_login.grid_columnconfigure(0, weight=3, minsize=576)  # 60% de 960
     ventana_login.grid_columnconfigure(1, weight=2, minsize=384)  # 40% de 960
     ventana_login.grid_rowconfigure(0, weight=1)
 
-    # CONFIGURACION DEL GRID()
-
 
     # IZQUIERDA
-    frame_imagen_izquierda = tk.Frame(ventana_login, bg=color_principal)
+    frame_imagen_izquierda = tk.Frame(ventana_login, bg=color_primario)
     frame_imagen_izquierda.grid(row=0, column=0, sticky="nsew")
 
     # Espacio para colocar la imagen
