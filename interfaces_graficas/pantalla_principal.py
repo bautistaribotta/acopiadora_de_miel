@@ -40,5 +40,6 @@ def pantalla_principal():
 
     ventana_principal.mainloop()
 
+
 if __name__ == "__main__":
     pantalla_principal()
