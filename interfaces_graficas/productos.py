@@ -116,13 +116,22 @@ def nuevo_producto():
     combobox_categoria.grid(row=2, column=1, sticky="w", padx=(0, 30), pady=10)
 
 
+    # PRECIO
+    label_precio = tk.Label(ventana_nuevo_producto, text="Precio:")
+    label_precio.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_precio.grid(row=3, column=0, sticky="e", padx=(20, 10), pady=10)
+
+    entry_precio = tk.Entry(ventana_nuevo_producto, font=fuente_texto, width=20)
+    entry_precio.grid(row=3, column=1, sticky="w", padx=(0, 20), pady=10)
+
+
     # CANTIDAD
     label_cantidad = tk.Label(ventana_nuevo_producto, text="Cantidad:")
     label_cantidad.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
-    label_cantidad.grid(row=3, column=0, sticky="e", padx=(20, 10), pady=10)
+    label_cantidad.grid(row=4, column=0, sticky="e", padx=(20, 10), pady=10)
 
     entry_cantidad = tk.Entry(ventana_nuevo_producto, font=fuente_texto, width=20)
-    entry_cantidad.grid(row=3, column=1, sticky="w", padx=(0, 20), pady=10)
+    entry_cantidad.grid(row=4, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
     # FRAME BOTONES
@@ -139,8 +148,6 @@ def nuevo_producto():
     boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
     boton_cancelar.config(bg=color_secundario, fg=color_primario, width=12)
     boton_cancelar.pack(side="left", padx=5)
-
-    ventana_nuevo_producto.mainloop()
 
 
 if __name__ == "__main__":
