@@ -1,3 +1,23 @@
+import tkinter as tk
+from tkinter import messagebox
+
+
+def controlador_entry_no_numeros(variable_control , name, index, mode):
+    """
+    Funcion para que un entry no pueda recibir un numero
+    La siguiente funcion, hace que en tiempo de ejecucion, se muestre un error en caso que
+    el usuario coloque un numero dentro de un entry, esto hara que salte una ventana emergente
+    variable_control = Un StringVar
+    name = Parametro obligatorio
+    index = Parametro obligatorio
+    mode = Parametro obligatorio
+    """
+    texto = variable_control.get()
+    for caracter in texto:
+        if caracter.isdigit():
+            messagebox.showwarning("Error nombre", "El nombre no puede contener numeros")
+            variable_control.set(texto[:-1])
+
 
 
 def centrar_ventana(ventana, aplicacion_ancho, aplicacion_alto):
