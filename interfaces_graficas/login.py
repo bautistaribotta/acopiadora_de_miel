@@ -7,6 +7,7 @@ def mostrar_login():
     ventana_login = tk.Tk()
     ventana_login.title("Login")
     ventana_login.resizable(False, False)
+    ventana_login.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
 
     # LLAMO A LA FUNCION PARA DEJAR LA VENTANA CENTRADA Y CONFIGURO EL GRID
