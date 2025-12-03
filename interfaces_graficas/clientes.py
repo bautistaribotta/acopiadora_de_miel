@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter import messagebox
 from utilidades.configuracion import *
 
 
@@ -97,7 +98,10 @@ def nuevo_cliente():
     label_nombre.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_nombre.grid(row=1, column=0, sticky="e", padx=(20, 10), pady=10)
 
-    entry_nombre = ttk.Entry(ventana_nuevo_cliente, font=fuente_texto, width=20)
+    variable_control_entry = tk.StringVar()
+    entry_nombre = ttk.Entry(ventana_nuevo_cliente, textvariable=variable_control_entry)
+    variable_control_entry.trace("w", controlador_entry_no_numeros)
+    entry_nombre.config(font=fuente_texto, width=20)
     entry_nombre.grid(row=1, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
