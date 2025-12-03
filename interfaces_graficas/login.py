@@ -33,14 +33,27 @@ def mostrar_login():
     label_cartel_bienvenida.config(font="Arial, 35", bg=color_secundario)
     label_cartel_bienvenida.grid(row=10, column=5, padx=30, pady=(150, 75))
 
+
+    # USUARIO
+    label_usuario = tk.Label(frame_login_derecha, text="Usuario:")
+    label_usuario.config(bg=color_secundario, fg=color_primario, font=fuente_texto)
+    label_usuario.grid(row=15, column=5, padx=(0, 160), pady=10)
+
     opciones = ["Administrador", "Usuario"]
     opciones_usuario = ttk.Combobox(frame_login_derecha, values=opciones, state="readonly")
-    opciones_usuario.config(font=fuente_texto)
+    opciones_usuario.config(font=fuente_texto, width=15)
     opciones_usuario.current(1)
-    opciones_usuario.grid(row=15, column=5, padx=30, pady=10)
+    opciones_usuario.grid(row=15, column=5, padx=(90, 10), pady=10)
 
-    entry_contrasenia = ttk.Entry(frame_login_derecha, width=21, font=fuente_texto, show="*")
-    entry_contrasenia.grid(row=25, column=5, padx=30, pady=10)
+
+    # CONTRASEÑA
+    label_clave = tk.Label(frame_login_derecha, text="Clave:")
+    label_clave.config(bg=color_secundario, fg=color_primario, font=fuente_texto)
+    label_clave.grid(row=25, column=5, padx=(0, 140), pady=0)
+
+    entry_clave = ttk.Entry(frame_login_derecha, width=17, font=fuente_texto, show="*")
+    entry_clave.grid(row=25, column=5, padx=(80, 0), pady=0)
+
 
     boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar")
     boton_inicio_sesion.grid(row=50, column=5,padx=30, pady=10)
