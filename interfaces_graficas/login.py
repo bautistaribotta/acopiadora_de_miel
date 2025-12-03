@@ -54,9 +54,8 @@ def mostrar_login():
     entry_clave = ttk.Entry(frame_login_derecha, width=17, font=fuente_texto, show="*")
     entry_clave.grid(row=25, column=5, padx=(80, 0), pady=0)
 
-
     boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar")
-    boton_inicio_sesion.grid(row=50, column=5, padx=30, pady=20)
+    boton_inicio_sesion.grid(row=50, column=5, padx=(90, 8), pady=15)
 
     ventana_login.mainloop()
 

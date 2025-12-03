@@ -35,7 +35,7 @@ def clientes():
     boton_eliminar.pack(side="right", padx=(5, 0))
 
     boton_editar = tk.Button(frame_superior, text="Editar")
-    boton_editar.config(bg=color_secundario, fg=color_primario, width=10, font=fuente_texto)
+    boton_editar.config(bg=color_secundario, fg=color_primario, width=10, font=fuente_texto, command=editar_cliente)
     boton_editar.pack(side="right", padx=5)
 
     boton_agregar = tk.Button(frame_superior, text="Agregar")
@@ -87,9 +87,9 @@ def nuevo_cliente():
 
 
     # LABEL TITULO
-    label_titulo = tk.Label(ventana_nuevo_cliente, text="Registrar Nuevo Cliente")
+    label_titulo = tk.Label(ventana_nuevo_cliente, text="REGISTRAR CLIENTE")
     label_titulo.config(font=fuente_titulos, bg=color_primario, fg=color_secundario)
-    label_titulo.grid(row=0, column=0, columnspan=2, pady=(20, 30), padx=20)
+    label_titulo.grid(row=0, column=0, columnspan=2, pady=(50, 40), padx=20)
 
 
     # NOMBRE
@@ -161,6 +161,117 @@ def nuevo_cliente():
 
     # FRAME BOTONES
     frame_botones = tk.Frame(ventana_nuevo_cliente, bg=color_primario)
+    frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
+
+    boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
+    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12)
+    boton_guardar.pack(side="left", padx=5)
+
+    boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
+    boton_cancelar.config(bg=color_secundario, fg=color_primario, width=12)
+    boton_cancelar.pack(side="left", padx=5)
+
+    # Función para mostrar/ocultar CUIT según la selección del combobox
+    def actualizar_cuit(event):
+        if combobox_factura.get() == "Sí":
+            label_cuit.grid(row=7, column=0, sticky="e", padx=(20, 10), pady=10)
+            entry_cuit.grid(row=7, column=1, sticky="w", padx=(0, 20), pady=10)
+        else:
+            label_cuit.grid_remove()
+            entry_cuit.grid_remove()
+
+    # Vincular evento al combobox
+    combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
+
+
+def editar_cliente():
+    ventana_editar_cliente = tk.Toplevel()
+    ventana_editar_cliente.title("Editar cliente")
+    ventana_editar_cliente.config(bg=color_primario)
+    ventana_editar_cliente.geometry("400x600+120+85")
+    ventana_editar_cliente.resizable(False, False)
+
+
+    # CONFIGURACION DEL GRID
+    ventana_editar_cliente.grid_columnconfigure(0, weight=1)
+    ventana_editar_cliente.grid_columnconfigure(1, weight=2)
+
+
+    # LABEL TITULO
+    label_titulo = tk.Label(ventana_editar_cliente, text="EDITAR CLIENTE")
+    label_titulo.config(font=fuente_titulos, bg=color_primario, fg=color_secundario)
+    label_titulo.grid(row=0, column=0, columnspan=2, pady=(50, 40), padx=20)
+
+
+    # NOMBRE
+    label_nombre = tk.Label(ventana_editar_cliente, text="Nombre:")
+    label_nombre.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_nombre.grid(row=1, column=0, sticky="e", padx=(20, 10), pady=10)
+
+    variable_control_entry = tk.StringVar()
+    entry_nombre = ttk.Entry(ventana_editar_cliente, textvariable=variable_control_entry)
+    variable_control_entry.trace("w", lambda *args: controlador_entry_no_numeros(variable_control_entry))
+    entry_nombre.config(font=fuente_texto, width=20)
+    entry_nombre.grid(row=1, column=1, sticky="w", padx=(0, 20), pady=10)
+
+
+    # APELLIDO
+    label_apellido = tk.Label(ventana_editar_cliente, text="Apellido:")
+    label_apellido.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_apellido.grid(row=2, column=0, sticky="e", padx=(20, 10), pady=10)
+
+    entry_apellido = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
+    entry_apellido.grid(row=2, column=1, sticky="w", padx=(0, 20), pady=10)
+
+
+    # TELEFONO
+    label_telefono = tk.Label(ventana_editar_cliente, text="Teléfono:")
+    label_telefono.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_telefono.grid(row=3, column=0, sticky="e", padx=(20, 10), pady=10)
+
+    entry_telefono = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
+    entry_telefono.grid(row=3, column=1, sticky="w", padx=(0, 20), pady=10)
+
+
+    # LOCALIDAD
+    label_localidad = tk.Label(ventana_editar_cliente, text="Localidad:")
+    label_localidad.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_localidad.grid(row=4, column=0, sticky="e", padx=(20, 10), pady=10)
+
+    entry_localidad = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
+    entry_localidad.grid(row=4, column=1, sticky="w", padx=(0, 20), pady=10)
+
+
+    # CALLE
+    label_calle = tk.Label(ventana_editar_cliente, text="Calle:")
+    label_calle.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_calle.grid(row=5, column=0, sticky="e", padx=(20, 10), pady=10)
+
+    entry_calle = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
+    entry_calle.grid(row=5, column=1, sticky="w", padx=(0, 20), pady=10)
+
+
+    # FACTURA
+    label_factura = tk.Label(ventana_editar_cliente, text="Fac. Produccion:")
+    label_factura.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_factura.grid(row=6, column=0, sticky="e", padx=(20, 10), pady=10)
+
+    opciones_factura = ["No", "Sí"]
+    combobox_factura = ttk.Combobox(ventana_editar_cliente, values=opciones_factura)
+    combobox_factura.config(state="readonly", font=fuente_texto, width=18)
+    combobox_factura.current(0)
+    combobox_factura.grid(row=6, column=1, sticky="w", padx=(0, 20), pady=10)
+
+
+    # CUIT (inicialmente oculto)
+    label_cuit = tk.Label(ventana_editar_cliente, text="CUIT:")
+    label_cuit.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+
+    entry_cuit = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
+
+
+    # FRAME BOTONES
+    frame_botones = tk.Frame(ventana_editar_cliente, bg=color_primario)
     frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
 
     boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
