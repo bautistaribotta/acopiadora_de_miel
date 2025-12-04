@@ -5,8 +5,6 @@ from tkinter import messagebox
 def controlador_entry_no_numeros(variable_control , name=None, index=None, mode=None):
     """
     Funcion para que un entry no pueda recibir un numero
-    La siguiente funcion, hace que en tiempo de ejecucion, se muestre un error en caso que
-    el usuario coloque un numero dentro de un entry, esto hara que salte una ventana emergente
     variable_control = Un StringVar
     name = Parametro obligatorio aunque no se use
     index = Parametro obligatorio aunque no se use
