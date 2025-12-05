@@ -7,10 +7,16 @@ def remitos():
     ventana_remitos.title("Remitos")
     ventana_remitos.resizable(False, False)
     ventana_remitos.config(bg=color_primario)
-    centrar_ventana(ventana_remitos, 400, 600)
 
-    # GEOMETRIA Y POSICION
-    ventana_remitos.grid()
+
+    # POSICION Y TAMAÑO
+    ancho = ventana_remitos.winfo_screenwidth()
+    alto = ventana_remitos.winfo_screenheight()
+    x = int(ancho / 2) - int(400 / 2)
+    y = int(alto / 2) - int(600 / 2)
+    ventana_remitos.geometry(f"{400}x{600}+{x}+{y}")
+
+    
 
 
 if __name__ == "__main__":
