@@ -110,7 +110,7 @@ def nuevo_producto():
     label_categoria.grid(row=2, column=0, sticky="e", padx=(20, 10), pady=10)
 
     # ---------------- FALTAN MAS CATEGORIAS ----------------
-    lista_categorias = ["Alimento", "Cera", "Estampa", "Insumos", "Madera", "Medicamentos", "Miel"]
+    lista_categorias = ["Alimento", "Cera", "Estampa", "Insumos", "Madera", "Medicamentos", "Miel", "Otros"]
     combobox_categoria = ttk.Combobox(ventana_nuevo_producto)
     combobox_categoria.config(font=fuente_texto, values=lista_categorias, state="readonly")
     combobox_categoria.grid(row=2, column=1, sticky="w", padx=(0, 30), pady=10)

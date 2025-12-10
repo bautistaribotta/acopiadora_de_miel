@@ -1,7 +1,6 @@
 import tkinter as tk
 from utilidades.configuracion import *
 from interfaces_graficas.clientes import *
-from interfaces_graficas.clientes import *
 from interfaces_graficas.productos import *
 from interfaces_graficas.remitos import *
 
@@ -9,7 +8,7 @@ from interfaces_graficas.remitos import *
 def pantalla_principal():
     ventana_principal = tk.Tk()
     ventana_principal.configure(bg=color_primario)
-    ventana_principal.resizable(False, True)
+    ventana_principal.resizable(True, True)
     ventana_principal.title("Menu principal")
     ventana_principal.state("zoomed")
 
