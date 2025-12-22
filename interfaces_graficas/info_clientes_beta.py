@@ -15,13 +15,11 @@ def informacion_cliente():
 
 
     # --- FRAME SUPERIOR (Datos y Botones) ---
-    # fill="x" para que ocupe el ancho, pero height fijo o dinámico según contenido
     frame_superior = tk.Frame(ventana_info_cliente, bg=color_primario)
     frame_superior.pack(side="top", fill="x", padx=20, pady=10)
 
 
     # --- SUB-FRAME DATOS DEL CLIENTE (Izquierda) ---
-    # expand=True para que tome todo el espacio extra dejado por los botones
     frame_datos = tk.Frame(frame_superior, bg=color_primario)
     frame_datos.pack(side="left", fill="both", expand=True)
 
