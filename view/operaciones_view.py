@@ -10,7 +10,7 @@ def nueva_operacion():
     ventana_nueva_operacion.resizable(False, False)
 
     ancho_ventana = 900
-    alto_ventana = 700
+    alto_ventana = 600
     centrar_ventana(ventana_nueva_operacion, ancho_ventana, alto_ventana)
 
     # CONFIGURACIÓN DEL GRID PRINCIPAL
@@ -20,7 +20,7 @@ def nueva_operacion():
     ventana_nueva_operacion.grid_columnconfigure(0, weight=1)
 
 
-    # ==================== FRAME SUPERIOR ====================
+    # ==================== FRAME SUPERIOR - MATRIZ 2x2 ====================
     frame_superior = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
 
@@ -30,21 +30,9 @@ def nueva_operacion():
 
 
     # FILA 0, COLUMNA 0 - TÍTULO
-    label_titulo_tabla = tk.Label(frame_superior, text="NUEVA OPERACION",
+    label_titulo_tabla = tk.Label(frame_superior, text="Nueva operacion",
                                   font=fuente_titulos, bg=color_primario, fg=color_secundario)
     label_titulo_tabla.grid(row=0, column=0, sticky="w", pady=(0, 15))
-
-
-    # FILA 0, COLUMNA 1 - OBSERVACIONES
-    frame_observaciones = tk.Frame(frame_superior, bg=color_primario)
-    frame_observaciones.grid(row=0, column=1, sticky="e", pady=(0, 15))
-
-    label_observaciones = tk.Label(frame_observaciones, text="Observaciones:", font=fuente_texto,
-                                   bg=color_primario, fg=color_secundario)
-    label_observaciones.pack(side="left", padx=(0, 10))
-
-    entry_observaciones = ttk.Entry(frame_observaciones, font=fuente_texto, width=30)
-    entry_observaciones.pack(side="left")
 
 
     # FILA 1, COLUMNA 0 - BÚSQUEDA
@@ -87,7 +75,7 @@ def nueva_operacion():
     scrollbar_tabla.pack(side="right", fill="y")
 
     # Treeview - Tabla de productos
-    columnas_productos = ("id", "nombre", "categoria", "cantidad", "precio_unitario")
+    columnas_productos = ("id", "nombre", "categoria", "cantidad", "precio_unitario", "subtotal")
     tabla_productos = ttk.Treeview(frame_tree_container, columns=columnas_productos,
                                    show="headings", yscrollcommand=scrollbar_tabla.set, height=10)
 
@@ -97,6 +85,7 @@ def nueva_operacion():
     tabla_productos.heading("categoria", text="Categoría")
     tabla_productos.heading("cantidad", text="Cantidad")
     tabla_productos.heading("precio_unitario", text="Precio Unit.")
+    tabla_productos.heading("subtotal", text="Subtotal")
 
     # Configurar columnas
     tabla_productos.column("id", width=50, anchor="center")
@@ -104,6 +93,7 @@ def nueva_operacion():
     tabla_productos.column("categoria", width=120, anchor="w")
     tabla_productos.column("cantidad", width=80, anchor="center")
     tabla_productos.column("precio_unitario", width=100, anchor="e")
+    tabla_productos.column("subtotal", width=100, anchor="e")
 
     tabla_productos.pack(side="left", fill="both", expand=True)
     scrollbar_tabla.config(command=tabla_productos.yview)
@@ -113,11 +103,13 @@ def nueva_operacion():
     frame_botones_finales = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_botones_finales.grid(row=2, column=0, pady=(10, 20))
 
+    # Botón Guardar
     boton_guardar = tk.Button(frame_botones_finales, text="Guardar",
                               font=fuente_texto, bg=color_secundario, fg=color_primario,
                               width=18, cursor="hand2")
     boton_guardar.pack(side="left", padx=10)
 
+    # Botón Cancelar
     boton_cancelar = tk.Button(frame_botones_finales, text="Cancelar",
                                font=fuente_texto, bg=color_secundario, fg=color_primario,
                                width=18, cursor="hand2",
@@ -126,8 +118,6 @@ def nueva_operacion():
 
 
 def editar_operacion():
-    # Aquí puedes reutilizar la misma estructura de nueva_operacion
-    # pero cargando los datos existentes
     pass
 
 
