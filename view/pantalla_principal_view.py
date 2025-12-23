@@ -1,8 +1,8 @@
 import tkinter as tk
 from utilidades.configuracion import *
-from view.clientes import *
-from view.productos import *
-from view.remitos import *
+from view.clientes_view import *
+from view.productos_view import *
+from view.remitos_view import *
 
 
 def pantalla_principal():
