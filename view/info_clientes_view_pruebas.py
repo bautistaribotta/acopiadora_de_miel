@@ -1,5 +1,6 @@
 from tkinter import ttk
 from utilidades.configuracion import *
+from view.operaciones_view import *
 
 
 def informacion_cliente():
@@ -100,7 +101,7 @@ def informacion_cliente():
 
     # BOTONES
     boton_nueva = tk.Button(frame_botones, text="Nueva", font=fuente_texto, bg=color_secundario, fg=color_primario,
-                            width=10, cursor="hand2")
+                            width=10, cursor="hand2", command=nueva_operacion)
     boton_nueva.pack(side="left", padx=5)
 
     boton_editar = tk.Button(frame_botones, text="Editar", font=fuente_texto, bg=color_secundario, fg=color_primario,
