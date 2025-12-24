@@ -16,8 +16,6 @@ def remitos():
     y = int(alto / 2) - int(600 / 2)
     ventana_remitos.geometry(f"{400}x{600}+{x}+{y}")
 
-    
-
 
 if __name__ == "__main__":
     root = tk.Tk()

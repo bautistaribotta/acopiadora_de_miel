@@ -15,7 +15,7 @@ def pantalla_principal():
     # CONFIGURACION DEL GRID DE LA VENTANA
     ventana_principal.grid_rowconfigure(0, weight=0)  # Barra: tamaño fijo
     ventana_principal.grid_rowconfigure(1, weight=1)  # Contenido: se expande
-    ventana_principal.grid_columnconfigure(0, weight=1)  # Todo el ancho
+    ventana_principal.grid_columnconfigure(0, weight=1)  # Ancho completo
 
 
     # BARRA SUPERIOR

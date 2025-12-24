@@ -446,7 +446,6 @@ def informacion_cliente():
 
 
 if __name__ == "__main__":
-    # ESTO ES SOLO A MODO DE PRUEBA, PARA NO ABRIR TODO EL TIEMPO LA PANTALLA PRINCIPAL
     root = tk.Tk()  # Crea una ventana principal oculta
     root.withdraw()  # La oculta (porque no la necesito visible)
     clientes()  # Abre la ventana Toplevel de proveedores
