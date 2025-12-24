@@ -109,7 +109,6 @@ def nuevo_producto():
     label_categoria.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_categoria.grid(row=2, column=0, sticky="e", padx=(20, 10), pady=10)
 
-    # ---------------- FALTAN MAS CATEGORIAS ----------------
     lista_categorias = ["Alimento", "Cera", "Estampa", "Insumos", "Madera", "Medicamentos", "Miel", "Otros"]
     combobox_categoria = ttk.Combobox(ventana_nuevo_producto)
     combobox_categoria.config(font=fuente_texto, values=lista_categorias, state="readonly")
@@ -121,8 +120,10 @@ def nuevo_producto():
     label_unidad_medida.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_unidad_medida.grid(row=3, column=0, sticky="e", padx=(20, 10), pady=10)
 
-    entry_unidad_medida = tk.Entry(ventana_nuevo_producto, font=fuente_texto, width=20)
-    entry_unidad_medida.grid(row=3, column=1, sticky="w", padx=(0, 20), pady=10)
+    lista_unidad_medidas = ["Unidades", "Kilos", "Litros"]
+    combobox_unidad_medida = ttk.Combobox(ventana_nuevo_producto)
+    combobox_unidad_medida.config(font=fuente_texto, values=lista_unidad_medidas, state="readonly")
+    combobox_unidad_medida.grid(row=3, column=1, sticky="w", padx=(0, 30), pady=10)
 
 
     # PRECIO
@@ -206,8 +207,10 @@ def editar_producto():
     label_unidad_medida.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_unidad_medida.grid(row=3, column=0, sticky="e", padx=(20, 10), pady=10)
 
-    entry_unidad_medida = tk.Entry(ventana_editar_producto, font=fuente_texto, width=20)
-    entry_unidad_medida.grid(row=3, column=1, sticky="w", padx=(0, 20), pady=10)
+    lista_unidad_medidas = ["Unidades", "Kilos", "Litros"]
+    combobox_unidad_medida = ttk.Combobox(ventana_editar_producto)
+    combobox_unidad_medida.config(font=fuente_texto, values=lista_unidad_medidas, state="readonly")
+    combobox_unidad_medida.grid(row=3, column=1, sticky="w", padx=(0, 30), pady=10)
 
 
     # PRECIO
