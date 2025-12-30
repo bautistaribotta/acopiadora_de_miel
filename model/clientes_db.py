@@ -1,6 +1,6 @@
 import mysql.connector
 
-def buscar_cliente():
+def buscar_cliente(nombre):
     conexion = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -8,6 +8,8 @@ def buscar_cliente():
         database="southern_honey_group"
     )
     cursor = conexion.cursor()
+
+    intruccion_sql = f"SELECT (id, nombre, localidad, telefono) FROM clientes WHERE nombre = {nombre}"
 
 
 def insertar_cliente(nombre, apellido, telefono, localidad, direccion, factura_produccion, cuit):
