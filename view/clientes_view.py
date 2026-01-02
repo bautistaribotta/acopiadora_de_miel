@@ -1,3 +1,7 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from operaciones_view import *
 from estilos_view import *
 from controller.validaciones import *
@@ -43,7 +47,7 @@ def listado_clientes():
 
     boton_agregar = tk.Button(frame_superior, text="Agregar")
     boton_agregar.config(bg=color_secundario, fg=color_primario, text="Añadir", width=10,
-                         font=fuente_texto, command=nuevo_cliente_vista, cursor="hand2")
+                         font=fuente_texto, command=lambda: nuevo_cliente_vista(actualizar_tabla), cursor="hand2")
     boton_agregar.pack(side="right", padx=5)
 
 
@@ -63,9 +67,14 @@ def listado_clientes():
                                      yscrollcommand=scrollbar.set, height=20)
 
     # MOSTRAR LOS DATOS EN EL TREEVIEW
-    clientes = listar_clientes_controlador()
-    for cliente in clientes:
-        tabla_clientes.insert("", "end", values=cliente)
+    def actualizar_tabla():
+        for item in tabla_clientes.get_children():
+            tabla_clientes.delete(item)
+        clientes = listar_clientes_controlador()
+        for cliente in clientes:
+            tabla_clientes.insert("", "end", values=cliente)
+
+    actualizar_tabla()
 
 
     # CONFIGURAR COLUMNAS
@@ -83,7 +92,7 @@ def listado_clientes():
     scrollbar.config(command=tabla_clientes.yview)
 
 
-def nuevo_cliente_vista():
+def nuevo_cliente_vista(callback=None):
     ventana_nuevo_cliente = tk.Toplevel()
     ventana_nuevo_cliente.title("Nuevo Cliente")
     ventana_nuevo_cliente.config(bg=color_primario)
@@ -192,7 +201,7 @@ def nuevo_cliente_vista():
         if fac == "No":
             c_u_i_t = 0
 
-        nuevo_cliente_controlador(nom, apell, tel, local, direcc, fac, c_u_i_t, ventana_nuevo_cliente)
+        nuevo_cliente_controlador(nom, apell, tel, local, direcc, fac, c_u_i_t, ventana_nuevo_cliente, callback)
 
 
     # FRAME BOTONES
