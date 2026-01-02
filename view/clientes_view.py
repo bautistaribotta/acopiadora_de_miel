@@ -187,7 +187,7 @@ def nuevo_cliente_vista():
         if fac == "No":
             c_u_i_t = 0
 
-        nuevo_cliente_controlador(nom, apell, tel, local, direcc, fac, c_u_i_t)
+        nuevo_cliente_controlador(nom, apell, tel, local, direcc, fac, c_u_i_t, ventana_nuevo_cliente)
 
 
     # FRAME BOTONES

@@ -4,10 +4,6 @@ from tkinter import messagebox
 
 
 def nuevo_cliente_controlador(nombre, apellido, telefono, localidad, direccion, factura, cuit, ventana):
-    """
-    Recibe los datos, valida y guarda.
-    'ventana' es la ventana Toplevel, la recibimos para poder cerrarla si todo sale bien.
-    """
     if not nombre or not apellido or not telefono:
         messagebox.showwarning("Faltan datos", "Por favor complete los campos obligatorios.")
         return
