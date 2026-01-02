@@ -1,7 +1,7 @@
 from operaciones_view import *
 from estilos_view import *
 from controller.validaciones import *
-from controller.clientes_controlador import *
+from controller.clientes_controlador import nuevo_cliente_controlador
 
 
 def listados_clientes():
@@ -174,13 +174,29 @@ def nuevo_cliente_vista():
     entry_cuit.config(validate="key", validatecommand=(cmd_validar_numeros, '%P'))
 
 
+    # CAPTURA DE DATOS
+    def capturar_datos_cliente():
+        nom = entry_nombre.get()
+        apell = entry_apellido.get()
+        tel = entry_telefono.get()
+        local = entry_localidad.get()
+        direcc = entry_direccion.get()
+        fac = combobox_factura.get()
+        c_u_i_t = entry_cuit.get()
+
+        if fac == "No":
+            c_u_i_t = 0
+
+        nuevo_cliente_controlador(nom, apell, tel, local, direcc, fac, c_u_i_t)
+
+
     # FRAME BOTONES
     frame_botones = tk.Frame(ventana_nuevo_cliente, bg=color_primario)
     frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
 
     boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
     boton_guardar.config(bg=color_secundario, fg=color_primario, width=12,
-                         cursor="hand2", command=nuevo_cliente_controlador)
+                         cursor="hand2", command=capturar_datos_cliente)
     boton_guardar.pack(side="left", padx=5)
 
     boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
