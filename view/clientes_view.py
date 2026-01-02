@@ -1,9 +1,10 @@
 from operaciones_view import *
 from estilos_view import *
 from controller.validaciones import *
+from controller.clientes_controlador import *
 
 
-def clientes():
+def listados_clientes():
     ventana_clientes = tk.Toplevel()
     ventana_clientes.title("Clientes")
     ventana_clientes.geometry("800x600+550+85")
@@ -37,12 +38,12 @@ def clientes():
 
     boton_editar = tk.Button(frame_superior, text="Editar")
     boton_editar.config(bg=color_secundario, fg=color_primario, width=10,
-                        font=fuente_texto, command=editar_cliente, cursor="hand2")
+                        font=fuente_texto, command=editar_cliente_vista, cursor="hand2")
     boton_editar.pack(side="right", padx=5)
 
     boton_agregar = tk.Button(frame_superior, text="Agregar")
     boton_agregar.config(bg=color_secundario, fg=color_primario, text="Añadir", width=10,
-                         font=fuente_texto, command=nuevo_cliente, cursor="hand2")
+                         font=fuente_texto, command=nuevo_cliente_vista, cursor="hand2")
     boton_agregar.pack(side="right", padx=5)
 
 
@@ -77,7 +78,7 @@ def clientes():
     scrollbar.config(command=tabla_clientes.yview)
 
 
-def nuevo_cliente():
+def nuevo_cliente_vista():
     ventana_nuevo_cliente = tk.Toplevel()
     ventana_nuevo_cliente.title("Nuevo Cliente")
     ventana_nuevo_cliente.config(bg=color_primario)
@@ -178,7 +179,8 @@ def nuevo_cliente():
     frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
 
     boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
-    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12, cursor="hand2")
+    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12,
+                         cursor="hand2", command=nuevo_cliente_controlador)
     boton_guardar.pack(side="left", padx=5)
 
     boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
@@ -199,7 +201,7 @@ def nuevo_cliente():
     combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
 
 
-def editar_cliente():
+def editar_cliente_vista():
     ventana_editar_cliente = tk.Toplevel()
     ventana_editar_cliente.title("Editar cliente")
     ventana_editar_cliente.config(bg=color_primario)
@@ -312,7 +314,7 @@ def editar_cliente():
     combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
 
 
-def informacion_cliente():
+def informacion_cliente_vista():
     ventana_info_cliente = tk.Toplevel(root)
     ventana_info_cliente.title("Informacion del cliente")
     ventana_info_cliente.configure(bg=color_primario)
@@ -459,5 +461,5 @@ def informacion_cliente():
 if __name__ == "__main__":
     root = tk.Tk()  # Crea una ventana principal oculta
     root.withdraw()  # La oculta (porque no la necesito visible)
-    clientes()  # Abre la ventana Toplevel de proveedores
+    listados_clientes()  # Abre la ventana Toplevel de proveedores
     root.mainloop()  # Mantiene la aplicación corriendo

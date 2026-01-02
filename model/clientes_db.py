@@ -2,7 +2,7 @@ import mysql.connector
 from entidades import Cliente
 
 
-def nuevo_cliente(cliente : Cliente):
+def nuevo_cliente_db(cliente : Cliente):
     conexion = mysql.connector.connect(
         host="localhost",
         user="root",

@@ -33,7 +33,7 @@ def pantalla_principal():
     boton_productos.grid(row=0, column=0, padx=20, pady=15)
 
     boton_clientes = tk.Button(opciones_top, text="CLIENTES")
-    boton_clientes.configure(bg=color_primario, fg=color_secundario, command=clientes, cursor="hand2")
+    boton_clientes.configure(bg=color_primario, fg=color_secundario, command=listados_clientes, cursor="hand2")
     boton_clientes.grid(row=0, column=1, padx=20, pady=15)
 
     boton_remitos = tk.Button(opciones_top, text="REMITOS")
