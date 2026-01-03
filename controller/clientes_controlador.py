@@ -13,6 +13,7 @@ def nuevo_cliente_controlador(nombre, apellido, telefono, localidad, direccion, 
     try:
         nuevo_cliente_db(nuevo_obj_cliente)
         messagebox.showinfo("Éxito", "Cliente guardado correctamente.")
+        # Si callback se mantienen en None, no ejecuta nada
         if callback:
             callback()
         ventana.destroy()

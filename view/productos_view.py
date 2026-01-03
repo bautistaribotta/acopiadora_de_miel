@@ -1,5 +1,4 @@
 from tkinter import ttk
-
 from controller.productos_controlador import listar_productos_controlador
 from estilos_view import *
 from controller.validaciones import *
