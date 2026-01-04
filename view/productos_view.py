@@ -1,5 +1,5 @@
 from tkinter import ttk
-from controller.productos_controlador import listar_productos_controlador, nuevo_producto_controlador
+from controller.productos_controlador import listar_productos_controlador, nuevo_producto_controlador, eliminar_producto_controlador
 from estilos_view import *
 from controller.validaciones import *
 import tkinter as tk
@@ -35,7 +35,8 @@ def listado_productos():
 
     # BOTONES
     boton_eliminar = tk.Button(frame_superior, text="Eliminar", font=fuente_texto)
-    boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10, cursor="hand2")
+    boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10,
+                          cursor="hand2", command=ejecutar_eliminacion)
     boton_eliminar.pack(side="right", padx=(5, 0))
 
     boton_editar = tk.Button(frame_superior, text="Editar", font=fuente_texto)
@@ -72,8 +73,37 @@ def listado_productos():
         clientes = listar_productos_controlador()
         for cliente in clientes:
             tabla_productos.insert("", "end", values=cliente)
-
     actualizar_tabla()
+
+
+    # FUNCION ELIMINAR
+    def ejecutar_eliminacion():
+        seleccion = tabla_productos.selection()
+        if not seleccion:
+            messagebox.showwarning("Atención", "Seleccione un producto para eliminar.")
+            return
+
+        # Obtenemos el ID del item seleccionado (columna 0)
+        item_id = tabla_productos.item(seleccion[0])['values'][0]
+
+        confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este producto?")
+        if confirmar:
+            if eliminar_producto_controlador(item_id):
+                actualizar_tabla()
+
+
+    # MENU CONTEXTUAL (Clic derecho)
+    menu_contextual = tk.Menu(ventana_productos, tearoff=0)
+    menu_contextual.add_command(label="Editar",
+                                command="")  # IMPLEMENTAR FUNCION DE EDITAR
+    menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
+
+
+    def mostrar_menu(event):
+        item = tabla_productos.identify_row(event.y)
+        if item:
+            tabla_productos.selection_set(item)
+            menu_contextual.post(event.x_root, event.y_root)
 
 
     # CONFIGURAR COLUMNAS
