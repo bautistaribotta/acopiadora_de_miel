@@ -1,5 +1,5 @@
 from tkinter import ttk
-from controller.productos_controlador import listar_productos_controlador
+from controller.productos_controlador import listar_productos_controlador, nuevo_producto_controlador
 from estilos_view import *
 from controller.validaciones import *
 import tkinter as tk
@@ -43,7 +43,8 @@ def listado_productos():
     boton_editar.pack(side="right", padx=5)
 
     boton_agregar = tk.Button(frame_superior, text="Añadir", font=fuente_texto)
-    boton_agregar.config(bg=color_secundario, fg=color_primario, width=10, command=nuevo_producto, cursor="hand2")
+    boton_agregar.config(bg=color_secundario, fg=color_primario, width=10,
+                        command=lambda: nuevo_producto(actualizar_tabla), cursor="hand2")
     boton_agregar.pack(side="right", padx=5)
 
 
@@ -58,7 +59,7 @@ def listado_productos():
 
 
     # TREEVIEW (TABLA)
-    columnas = ("id", "nombre", "categoria", "cantidad")
+    columnas = ("id", "nombre", "categoria", "precio", "cantidad")
     tabla_productos = ttk.Treeview(frame_tabla, columns=columnas, show="headings",
                                    yscrollcommand=scrollbar.set, height=20)
 
@@ -79,18 +80,20 @@ def listado_productos():
     tabla_productos.heading("id", text="ID")
     tabla_productos.heading("nombre", text="Nombre")
     tabla_productos.heading("categoria", text="Categoría")
+    tabla_productos.heading("precio", text="Precio")
     tabla_productos.heading("cantidad", text="Cantidad")
 
     tabla_productos.column("id", width=80, anchor="center")
     tabla_productos.column("nombre", width=250, anchor="w")
     tabla_productos.column("categoria", width=200, anchor="w")
+    tabla_productos.column("precio", width=100, anchor="e")
     tabla_productos.column("cantidad", width=100, anchor="center")
 
     tabla_productos.pack(side="left", fill="both", expand=True)
     scrollbar.config(command=tabla_productos.yview)
 
 
-def nuevo_producto():
+def nuevo_producto(callback):
     ventana_nuevo_producto = tk.Toplevel()
     ventana_nuevo_producto.title("Nuevo producto")
     ventana_nuevo_producto.configure(bg=color_primario)
@@ -164,6 +167,18 @@ def nuevo_producto():
     entry_cantidad.grid(row=5, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
+    def realizar_guardado():
+        nuevo_producto_controlador(
+            entry_nombre.get(),
+            combobox_categoria.get(),
+            combobox_unidad_medida.get(),
+            entry_precio.get(),
+            entry_cantidad.get(),
+            ventana_nuevo_producto,
+            callback
+        )
+
+
     # FRAME BOTONES
     frame_botones = tk.Frame(ventana_nuevo_producto)
     frame_botones.config(bg=color_primario, height= 20)
@@ -172,7 +187,8 @@ def nuevo_producto():
 
     # BOTONES
     boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
-    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12, cursor="hand2")
+    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12,
+                         cursor="hand2", command=realizar_guardado)
     boton_guardar.pack(side="left", padx=5)
 
     boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
