@@ -91,6 +91,7 @@ def listado_clientes():
     tabla_clientes.column("telefono", width=150, anchor="center")
 
     tabla_clientes.pack(side="left", fill="both", expand=True)
+    tabla_clientes.bind("<Button-3>", mostrar_menu)
     scrollbar.config(command=tabla_clientes.yview)
 
 
