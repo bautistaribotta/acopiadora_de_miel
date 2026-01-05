@@ -24,10 +24,10 @@ def nuevo_producto_controlador(nombre, categoria, unidad_medida, precio_unidad, 
 def eliminar_producto_controlador(id_producto):
     try:
         eliminar_producto(id_producto)
-        messagebox.showinfo("Exito", "Cliente eliminado correctamente.")
+        messagebox.showinfo("Exito", "Producto eliminado correctamente.")
         return True
     except Exception as e:
-        messagebox.showerror("Error", f"El cliente no pudo ser eliminado: {e}")
+        messagebox.showerror("Error", f"El producto no pudo ser eliminado: {e}")
         return False
 
 

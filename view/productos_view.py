@@ -33,22 +33,6 @@ def listado_productos():
     entry_buscar.pack(side="left")
 
 
-    # BOTONES
-    boton_eliminar = tk.Button(frame_superior, text="Eliminar", font=fuente_texto)
-    boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10,
-                          cursor="hand2", command=ejecutar_eliminacion)
-    boton_eliminar.pack(side="right", padx=(5, 0))
-
-    boton_editar = tk.Button(frame_superior, text="Editar", font=fuente_texto)
-    boton_editar.config(bg=color_secundario, fg=color_primario, width=10, command=editar_producto, cursor="hand2")
-    boton_editar.pack(side="right", padx=5)
-
-    boton_agregar = tk.Button(frame_superior, text="Añadir", font=fuente_texto)
-    boton_agregar.config(bg=color_secundario, fg=color_primario, width=10,
-                        command=lambda: nuevo_producto(actualizar_tabla), cursor="hand2")
-    boton_agregar.pack(side="right", padx=5)
-
-
     # FRAME TABLA
     frame_tabla = tk.Frame(ventana_productos, bg=color_primario)
     frame_tabla.grid(row=1, column=0, sticky="nsew", padx=20, pady=(10, 20))
@@ -94,8 +78,7 @@ def listado_productos():
 
     # MENU CONTEXTUAL (Clic derecho)
     menu_contextual = tk.Menu(ventana_productos, tearoff=0)
-    menu_contextual.add_command(label="Editar",
-                                command="")  # IMPLEMENTAR FUNCION DE EDITAR
+    menu_contextual.add_command(label="Editar", command="")  # IMPLEMENTAR FUNCION DE EDITAR
     menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
 
 
@@ -121,6 +104,22 @@ def listado_productos():
 
     tabla_productos.pack(side="left", fill="both", expand=True)
     scrollbar.config(command=tabla_productos.yview)
+
+
+    # BOTONES
+    boton_eliminar = tk.Button(frame_superior, text="Eliminar", font=fuente_texto)
+    boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10,
+                          cursor="hand2", command=ejecutar_eliminacion)
+    boton_eliminar.pack(side="right", padx=(5, 0))
+
+    boton_editar = tk.Button(frame_superior, text="Editar", font=fuente_texto)
+    boton_editar.config(bg=color_secundario, fg=color_primario, width=10, command=editar_producto, cursor="hand2")
+    boton_editar.pack(side="right", padx=5)
+
+    boton_agregar = tk.Button(frame_superior, text="Añadir", font=fuente_texto)
+    boton_agregar.config(bg=color_secundario, fg=color_primario, width=10,
+                         command=lambda: nuevo_producto(actualizar_tabla), cursor="hand2")
+    boton_agregar.pack(side="right", padx=5)
 
 
 def nuevo_producto(callback):
