@@ -5,7 +5,8 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operaciones_view import *
 from estilos_view import *
 from controller.validaciones import *
-from controller.clientes_controlador import nuevo_cliente_controlador, listar_clientes_controlador
+from controller.clientes_controlador import (nuevo_cliente_controlador, listar_clientes_controlador,
+                                             eliminar_cliente_controlador)
 
 
 def listado_clientes():
@@ -20,35 +21,6 @@ def listado_clientes():
     ventana_clientes.grid_rowconfigure(0, weight=0)  # Buscador y Botones
     ventana_clientes.grid_rowconfigure(1, weight=1)  # Tabla
     ventana_clientes.grid_columnconfigure(0, weight=1)
-
-
-    # FRAME SUPERIOR - BUSCADOR Y BOTONES
-    frame_superior = tk.Frame(ventana_clientes, bg=color_primario)
-    frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
-
-
-    # BUSCADOR
-    label_busqueda = tk.Label(frame_superior, text="Buscar:", font=fuente_texto, bg=color_primario, fg=color_secundario)
-    label_busqueda.pack(side="left", padx=(0, 10))
-    barra_busqueda = tk.Entry(frame_superior, bg=color_secundario, fg=color_primario, font=fuente_texto, width=25)
-    barra_busqueda.pack(side="left")
-
-
-    # BOTONES
-    boton_eliminar = tk.Button(frame_superior, text="Eliminar")
-    boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10,
-                          font=fuente_texto, cursor="hand2")
-    boton_eliminar.pack(side="right", padx=(5, 0))
-
-    boton_editar = tk.Button(frame_superior, text="Editar")
-    boton_editar.config(bg=color_secundario, fg=color_primario, width=10,
-                        font=fuente_texto, command=editar_cliente_vista, cursor="hand2")
-    boton_editar.pack(side="right", padx=5)
-
-    boton_agregar = tk.Button(frame_superior, text="Agregar")
-    boton_agregar.config(bg=color_secundario, fg=color_primario, text="Añadir", width=10,
-                         font=fuente_texto, command=lambda: nuevo_cliente_vista(actualizar_tabla), cursor="hand2")
-    boton_agregar.pack(side="right", padx=5)
 
 
     # FRAME TABLA
@@ -75,8 +47,36 @@ def listado_clientes():
         clientes = listar_clientes_controlador()
         for cliente in clientes:
             tabla_clientes.insert("", "end", values=cliente)
-
     actualizar_tabla()
+
+
+    # ELIMINAR CLIENTE
+    def ejecutar_eliminacion():
+        seleccion = tabla_clientes.selection()
+        if not seleccion:
+            messagebox.showwarning("Atención", "Seleccione un cliente para eliminar.")
+            return
+
+        # Obtenemos el ID del item seleccionado (columna 0)
+        item_id = tabla_clientes.item(seleccion[0])['values'][0]
+
+        confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este cliente?")
+        if confirmar:
+            if eliminar_cliente_controlador(item_id):
+                actualizar_tabla()
+
+
+    # MENU CONTEXTUAL (clic derecho)
+    menu_contextual = tk.Menu(ventana_clientes, tearoff=0)
+    menu_contextual.add_command(label="Editar", command="") # IMPLEMENTAR FUNCION DE EDITAR
+    menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
+
+
+    def mostrar_menu(event):
+        item = tabla_clientes.identify_row(event.y)
+        if item:
+            tabla_clientes.selection_set(item)
+            menu_contextual.post(event.x_root, event.y_root)
 
 
     # CONFIGURAR COLUMNAS
@@ -92,6 +92,34 @@ def listado_clientes():
 
     tabla_clientes.pack(side="left", fill="both", expand=True)
     scrollbar.config(command=tabla_clientes.yview)
+
+
+    # FRAME SUPERIOR - BUSCADOR Y BOTONES
+    frame_superior = tk.Frame(ventana_clientes, bg=color_primario)
+    frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
+
+    # BUSCADOR
+    label_busqueda = tk.Label(frame_superior, text="Buscar:", font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_busqueda.pack(side="left", padx=(0, 10))
+    barra_busqueda = tk.Entry(frame_superior, bg=color_secundario, fg=color_primario, font=fuente_texto, width=25)
+    barra_busqueda.pack(side="left")
+
+    # BOTONES
+    boton_eliminar = tk.Button(frame_superior, text="Eliminar")
+    boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10,
+                          font=fuente_texto, cursor="hand2", command=ejecutar_eliminacion)
+    boton_eliminar.pack(side="right", padx=(5, 0))
+
+    boton_editar = tk.Button(frame_superior, text="Editar")
+    boton_editar.config(bg=color_secundario, fg=color_primario, width=10,
+                        font=fuente_texto, command=editar_cliente_vista, cursor="hand2")
+    boton_editar.pack(side="right", padx=5)
+
+    boton_agregar = tk.Button(frame_superior, text="Agregar")
+    boton_agregar.config(bg=color_secundario, fg=color_primario, text="Añadir", width=10,
+                         font=fuente_texto, command=lambda: nuevo_cliente_vista(actualizar_tabla), cursor="hand2")
+    boton_agregar.pack(side="right", padx=5)
+
 
 
 def nuevo_cliente_vista(callback=None):

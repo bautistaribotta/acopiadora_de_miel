@@ -19,20 +19,6 @@ def listado_productos():
     ventana_productos.grid_columnconfigure(0, weight=1)
 
 
-    # FRAME SUPERIOR - BUSCADOR Y BOTONES
-    frame_superior = tk.Frame(ventana_productos, bg=color_primario)
-    frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
-
-
-    # BUSCADOR
-    label_buscar = tk.Label(frame_superior, text="Buscar:")
-    label_buscar.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
-    label_buscar.pack(side="left", padx=(0, 10))
-
-    entry_buscar = ttk.Entry(frame_superior, font=fuente_texto, width=25)
-    entry_buscar.pack(side="left")
-
-
     # FRAME TABLA
     frame_tabla = tk.Frame(ventana_productos, bg=color_primario)
     frame_tabla.grid(row=1, column=0, sticky="nsew", padx=20, pady=(10, 20))
@@ -107,6 +93,18 @@ def listado_productos():
     scrollbar.config(command=tabla_productos.yview)
 
 
+    # FRAME SUPERIOR - BUSCADOR Y BOTONES
+    frame_superior = tk.Frame(ventana_productos, bg=color_primario)
+    frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
+
+    # BUSCADOR
+    label_buscar = tk.Label(frame_superior, text="Buscar:")
+    label_buscar.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_buscar.pack(side="left", padx=(0, 10))
+
+    entry_buscar = ttk.Entry(frame_superior, font=fuente_texto, width=25)
+    entry_buscar.pack(side="left")
+
     # BOTONES
     boton_eliminar = tk.Button(frame_superior, text="Eliminar", font=fuente_texto)
     boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10,
@@ -114,16 +112,16 @@ def listado_productos():
     boton_eliminar.pack(side="right", padx=(5, 0))
 
     boton_editar = tk.Button(frame_superior, text="Editar", font=fuente_texto)
-    boton_editar.config(bg=color_secundario, fg=color_primario, width=10, command=editar_producto, cursor="hand2")
+    boton_editar.config(bg=color_secundario, fg=color_primario, width=10, command=editar_producto_vista, cursor="hand2")
     boton_editar.pack(side="right", padx=5)
 
     boton_agregar = tk.Button(frame_superior, text="Añadir", font=fuente_texto)
     boton_agregar.config(bg=color_secundario, fg=color_primario, width=10,
-                         command=lambda: nuevo_producto(actualizar_tabla), cursor="hand2")
+                         command=lambda: nuevo_producto_vista(actualizar_tabla), cursor="hand2")
     boton_agregar.pack(side="right", padx=5)
 
 
-def nuevo_producto(callback):
+def nuevo_producto_vista(callback):
     ventana_nuevo_producto = tk.Toplevel()
     ventana_nuevo_producto.title("Nuevo producto")
     ventana_nuevo_producto.configure(bg=color_primario)
@@ -227,7 +225,7 @@ def nuevo_producto(callback):
     boton_cancelar.pack(side="left", padx=5)
 
 
-def editar_producto():
+def editar_producto_vista():
     ventana_editar_producto = tk.Toplevel()
     ventana_editar_producto.title("Editar producto")
     ventana_editar_producto.configure(bg=color_primario)
