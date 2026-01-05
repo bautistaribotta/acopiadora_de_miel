@@ -103,6 +103,7 @@ def listado_productos():
     tabla_productos.column("cantidad", width=100, anchor="center")
 
     tabla_productos.pack(side="left", fill="both", expand=True)
+    tabla_productos.bind("<Button-3>", mostrar_menu)
     scrollbar.config(command=tabla_productos.yview)
 
 
