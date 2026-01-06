@@ -3,7 +3,9 @@ from view.main import pantalla_principal
 
 
 def verificacion_inicio_sesion(usuario, clave, ventana):
-    if inicion_sesion(usuario, clave) is None:
+    resultado = inicion_sesion(usuario, clave)
+
+    if resultado is None:
         return False
     else:
         ventana.destroy()
