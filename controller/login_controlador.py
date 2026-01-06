@@ -1,4 +1,4 @@
-from model.usuarios_db import inicion_sesion
+from model.login_db import inicion_sesion
 from view.main import pantalla_principal
 
 
