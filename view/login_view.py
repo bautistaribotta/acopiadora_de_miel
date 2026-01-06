@@ -1,6 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from estilos_view import *
+from controller.usuarios_controlador import verificacion_inicio_sesion
 
 
 def mostrar_login():
@@ -54,11 +55,17 @@ def mostrar_login():
     entry_clave = ttk.Entry(frame_login_derecha, width=17, font=fuente_texto, show="*")
     entry_clave.grid(row=25, column=5, padx=(80, 0), pady=0)
 
+
+    # EXTRAIGO LOS DATOS Y CREO EL BOTON
+    usuario = opciones_usuario.get().lower()
+    clave = entry_clave.get().lower()
+
     boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar")
-    boton_inicio_sesion.config(cursor="hand2")
+    boton_inicio_sesion.config(cursor="hand2", command=verificacion_inicio_sesion(usuario, clave))
     boton_inicio_sesion.grid(row=50, column=5, padx=(90, 8), pady=15)
 
     ventana_login.mainloop()
+
 
 if __name__ == "__main__":
     mostrar_login()
