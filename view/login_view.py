@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from estilos_view import *
 from controller.usuarios_controlador import verificacion_inicio_sesion
 
@@ -56,12 +56,20 @@ def mostrar_login():
     entry_clave.grid(row=25, column=5, padx=(80, 0), pady=0)
 
 
-    # EXTRAIGO LOS DATOS Y CREO EL BOTON
-    usuario = opciones_usuario.get().lower()
-    clave = entry_clave.get().lower()
+    def intentar_login():
+        usuario = opciones_usuario.get().lower()
+        clave = entry_clave.get()
+
+        if not usuario or not clave:
+            messagebox.showwarning("Error", "Debe ingresar ambos campos")
+            return
+
+        if not verificacion_inicio_sesion(usuario, clave, ventana_login):
+            messagebox.showerror("Error", "Usuario o contraseña incorrecta")
+
 
     boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar")
-    boton_inicio_sesion.config(cursor="hand2", command=verificacion_inicio_sesion(usuario, clave, ventana_login))
+    boton_inicio_sesion.config(cursor="hand2", command=intentar_login)
     boton_inicio_sesion.grid(row=50, column=5, padx=(90, 8), pady=15)
 
     ventana_login.mainloop()
