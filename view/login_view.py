@@ -61,7 +61,7 @@ def mostrar_login():
     clave = entry_clave.get().lower()
 
     boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar")
-    boton_inicio_sesion.config(cursor="hand2", command=verificacion_inicio_sesion(usuario, clave))
+    boton_inicio_sesion.config(cursor="hand2", command=verificacion_inicio_sesion(usuario, clave, ventana_login))
     boton_inicio_sesion.grid(row=50, column=5, padx=(90, 8), pady=15)
 
     ventana_login.mainloop()
