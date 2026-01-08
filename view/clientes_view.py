@@ -88,7 +88,7 @@ def listado_clientes():
             return
 
         id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
-        informacion_cliente_vista(id_cliente)
+        informacion_cliente_vista(id_cliente, ventana_clientes)
 
 
         # CONFIGURAR COLUMNAS
@@ -387,7 +387,7 @@ def editar_cliente_vista():
     combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
 
 
-def informacion_cliente_vista(id_cliente):
+def informacion_cliente_vista(id_cliente, ventana_clientes):
 
     # BUSCA EL CLIENTE Y LO INSTANCIA
     cliente = informacion_cliente_controlador(id_cliente)
@@ -404,7 +404,7 @@ def informacion_cliente_vista(id_cliente):
 
 
     # INICIA LA VISTA
-    ventana_info_cliente = tk.Toplevel(root)
+    ventana_info_cliente = tk.Toplevel(ventana_clientes)
     ventana_info_cliente.title("Informacion del cliente")
     ventana_info_cliente.configure(bg=color_primario)
 
@@ -502,15 +502,15 @@ def informacion_cliente_vista(id_cliente):
 
     # BOTONES
     boton_nueva = tk.Button(frame_botones, text="Nueva", font=fuente_texto, bg=color_secundario, fg=color_primario,
-                            width=10, cursor="hand2", command=nueva_operacion)
+                            width=8, cursor="hand2", command=nueva_operacion)
     boton_nueva.pack(side="left", padx=5)
 
     boton_editar = tk.Button(frame_botones, text="Editar", font=fuente_texto, bg=color_secundario, fg=color_primario,
-                             width=10, cursor="hand2")
+                             width=8, cursor="hand2")
     boton_editar.pack(side="left", padx=5)
 
     boton_eliminar = tk.Button(frame_botones, text="Eliminar", font=fuente_texto, bg=color_secundario, fg=color_primario,
-                               width=10, cursor="hand2")
+                               width=8, cursor="hand2")
     boton_eliminar.pack(side="left", padx=5)
 
 
@@ -549,7 +549,4 @@ def informacion_cliente_vista(id_cliente):
 
 
 if __name__ == "__main__":
-    root = tk.Tk()  # Crea una ventana principal
-    root.withdraw()  # La oculta (porque no la necesito visible)
     listado_clientes()  # Abre la ventana Toplevel de proveedores
-    root.mainloop()  # Mantiene la aplicación corriendo

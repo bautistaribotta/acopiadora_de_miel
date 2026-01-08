@@ -103,7 +103,7 @@ def buscar_cliente_id(id_cliente):
     cursor = conexion.cursor()
 
     intruccion_sql = f"SELECT * FROM clientes WHERE id = %s"
-    valor = (f"%{id_cliente}%",)
+    valor = (id_cliente,)
     cursor.execute(intruccion_sql, valor)
     resultados = cursor.fetchone()
 
