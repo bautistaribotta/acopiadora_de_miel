@@ -82,8 +82,12 @@ def listado_clientes():
 
     def captar_id_cliente(event):
         seleccion = tabla_clientes.selection()
-        id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
 
+        # Si no hay nada seleccionado (ej. clic en espacio blanco), no hacemos nada
+        if not seleccion:
+            return
+
+        id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
         informacion_cliente_vista(id_cliente)
 
 

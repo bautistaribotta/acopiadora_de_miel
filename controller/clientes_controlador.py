@@ -22,8 +22,20 @@ def nuevo_cliente_controlador(nombre, apellido, telefono, localidad, direccion, 
 
 
 def informacion_cliente_controlador(id_cliente):
-    resultado = buscar_cliente_id(id_cliente)
+    # Me aseguro que le id sea un int limpio
+    try:
+        id_limpio = int(id_cliente)
+    except ValueError:
+        return None
 
+    # Busco en la base de datos
+    resultado = buscar_cliente_id(id_limpio)
+
+    # Verifico por las dudas
+    if resultado is None:
+        return None
+
+    # Desgloso los datos
     nombre = resultado[1]
     apellido = resultado[2]
     telefono = resultado[3]
@@ -32,7 +44,7 @@ def informacion_cliente_controlador(id_cliente):
     factura_produccion = resultado[6]
     cuit = resultado[7]
 
-    cliente = Cliente(nombre, apellido, telefono,localidad,direccion,factura_produccion, cuit)
+    cliente = Cliente(nombre, apellido, telefono, localidad, direccion, factura_produccion, cuit)
     return cliente
 
 
