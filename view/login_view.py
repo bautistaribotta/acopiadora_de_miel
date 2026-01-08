@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from estilos_view import *
+from estilos import *
 from controller.login_controlador import verificacion_inicio_sesion
 
 

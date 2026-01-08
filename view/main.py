@@ -10,6 +10,7 @@ def pantalla_principal():
     ventana_principal.resizable(True, True)
     ventana_principal.title("Menu principal")
     ventana_principal.state("zoomed")
+    #ventana_principal.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
     # CONFIGURACION DEL GRID DE LA VENTANA
     ventana_principal.grid_rowconfigure(0, weight=0)  # Barra: tamaño fijo

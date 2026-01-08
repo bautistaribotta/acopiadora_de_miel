@@ -1,6 +1,6 @@
 from tkinter import ttk
 from controller.productos_controlador import listar_productos_controlador, nuevo_producto_controlador, eliminar_producto_controlador
-from estilos_view import *
+from estilos import *
 from controller.validaciones import *
 import tkinter as tk
 
@@ -11,6 +11,7 @@ def listado_productos():
     ventana_productos.geometry("800x600+0+85")
     ventana_productos.resizable(False, False)
     ventana_productos.configure(bg=color_primario)
+    ventana_productos.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
 
     # CONFIGURACION DEL GRID

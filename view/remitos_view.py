@@ -1,5 +1,5 @@
 import tkinter as tk
-from estilos_view import *
+from estilos import *
 
 
 def remitos():
@@ -7,6 +7,7 @@ def remitos():
     ventana_remitos.title("Remitos")
     ventana_remitos.resizable(False, False)
     ventana_remitos.config(bg=color_primario)
+    ventana_remitos.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
 
     # POSICION Y TAMAÑO

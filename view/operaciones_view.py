@@ -1,6 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
-from estilos_view import *
+from estilos import *
 
 
 def nueva_operacion():

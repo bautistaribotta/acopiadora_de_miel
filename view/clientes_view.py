@@ -3,7 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from operaciones_view import *
-from estilos_view import *
+from estilos import *
 from controller.validaciones import *
 from controller.clientes_controlador import *
 
@@ -14,6 +14,7 @@ def listado_clientes():
     ventana_clientes.geometry("800x600+550+85")
     ventana_clientes.resizable(False, False)
     ventana_clientes.configure(bg=color_primario)
+    ventana_clientes.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
 
     # CONFIGURACION DEL GRID
