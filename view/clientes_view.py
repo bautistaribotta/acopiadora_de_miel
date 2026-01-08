@@ -398,7 +398,7 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
     else:
         fac_produccion = "No"
 
-    cuit = cliente.cuit
+    cuit = int(cliente.cuit)
     if cuit == 0:
         cuit = "N/A"
 
