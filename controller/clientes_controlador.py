@@ -1,5 +1,5 @@
 from model.entidades import Cliente
-from model.clientes_db import nuevo_cliente_db, listar_clientes_db, eliminar_cliente
+from model.clientes_db import *
 from tkinter import messagebox
 
 
@@ -19,6 +19,21 @@ def nuevo_cliente_controlador(nombre, apellido, telefono, localidad, direccion, 
         ventana.destroy()
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo guardar el cliente: {e}")
+
+
+def informacion_cliente_controlador(id_cliente):
+    resultado = buscar_cliente_id(id_cliente)
+
+    nombre = resultado[1]
+    apellido = resultado[2]
+    telefono = resultado[3]
+    localidad = resultado[4]
+    direccion = resultado[5]
+    factura_produccion = resultado[6]
+    cuit = resultado[7]
+
+    cliente = Cliente(nombre, apellido, telefono,localidad,direccion,factura_produccion, cuit)
+    return cliente
 
 
 def eliminar_cliente_controlador(id_cliente):

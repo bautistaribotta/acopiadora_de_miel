@@ -50,13 +50,15 @@ def listado_productos():
     def ejecutar_eliminacion():
         seleccion = tabla_productos.selection()
         if not seleccion:
-            messagebox.showwarning("Atención", "Seleccione un producto para eliminar.")
+            messagebox.showwarning("Atención", "Seleccione un producto para eliminar.",
+                                   parent=ventana_productos)
             return
 
         # Obtenemos el ID del item seleccionado (columna 0)
         item_id = tabla_productos.item(seleccion[0])['values'][0]
 
-        confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este producto?")
+        confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este producto?",
+                                        parent=ventana_productos)
         if confirmar:
             if eliminar_producto_controlador(item_id):
                 actualizar_tabla()

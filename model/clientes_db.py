@@ -68,6 +68,9 @@ def eliminar_cliente(id_cliente):
 
 
 def listar_clientes_db():
+    """
+    Esta funcion se usa para mostrar los datos de todos los clientes en el treeview
+    """
     conexion = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -87,6 +90,29 @@ def listar_clientes_db():
 
 
 def buscar_cliente_id(id_cliente):
+    """
+    Tener en cuenta que esta funcion usa el = es para solo usar uno, para buscar entre los clientes
+    en un buscador en tiempo real, se debe usar la funcion "buscador_cliente_por_id"
+    """
+    conexion = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="southern_honey_group"
+    )
+    cursor = conexion.cursor()
+
+    intruccion_sql = f"SELECT * FROM clientes WHERE id = %s"
+    valor = (f"%{id_cliente}%",)
+    cursor.execute(intruccion_sql, valor)
+    resultados = cursor.fetchone()
+
+    cursor.close()
+    conexion.close()
+    return resultados
+
+
+def buscador_cliente_por_id(id_cliente):
     """Tener en cuenta que esta funcion usa LIKE ya que hace una busqueda en tiempo real"""
     conexion = mysql.connector.connect(
         host="localhost",
@@ -106,7 +132,7 @@ def buscar_cliente_id(id_cliente):
     return resultados
 
 
-def buscar_cliente_nombre(nombre_cliente):
+def buscador_cliente_por_nombre(nombre_cliente):
     conexion = mysql.connector.connect(
         host="localhost",
         user="root",

@@ -10,7 +10,7 @@ def inicion_sesion(usuario, clave):
     )
     cursor = conexion.cursor()
 
-    instruccion_sql = "SELECT usuario, clave FROM usuarios WHERE usuario=%s AND clave=%s LIMIT 1"
+    instruccion_sql = "SELECT usuario, clave FROM usuarios WHERE usuario=%s AND clave=%s"
     valores = (usuario, clave)
     cursor.execute(instruccion_sql, valores)
 

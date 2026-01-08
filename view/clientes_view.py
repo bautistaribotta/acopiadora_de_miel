@@ -5,8 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from operaciones_view import *
 from estilos_view import *
 from controller.validaciones import *
-from controller.clientes_controlador import (nuevo_cliente_controlador, listar_clientes_controlador,
-                                             eliminar_cliente_controlador)
+from controller.clientes_controlador import *
 
 
 def listado_clientes():
@@ -54,13 +53,15 @@ def listado_clientes():
     def ejecutar_eliminacion():
         seleccion = tabla_clientes.selection()
         if not seleccion:
-            messagebox.showwarning("Atención", "Seleccione un cliente para eliminar.")
+            messagebox.showwarning("Atención", "Seleccione un cliente para eliminar.",
+                                   parent=ventana_clientes)
             return
 
         # Obtenemos el ID del item seleccionado (columna 0)
         item_id = tabla_clientes.item(seleccion[0])['values'][0]
 
-        confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este cliente?")
+        confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este cliente?",
+                                        parent=ventana_clientes)
         if confirmar:
             if eliminar_cliente_controlador(item_id):
                 actualizar_tabla()
@@ -79,7 +80,14 @@ def listado_clientes():
             menu_contextual.post(event.x_root, event.y_root)
 
 
-    # CONFIGURAR COLUMNAS
+    def captar_id_cliente(event):
+        seleccion = tabla_clientes.selection()
+        id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
+
+        informacion_cliente_vista(id_cliente)
+
+
+        # CONFIGURAR COLUMNAS
     tabla_clientes.heading("id", text="ID")
     tabla_clientes.heading("nombre", text="Nombre")
     tabla_clientes.heading("localidad", text="Localidad")
@@ -92,6 +100,7 @@ def listado_clientes():
 
     tabla_clientes.pack(side="left", fill="both", expand=True)
     tabla_clientes.bind("<Button-3>", mostrar_menu)
+    tabla_clientes.bind("<Double-1>", captar_id_cliente)
     scrollbar.config(command=tabla_clientes.yview)
 
 
@@ -120,7 +129,6 @@ def listado_clientes():
     boton_agregar.config(bg=color_secundario, fg=color_primario, text="Añadir", width=10,
                          font=fuente_texto, command=lambda: nuevo_cliente_vista(actualizar_tabla), cursor="hand2")
     boton_agregar.pack(side="right", padx=5)
-
 
 
 def nuevo_cliente_vista(callback=None):
@@ -375,7 +383,23 @@ def editar_cliente_vista():
     combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
 
 
-def informacion_cliente_vista():
+def informacion_cliente_vista(id_cliente):
+
+    # BUSCA EL CLIENTE Y LO INSTANCIA
+    cliente = informacion_cliente_controlador(id_cliente)
+
+    fac_produccion = cliente.factura_produccion
+    if fac_produccion == 1:
+        fac_produccion = "Si"
+    else:
+        fac_produccion = "No"
+
+    cuit = cliente.cuit
+    if cuit == 0:
+        cuit = "N/A"
+
+
+    # INICIA LA VISTA
     ventana_info_cliente = tk.Toplevel(root)
     ventana_info_cliente.title("Informacion del cliente")
     ventana_info_cliente.configure(bg=color_primario)
@@ -399,21 +423,22 @@ def informacion_cliente_vista():
     # --- FILA 0: ID | Nombre | Apellido ---
 
     # ID
+
     label_id_titulo = tk.Label(frame_datos, text="ID:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_id_titulo.grid(row=0, column=0, sticky="w", pady=5, padx=(0, 5))
-    label_id_valor = tk.Label(frame_datos, text="---", bg=color_primario, fg="white", font=("Arial", 10))
+    label_id_valor = tk.Label(frame_datos, text=id_cliente, bg=color_primario, fg="white", font=("Arial", 10))
     label_id_valor.grid(row=0, column=1, sticky="w", pady=5, padx=(0, 20))
 
     # NOMBRE
     label_nombre_titulo = tk.Label(frame_datos, text="Nombre:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_nombre_titulo.grid(row=0, column=2, sticky="w", pady=5, padx=(10, 5))
-    label_nombre_valor = tk.Label(frame_datos, text="---", bg=color_primario, fg="white", font=("Arial", 10))
+    label_nombre_valor = tk.Label(frame_datos, text=cliente.nombre, bg=color_primario, fg="white", font=("Arial", 10))
     label_nombre_valor.grid(row=0, column=3, sticky="w", pady=5, padx=(0, 20))
 
     # APELLIDO
     label_apellido_titulo = tk.Label(frame_datos, text="Apellido:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_apellido_titulo.grid(row=0, column=4, sticky="w", pady=5, padx=(10, 5))
-    label_apellido_valor = tk.Label(frame_datos, text="---", bg=color_primario, fg="white", font=("Arial", 10))
+    label_apellido_valor = tk.Label(frame_datos, text=cliente.apellido, bg=color_primario, fg="white", font=("Arial", 10))
     label_apellido_valor.grid(row=0, column=5, sticky="w", pady=5, padx=(0, 0))
 
 
@@ -422,20 +447,20 @@ def informacion_cliente_vista():
     # TELEFONO
     label_telefono_titulo = tk.Label(frame_datos, text="Teléfono:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_telefono_titulo.grid(row=1, column=0, sticky="w", pady=5, padx=(0, 5))
-    label_telefono_valor = tk.Label(frame_datos, text="---", bg=color_primario, fg="white", font=("Arial", 10))
+    label_telefono_valor = tk.Label(frame_datos, text=cliente.telefono, bg=color_primario, fg="white", font=("Arial", 10))
     label_telefono_valor.grid(row=1, column=1, sticky="w", pady=5, padx=(0, 20))
 
     # LOCALIDAD
     label_localidad_titulo = tk.Label(frame_datos, text="Localidad:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_localidad_titulo.grid(row=1, column=2, sticky="w", pady=5, padx=(10, 5))
-    label_localidad_valor = tk.Label(frame_datos, text="---", bg=color_primario, fg="white", font=("Arial", 10))
+    label_localidad_valor = tk.Label(frame_datos, text=cliente.localidad, bg=color_primario, fg="white", font=("Arial", 10))
     label_localidad_valor.grid(row=1, column=3, sticky="w", pady=5, padx=(0, 20))
 
-    # CALLE
-    label_calle_titulo = tk.Label(frame_datos, text="Direccion:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
-    label_calle_titulo.grid(row=1, column=4, sticky="w", pady=5, padx=(10, 5))
-    label_calle_valor = tk.Label(frame_datos, text="---", bg=color_primario, fg="white", font=("Arial", 10))
-    label_calle_valor.grid(row=1, column=5, sticky="w", pady=5, padx=(0, 0))
+    # DIRECCION
+    label_direccion_titulo = tk.Label(frame_datos, text="Direccion:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
+    label_direccion_titulo.grid(row=1, column=4, sticky="w", pady=5, padx=(10, 5))
+    label_direccion_valor = tk.Label(frame_datos, text=cliente.direccion, bg=color_primario, fg="white", font=("Arial", 10))
+    label_direccion_valor.grid(row=1, column=5, sticky="w", pady=5, padx=(0, 0))
 
 
     # --- FILA 2: Factura | CUIT ---
@@ -443,13 +468,13 @@ def informacion_cliente_vista():
     # FACTURA
     label_factura_titulo = tk.Label(frame_datos, text="Factura:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_factura_titulo.grid(row=2, column=0, sticky="w", pady=5, padx=(0, 5))
-    label_factura_valor = tk.Label(frame_datos, text="---", bg=color_primario, fg="white", font=("Arial", 10))
+    label_factura_valor = tk.Label(frame_datos, text=fac_produccion, bg=color_primario, fg="white", font=("Arial", 10))
     label_factura_valor.grid(row=2, column=1, sticky="w", pady=5, padx=(0, 20))
 
     # CUIT
     label_cuit_titulo = tk.Label(frame_datos, text="CUIT:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_cuit_titulo.grid(row=2, column=2, sticky="w", pady=5, padx=(10, 5))
-    label_cuit_valor = tk.Label(frame_datos, text="---", bg=color_primario, fg="white", font=("Arial", 10))
+    label_cuit_valor = tk.Label(frame_datos, text=cuit, bg=color_primario, fg="white", font=("Arial", 10))
     label_cuit_valor.grid(row=2, column=3, sticky="w", pady=5, padx=(0, 20))
 
 
