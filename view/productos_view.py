@@ -1,8 +1,8 @@
-from tkinter import ttk
-from controller.productos_controlador import listar_productos_controlador, nuevo_producto_controlador, eliminar_producto_controlador
-from estilos import *
-from controller.validaciones import *
 import tkinter as tk
+from estilos import *
+from tkinter import ttk
+from controller.validaciones import *
+from controller.productos_controlador import *
 
 
 def listado_productos():
@@ -35,7 +35,7 @@ def listado_productos():
     tabla_productos = ttk.Treeview(frame_tabla, columns=columnas, show="headings",
                                    yscrollcommand=scrollbar.set, height=20)
 
-    # MOSTRAR LOS DATOS EN EL TREEVIEW
+    # FUNCION PARA ACTUALIZAR LA TABLA (TREEVIEW)
     def actualizar_tabla():
         # Limpia la tabla
         for item in tabla_productos.get_children():
@@ -47,7 +47,7 @@ def listado_productos():
     actualizar_tabla()
 
 
-    # FUNCION ELIMINAR
+    # FUNCION ELIMINAR PRODUCTO
     def ejecutar_eliminacion():
         seleccion = tabla_productos.selection()
         if not seleccion:
@@ -65,6 +65,26 @@ def listado_productos():
                 actualizar_tabla()
 
 
+    # FUNCION DE BUSCAR PRODUCTOS
+    def filtrar_tabla(event):
+        texto_busqueda = entry_buscar.get()
+
+        if event == "":
+            actualizar_tabla()
+            return
+
+        productos_encontrados = buscador_productos_controlador(texto_busqueda)
+
+        # Limpiamos la tabla actual
+        for item in tabla_productos.get_children():
+            tabla_productos.delete(item)
+
+        # Llenamos con los resultados de la búsqueda
+        for producto in productos_encontrados:
+            tabla_productos.insert("", "end", values=producto)
+
+
+
     # MENU CONTEXTUAL (Clic derecho)
     menu_contextual = tk.Menu(ventana_productos, tearoff=0)
     menu_contextual.add_command(label="Editar", command="")  # IMPLEMENTAR FUNCION DE EDITAR
@@ -78,7 +98,7 @@ def listado_productos():
             menu_contextual.post(event.x_root, event.y_root)
 
 
-    # CONFIGURAR COLUMNAS
+    # CONFIGURAR COLUMNAS DE LA TABLA (TREEVIEW)
     tabla_productos.heading("id", text="ID")
     tabla_productos.heading("nombre", text="Nombre")
     tabla_productos.heading("categoria", text="Categoría")
@@ -87,8 +107,8 @@ def listado_productos():
 
     tabla_productos.column("id", width=80, anchor="center")
     tabla_productos.column("nombre", width=250, anchor="w")
-    tabla_productos.column("categoria", width=200, anchor="w")
-    tabla_productos.column("precio", width=100, anchor="e")
+    tabla_productos.column("categoria", width=200, anchor="center")
+    tabla_productos.column("precio", width=100, anchor="center")
     tabla_productos.column("cantidad", width=100, anchor="center")
 
     tabla_productos.pack(side="left", fill="both", expand=True)
@@ -106,6 +126,7 @@ def listado_productos():
     label_buscar.pack(side="left", padx=(0, 10))
 
     entry_buscar = ttk.Entry(frame_superior, font=fuente_texto, width=25)
+    entry_buscar.bind("<KeyRelease>", filtrar_tabla)
     entry_buscar.pack(side="left")
 
     # BOTONES

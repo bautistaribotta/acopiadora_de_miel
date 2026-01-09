@@ -1,5 +1,5 @@
 from model.entidades import Producto
-from model.productos_db import listar_producto_db, nuevo_producto, eliminar_producto
+from model.productos_db import *
 from tkinter import messagebox
 
 
@@ -30,6 +30,13 @@ def eliminar_producto_controlador(id_producto, ventana):
     except Exception as e:
         messagebox.showerror("Error", f"El producto no pudo ser eliminado: {e}", parent=ventana)
         return False
+
+
+def buscador_productos_controlador(criterio):
+    if criterio.isdigit():
+        return buscador_producto_por_id(criterio)
+    else:
+        return buscador_producto_por_nombre(criterio)
 
 
 def listar_productos_controlador():

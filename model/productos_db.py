@@ -73,7 +73,7 @@ def listar_producto_db():
     )
     cursor = conexion.cursor()
 
-    instruccion = "SELECT id, nombre, categoria, cantidad FROM productos"
+    instruccion = "SELECT id, nombre, categoria, precio, cantidad FROM productos"
     cursor.execute(instruccion)
     resultados = cursor.fetchall()
 
@@ -82,7 +82,11 @@ def listar_producto_db():
     return resultados
 
 
-def buscar_producto_nombre(nombre_producto):
+def buscar_producto_id(id_producto):
+    """
+    Tener en cuenta que esta funcion usa el = es para solo usar uno, para buscar entre los productos
+    en un buscador en tiempo real, se debe usar la funcion "buscador_producto_por_id"
+    """
     conexion = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -91,8 +95,27 @@ def buscar_producto_nombre(nombre_producto):
     )
     cursor = conexion.cursor()
 
-    instruccion_sql = "SELECT id, nombre, categoria, cantidad FROM productos WHERE nombre LIKE %s"
-    valor = (f"%{nombre_producto}%",)
+    intruccion_sql = f"SELECT id, nombre, categoria, precio, cantidad FROM productos WHERE id = %s"
+    valor = (id_producto,)
+    cursor.execute(intruccion_sql, valor)
+    resultados = cursor.fetchone()
+
+    cursor.close()
+    conexion.close()
+    return resultados
+
+
+def buscador_producto_por_id(id_producto):
+    conexion = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="southern_honey_group"
+    )
+    cursor = conexion.cursor()
+
+    instruccion_sql = "SELECT id, nombre, categoria, precio, cantidad FROM productos WHERE id LIKE %s"
+    valor = (f"%{id_producto}%",)
 
     cursor.execute(instruccion_sql, valor)
     resultados = cursor.fetchall()
@@ -102,7 +125,7 @@ def buscar_producto_nombre(nombre_producto):
     return resultados
 
 
-def buscar_producto_id(id_producto):
+def buscador_producto_por_nombre(nombre_producto):
     conexion = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -111,8 +134,8 @@ def buscar_producto_id(id_producto):
     )
     cursor = conexion.cursor()
 
-    instruccion_sql = "SELECT id, nombre, categoria, cantidad FROM productos WHERE id LIKE %s"
-    valor = (f"%{id_producto}%",)
+    instruccion_sql = "SELECT id, nombre, categoria, precio, cantidad FROM productos WHERE nombre LIKE %s"
+    valor = (f"%{nombre_producto}%",)
 
     cursor.execute(instruccion_sql, valor)
     resultados = cursor.fetchall()
