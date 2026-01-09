@@ -61,7 +61,7 @@ def listado_productos():
         confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este producto?",
                                         parent=ventana_productos)
         if confirmar:
-            if eliminar_producto_controlador(item_id):
+            if eliminar_producto_controlador(item_id, ventana_productos):
                 actualizar_tabla()
 
 

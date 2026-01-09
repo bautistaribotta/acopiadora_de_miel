@@ -64,7 +64,7 @@ def listado_clientes():
         confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este cliente?",
                                         parent=ventana_clientes)
         if confirmar:
-            if eliminar_cliente_controlador(item_id):
+            if eliminar_cliente_controlador(item_id, ventana_clientes):
                 actualizar_tabla()
 
 
