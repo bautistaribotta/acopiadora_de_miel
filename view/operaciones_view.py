@@ -8,6 +8,8 @@ def nueva_operacion():
     ventana_nueva_operacion.title("Nueva Operación")
     ventana_nueva_operacion.config(bg=color_primario)
     ventana_nueva_operacion.resizable(False, False)
+    ventana_nueva_operacion.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+
 
     ancho_ventana = 900
     alto_ventana = 600
@@ -120,6 +122,7 @@ def editar_operacion():
     ventana_nueva_operacion.title("Editar operacion")
     ventana_nueva_operacion.config(bg=color_primario)
     ventana_nueva_operacion.resizable(False, False)
+    ventana_nueva_operacion.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
     ancho_ventana = 900
     alto_ventana = 600
@@ -222,7 +225,4 @@ def editar_operacion():
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()
     nueva_operacion()
-    root.mainloop()

@@ -130,6 +130,7 @@ def nuevo_producto_vista(callback):
     ventana_nuevo_producto.configure(bg=color_primario)
     ventana_nuevo_producto.geometry("400x600+850+85")
     ventana_nuevo_producto.resizable(False, False)
+    ventana_nuevo_producto.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
 
     # CONFIGURACION DEL GRID
@@ -234,6 +235,7 @@ def editar_producto_vista():
     ventana_editar_producto.configure(bg=color_primario)
     ventana_editar_producto.geometry("400x600+850+85")
     ventana_editar_producto.resizable(False, False)
+    ventana_editar_producto.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
 
     # CONFIGURACION DEL GRID
@@ -322,7 +324,4 @@ def editar_producto_vista():
 
 
 if __name__ == "__main__":
-    root = tk.Tk() # Crea una ventana principal oculta
-    root.withdraw() # La oculta (porque no la necesito visible)
-    listado_productos() # Abre la ventana Toplevel de productos
-    root.mainloop() # Mantiene la aplicación corriendo
+    listado_productos()

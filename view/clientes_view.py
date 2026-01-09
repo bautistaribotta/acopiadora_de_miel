@@ -92,7 +92,7 @@ def listado_clientes():
         informacion_cliente_vista(id_cliente, ventana_clientes)
 
 
-        # CONFIGURAR COLUMNAS
+    # CONFIGURAR COLUMNAS
     tabla_clientes.heading("id", text="ID")
     tabla_clientes.heading("nombre", text="Nombre")
     tabla_clientes.heading("localidad", text="Localidad")
@@ -142,6 +142,8 @@ def nuevo_cliente_vista(callback=None):
     ventana_nuevo_cliente.config(bg=color_primario)
     ventana_nuevo_cliente.geometry("400x600+120+85")
     ventana_nuevo_cliente.resizable(False, False)
+    ventana_nuevo_cliente.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+
 
     # CONFIGURACION DEL GRID
     ventana_nuevo_cliente.grid_columnconfigure(0, weight=1)
@@ -281,6 +283,8 @@ def editar_cliente_vista():
     ventana_editar_cliente.config(bg=color_primario)
     ventana_editar_cliente.geometry("400x600+120+85")
     ventana_editar_cliente.resizable(False, False)
+    ventana_editar_cliente.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+
 
     # CONFIGURACION DEL GRID
     ventana_editar_cliente.grid_columnconfigure(0, weight=1)
@@ -408,6 +412,8 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
     ventana_info_cliente = tk.Toplevel(ventana_clientes)
     ventana_info_cliente.title("Informacion del cliente")
     ventana_info_cliente.configure(bg=color_primario)
+    ventana_info_cliente.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+
 
     # Dimensiones y centrado
     ancho_ventana = 900
@@ -550,4 +556,4 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
 
 
 if __name__ == "__main__":
-    listado_clientes()  # Abre la ventana Toplevel de proveedores
+    listado_clientes()

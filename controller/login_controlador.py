@@ -1,5 +1,5 @@
 from model.login_db import inicion_sesion
-from view.main import pantalla_principal
+from view.pantalla_principal_view import pantalla_principal
 
 
 def verificacion_inicio_sesion(usuario, clave, ventana):

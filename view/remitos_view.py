@@ -19,7 +19,4 @@ def remitos():
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()
     remitos()
-    root.mainloop()
