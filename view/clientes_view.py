@@ -262,7 +262,7 @@ def nuevo_cliente_vista(callback=None):
         c_u_i_t = entry_cuit.get()
 
         if fac == "No":
-            c_u_i_t = 0
+            c_u_i_t = None
 
         nuevo_cliente_controlador(nom, apell, tel, local, direcc, fac, c_u_i_t, ventana_nuevo_cliente, callback)
 
@@ -421,7 +421,7 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
         fac_produccion = "No"
 
     cuit = int(cliente.cuit)
-    if cuit == 0:
+    if cuit is None:
         cuit = "N/A"
 
 
