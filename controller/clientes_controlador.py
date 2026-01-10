@@ -62,3 +62,10 @@ def eliminar_cliente_controlador(id_cliente, ventana):
 
 def listar_clientes_controlador():
     return listar_clientes_db()
+
+
+def buscador_clientes_controlador(criterio):
+    if criterio.isdigit():
+        return buscador_cliente_por_id(criterio)
+    else:
+        return buscador_cliente_por_nombre(criterio)

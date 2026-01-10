@@ -64,6 +64,25 @@ def listado_clientes():
                 actualizar_tabla()
 
 
+    # FUNCION DE BUSCAR PRODUCTOS
+    def filtrar_tabla(event):
+        texto_busqueda = entry_buscar.get()
+
+        if event == "":
+            actualizar_tabla()
+            return
+
+        productos_encontrados = buscador_clientes_controlador(texto_busqueda)
+
+        # Limpiamos la tabla actual
+        for item in tabla_clientes.get_children():
+            tabla_clientes.delete(item)
+
+        # Llenamos con los resultados de la búsqueda
+        for producto in productos_encontrados:
+            tabla_clientes.insert("", "end", values=producto)
+
+
     # MENU CONTEXTUAL (clic derecho)
     menu_contextual = tk.Menu(ventana_clientes, tearoff=0)
     menu_contextual.add_command(label="Editar", command="") # IMPLEMENTAR FUNCION DE EDITAR
@@ -91,12 +110,14 @@ def listado_clientes():
     # CONFIGURAR COLUMNAS
     tabla_clientes.heading("id", text="ID")
     tabla_clientes.heading("nombre", text="Nombre")
+    tabla_clientes.heading("apellido", text="Apellido")
     tabla_clientes.heading("localidad", text="Localidad")
     tabla_clientes.heading("telefono", text="Teléfono")
 
     tabla_clientes.column("id", width=80, anchor="center")
-    tabla_clientes.column("nombre", width=250, anchor="w")
-    tabla_clientes.column("localidad", width=200, anchor="w")
+    tabla_clientes.column("nombre", width=125, anchor="w")
+    tabla_clientes.column("apellido", width=125, anchor="w")
+    tabla_clientes.column("localidad", width=200, anchor="center")
     tabla_clientes.column("telefono", width=150, anchor="center")
 
     tabla_clientes.pack(side="left", fill="both", expand=True)
@@ -112,8 +133,10 @@ def listado_clientes():
     # BUSCADOR
     label_busqueda = tk.Label(frame_superior, text="Buscar:", font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_busqueda.pack(side="left", padx=(0, 10))
-    barra_busqueda = tk.Entry(frame_superior, bg=color_secundario, fg=color_primario, font=fuente_texto, width=25)
-    barra_busqueda.pack(side="left")
+
+    entry_buscar = tk.Entry(frame_superior, bg=color_secundario, fg=color_primario, font=fuente_texto, width=25)
+    entry_buscar.bind("<KeyRelease>", filtrar_tabla)
+    entry_buscar.pack(side="left")
 
     # BOTONES
     boton_eliminar = tk.Button(frame_superior, text="Eliminar")

@@ -80,7 +80,7 @@ def listar_clientes_db():
     cursor = conexion.cursor()
 
     # Selecciono las columnas en el mismo orden que el Treeview (id, nombre, localidad, telefono)
-    instruccion = "SELECT id, CONCAT(nombre, ' ', apellido), localidad, telefono FROM clientes"
+    instruccion = "SELECT id, nombre, apellido, localidad, telefono FROM clientes"
     cursor.execute(instruccion)
     resultados = cursor.fetchall()
 
