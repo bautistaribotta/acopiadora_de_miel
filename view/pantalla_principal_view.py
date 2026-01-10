@@ -130,17 +130,6 @@ def pantalla_usuario():
     label_valor_oficial.configure(bg=color_secundario, fg=color_primario, font=fuente_texto)
     label_valor_oficial.grid(row=0, column=1, padx=(0, 20), sticky="w")
 
-
-    # DOLAR BLUE
-    label_blue = tk.Label(frame_valores, text="Blue:")
-    label_blue.configure(bg=color_secundario, fg=color_primario, font=fuente_texto)
-    label_blue.grid(row=0, column=2, padx=(0, 5), sticky="e")
-
-    dolar_blue = get_cotizacion_blue_venta()
-    label_valor_blue = tk.Label(frame_valores, text=f"{dolar_blue}")
-    label_valor_blue.configure(bg=color_secundario, fg=color_primario, font=fuente_texto)
-    label_valor_blue.grid(row=0, column=3, padx=(0, 0), sticky="w")
-
     ventana_principal.mainloop()
 
 
