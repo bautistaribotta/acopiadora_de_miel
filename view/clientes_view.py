@@ -30,7 +30,7 @@ def listado_clientes():
 
 
     # TREEVIEW (TABLA)
-    columnas = ("id", "nombre", "localidad", "telefono")
+    columnas = ("id", "nombre", "apellido", "localidad", "telefono")
     tabla_clientes = ttk.Treeview(frame_tabla, columns=columnas, show="headings",
                                      yscrollcommand=scrollbar.set, height=20)
 
