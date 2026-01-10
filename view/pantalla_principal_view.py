@@ -37,9 +37,13 @@ def pantalla_administrador():
     boton_clientes.configure(bg=color_primario, fg=color_secundario, command=listado_clientes, cursor="hand2")
     boton_clientes.grid(row=0, column=1, padx=20, pady=15)
 
+    boton_deudores = tk.Button(opciones_top, text="DEUDORES")
+    boton_deudores.configure(bg=color_primario, fg=color_secundario, cursor="hand2")
+    boton_deudores.grid(row=0, column=2, padx=20, pady=15)
+
     boton_remitos = tk.Button(opciones_top, text="REMITOS")
     boton_remitos.configure(bg=color_primario, fg=color_secundario, command=remitos, cursor="hand2")
-    boton_remitos.grid(row=0, column=2, padx=20, pady=15)
+    boton_remitos.grid(row=0, column=3, padx=20, pady=15)
 
 
     # FRAME DERECHO - VALORES DOLAR
