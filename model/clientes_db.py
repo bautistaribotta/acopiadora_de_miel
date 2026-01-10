@@ -80,7 +80,7 @@ def listar_clientes_db():
     cursor = conexion.cursor()
 
     # Selecciono las columnas en el mismo orden que el Treeview (id, nombre, localidad, telefono)
-    instruccion = "SELECT id, nombre, apellido, localidad, telefono FROM clientes"
+    instruccion = "SELECT id, CONCAT_WS(' ', nombre, apellido), localidad, telefono FROM clientes"
     cursor.execute(instruccion)
     resultados = cursor.fetchall()
 
@@ -93,6 +93,7 @@ def buscar_cliente_id(id_cliente):
     """
     Tener en cuenta que esta funcion usa el = es para solo usar uno, para buscar entre los clientes
     en un buscador en tiempo real, se debe usar la funcion "buscador_cliente_por_id"
+    Esta sirve para buscar un cliente solo en la DB, no en la tabla, y eliminarlo o editarlo
     """
     conexion = mysql.connector.connect(
         host="localhost",
@@ -122,7 +123,7 @@ def buscador_cliente_por_id(id_cliente):
     )
     cursor = conexion.cursor()
 
-    intruccion_sql = f"SELECT id, nombre, localidad, telefono FROM clientes WHERE id LIKE %s"
+    intruccion_sql = f"SELECT id, CONCAT_WS(' ', nombre, apellido), localidad, telefono FROM clientes WHERE id LIKE %s"
     valor = (f"%{id_cliente}%",)
     cursor.execute(intruccion_sql, valor)
     resultados = cursor.fetchall()
@@ -141,7 +142,7 @@ def buscador_cliente_por_nombre(nombre_cliente):
     )
     cursor = conexion.cursor()
 
-    intruccion_sql = "SELECT id, nombre, localidad, telefono FROM clientes WHERE nombre LIKE %s"
+    intruccion_sql = "SELECT id, CONCAT_WS(' ', nombre, apellido), localidad, telefono FROM clientes WHERE nombre LIKE %s"
     valor = (f"%{nombre_cliente}%",)
     cursor.execute(intruccion_sql, valor)
     resultados = cursor.fetchall()

@@ -30,7 +30,7 @@ def listado_clientes():
 
 
     # TREEVIEW (TABLA)
-    columnas = ("id", "nombre", "apellido", "localidad", "telefono")
+    columnas = ("id", "nombre", "localidad", "telefono")
     tabla_clientes = ttk.Treeview(frame_tabla, columns=columnas, show="headings",
                                      yscrollcommand=scrollbar.set, height=20)
 
@@ -110,13 +110,11 @@ def listado_clientes():
     # CONFIGURAR COLUMNAS
     tabla_clientes.heading("id", text="ID")
     tabla_clientes.heading("nombre", text="Nombre")
-    tabla_clientes.heading("apellido", text="Apellido")
     tabla_clientes.heading("localidad", text="Localidad")
     tabla_clientes.heading("telefono", text="Teléfono")
 
     tabla_clientes.column("id", width=80, anchor="center")
-    tabla_clientes.column("nombre", width=125, anchor="w")
-    tabla_clientes.column("apellido", width=125, anchor="w")
+    tabla_clientes.column("nombre", width=250, anchor="w")
     tabla_clientes.column("localidad", width=200, anchor="center")
     tabla_clientes.column("telefono", width=150, anchor="center")
 
