@@ -41,3 +41,45 @@ def buscador_productos_controlador(criterio):
 
 def listar_productos_controlador():
     return listar_producto_db()
+
+
+def informacion_producto_controlador(id_producto):
+    try:
+        id_limpio = int(id_producto)
+    except ValueError:
+        return None
+
+    # (id, nombre, categoria, precio, cantidad, unidad_medida)
+    resultado = buscar_producto_id(id_limpio)
+
+    if resultado is None:
+        return None
+
+    # Constructor: Producto(nombre, categoria, unidad_medida, precio, cantidad)
+    nombre = resultado[1]
+    categoria = resultado[2]
+    precio = resultado[3]
+    cantidad = resultado[4]
+    unidad_medida = resultado[5]
+
+    producto = Producto(nombre, categoria, unidad_medida, precio, cantidad)
+    return producto
+
+
+def editar_producto_controlador(id_producto, nombre, categoria, unidad_medida, precio, cantidad, ventana, callback=None):
+    if not nombre or not categoria or not unidad_medida or not precio or not cantidad:
+        messagebox.showwarning("Faltan datos",
+                               "Por favor complete los campos obligatorios.", parent=ventana)
+        return
+
+    obj_producto_editado = Producto(nombre, categoria, unidad_medida, precio, cantidad)
+
+    try:
+        editar_producto(id_producto, obj_producto_editado)
+        messagebox.showinfo("Exito", "Producto editado correctamente.", parent=ventana)
+
+        if callback:
+            callback()
+        ventana.destroy()
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo editar el producto: {e}", parent=ventana)

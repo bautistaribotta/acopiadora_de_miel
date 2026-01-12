@@ -96,9 +96,22 @@ def listado_productos():
 
 
 
+    # FUNCION ABRIR EDITAR
+    def abrir_editar():
+        seleccion = tabla_productos.selection()
+        if not seleccion:
+            messagebox.showwarning("Atención", "Seleccione un producto para editar.",
+                                   parent=ventana_productos)
+            return
+
+        # Obtenemos el ID del item seleccionado (columna 0)
+        item_id = tabla_productos.item(seleccion[0])['values'][0]
+        editar_producto_vista(item_id, actualizar_tabla)
+
+
     # MENU CONTEXTUAL (Clic derecho)
     menu_contextual = tk.Menu(ventana_productos, tearoff=0)
-    menu_contextual.add_command(label="Editar", command="")  # IMPLEMENTAR FUNCION DE EDITAR
+    menu_contextual.add_command(label="Editar", command=abrir_editar)
     menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
 
 
@@ -146,7 +159,7 @@ def listado_productos():
     boton_eliminar.pack(side="right", padx=(5, 0))
 
     boton_editar = ttk.Button(frame_superior, text="Editar", style="BotonSecundario.TButton")
-    boton_editar.config(command=editar_producto_vista, cursor="hand2")
+    boton_editar.config(command=abrir_editar, cursor="hand2")
     boton_editar.pack(side="right", padx=5)
 
     boton_agregar = ttk.Button(frame_superior, text="Añadir", style="BotonSecundario.TButton")
@@ -225,14 +238,14 @@ def nuevo_producto_vista(callback):
 
 
     # CANTIDAD
-    cmd_validar_numeros = ventana_nuevo_producto.register(validar_solo_numeros)
+    cmd_validar_numeros_punto = ventana_nuevo_producto.register(validar_solo_numeros_punto)
 
     label_cantidad = tk.Label(ventana_nuevo_producto, text="Cantidad:")
     label_cantidad.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_cantidad.grid(row=5, column=0, sticky="e", padx=(20, 10), pady=10)
 
     entry_cantidad = tk.Entry(ventana_nuevo_producto, font=fuente_texto, width=20)
-    entry_cantidad.config(validate="key", validatecommand=(cmd_validar_numeros, '%P'))
+    entry_cantidad.config(validate="key", validatecommand=(cmd_validar_numeros_punto, '%P'))
     entry_cantidad.grid(row=5, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
@@ -264,7 +277,7 @@ def nuevo_producto_vista(callback):
     boton_cancelar.pack(side="left", padx=5)
 
 
-def editar_producto_vista():
+def editar_producto_vista(id_producto, callback=None):
     global ventana_editar_producto_instancia
     if ventana_editar_producto_instancia is not None and ventana_editar_producto_instancia.winfo_exists():
         ventana_editar_producto_instancia.lift()
@@ -290,6 +303,8 @@ def editar_producto_vista():
     label_titulo.config(bg=color_primario, fg=color_secundario, font=fuente_titulos)
     label_titulo.grid(row=0, column=0, columnspan=2, padx=20, pady=(50, 40))
 
+    # BUSCAR DATOS
+    producto_a_editar = informacion_producto_controlador(id_producto)
 
     # NOMBRE
     label_nombre = tk.Label(ventana_editar_producto, text="Nombre:")
@@ -297,6 +312,7 @@ def editar_producto_vista():
     label_nombre.grid(row=1, column=0, sticky="e", padx=(20, 10), pady=10)
 
     entry_nombre = tk.Entry(ventana_editar_producto, font=fuente_texto, width=20)
+    entry_nombre.insert(0, producto_a_editar.nombre)
     entry_nombre.grid(row=1, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
@@ -307,9 +323,10 @@ def editar_producto_vista():
 
 
     # ---------------- FALTAN MAS CATEGORIAS ----------------
-    lista_categorias = ["Alimento", "Cera", "Estampa", "Insumos", "Madera", "Medicamentos", "Miel"]
+    lista_categorias = ["Alimento", "Cera", "Estampa", "Insumos", "Madera", "Medicamentos", "Miel", "Otros"]
     combobox_categoria = ttk.Combobox(ventana_editar_producto)
     combobox_categoria.config(font=fuente_texto, values=lista_categorias, state="readonly")
+    combobox_categoria.set(producto_a_editar.categoria)
     combobox_categoria.grid(row=2, column=1, sticky="w", padx=(0, 30), pady=10)
 
 
@@ -321,6 +338,7 @@ def editar_producto_vista():
     lista_unidad_medidas = ["Unidades", "Kilos", "Litros"]
     combobox_unidad_medida = ttk.Combobox(ventana_editar_producto)
     combobox_unidad_medida.config(font=fuente_texto, values=lista_unidad_medidas, state="readonly")
+    combobox_unidad_medida.set(producto_a_editar.unidad_medida)
     combobox_unidad_medida.grid(row=3, column=1, sticky="w", padx=(0, 30), pady=10)
 
 
@@ -333,19 +351,35 @@ def editar_producto_vista():
 
     entry_precio = tk.Entry(ventana_editar_producto, font=fuente_texto, width=20)
     entry_precio.config(validate="key", validatecommand=(cmd_validar_precio, '%P'))
+    entry_precio.insert(0, str(producto_a_editar.precio))
     entry_precio.grid(row=4, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
     # CANTIDAD
-    cmd_validar_numeros = ventana_editar_producto.register(validar_solo_numeros)
+    cmd_validar_numeros_punto = ventana_editar_producto.register(validar_solo_numeros_punto)
 
     label_cantidad = tk.Label(ventana_editar_producto, text="Cantidad:")
     label_cantidad.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_cantidad.grid(row=5, column=0, sticky="e", padx=(20, 10), pady=10)
 
     entry_cantidad = tk.Entry(ventana_editar_producto, font=fuente_texto, width=20)
-    entry_cantidad.config(validate="key", validatecommand=(cmd_validar_numeros, '%P'))
+    entry_cantidad.config(validate="key", validatecommand=(cmd_validar_numeros_punto, '%P'))
+    entry_cantidad.insert(0, str(producto_a_editar.cantidad))
     entry_cantidad.grid(row=5, column=1, sticky="w", padx=(0, 20), pady=10)
+
+
+    # CAPTURAR EDICION
+    def capturar_datos_edicion():
+        editar_producto_controlador(
+            id_producto,
+            entry_nombre.get(),
+            combobox_categoria.get(),
+            combobox_unidad_medida.get(),
+            entry_precio.get(),
+            entry_cantidad.get(),
+            ventana_editar_producto,
+            callback
+        )
 
 
     # FRAME BOTONES
@@ -356,7 +390,7 @@ def editar_producto_vista():
 
     # BOTONES
     boton_guardar = ttk.Button(frame_botones, text="Guardar", style="BotonSecundario.TButton")
-    boton_guardar.config(cursor="hand2")
+    boton_guardar.config(cursor="hand2", command=capturar_datos_edicion)
     boton_guardar.pack(side="left", padx=5)
 
     boton_cancelar = ttk.Button(frame_botones, text="Cancelar", style="BotonSecundario.TButton")

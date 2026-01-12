@@ -95,7 +95,7 @@ def buscar_producto_id(id_producto):
     )
     cursor = conexion.cursor()
 
-    intruccion_sql = f"SELECT id, nombre, categoria, precio, cantidad FROM productos WHERE id = %s"
+    intruccion_sql = f"SELECT id, nombre, categoria, precio, cantidad, unidad_medida FROM productos WHERE id = %s"
     valor = (id_producto,)
     cursor.execute(intruccion_sql, valor)
     resultados = cursor.fetchone()
