@@ -420,7 +420,7 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
     else:
         fac_produccion = "No"
 
-    cuit = int(cliente.cuit)
+    cuit = cliente.cuit
     if cuit is None:
         cuit = "N/A"
 
@@ -435,7 +435,7 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
     # Dimensiones y centrado
     ancho_ventana = 900
     alto_ventana = 600
-    centrar_ventana(ventana_info_cliente, ancho_ventana, alto_ventana)
+    centrar_ventana_interna(ventana_info_cliente, ancho_ventana, alto_ventana)
 
 
     # --- FRAME SUPERIOR (Datos y Botones) ---

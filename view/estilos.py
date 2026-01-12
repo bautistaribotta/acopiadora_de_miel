@@ -8,6 +8,14 @@ def centrar_ventana(ventana, aplicacion_ancho, aplicacion_alto):
     ventana.geometry(f"{aplicacion_ancho}x{aplicacion_alto}+{x}+{y}")
 
 
+def centrar_ventana_interna(ventana, aplicacion_ancho, aplicacion_alto):
+    ancho = ventana.winfo_screenwidth()
+    alto = ventana.winfo_screenheight()
+    x = int(ancho / 2) - int(aplicacion_ancho / 2)
+    y = int(alto / 2) - int(aplicacion_alto / 2)
+    ventana.geometry(f"{aplicacion_ancho}x{aplicacion_alto}+{x}+{y}")
+
+
 color_primario = "#2B303A"
 color_secundario = "#EEE5E9"
 color_terciario = ""

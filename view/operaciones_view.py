@@ -13,7 +13,7 @@ def nueva_operacion():
 
     ancho_ventana = 900
     alto_ventana = 600
-    centrar_ventana(ventana_nueva_operacion, ancho_ventana, alto_ventana)
+    centrar_ventana_interna(ventana_nueva_operacion, ancho_ventana, alto_ventana)
 
     # CONFIGURACIÓN DEL GRID PRINCIPAL
     ventana_nueva_operacion.grid_rowconfigure(0, weight=0)  # Header con título, observaciones, búsqueda y botones
@@ -77,7 +77,7 @@ def nueva_operacion():
     scrollbar_tabla.pack(side="right", fill="y")
 
     # Treeview - Tabla de productos
-    columnas_productos = ("id", "nombre", "categoria", "cantidad", "precio_unitario")
+    columnas_productos = ("id", "nombre", "categoria", "precio", "cantidad")
     tabla_productos = ttk.Treeview(frame_tree_container, columns=columnas_productos,
                                    show="headings", yscrollcommand=scrollbar_tabla.set, height=10)
 
@@ -85,15 +85,15 @@ def nueva_operacion():
     tabla_productos.heading("id", text="ID")
     tabla_productos.heading("nombre", text="Nombre")
     tabla_productos.heading("categoria", text="Categoría")
+    tabla_productos.heading("precio", text="Precio")
     tabla_productos.heading("cantidad", text="Cantidad")
-    tabla_productos.heading("precio_unitario", text="Precio Unit.")
 
     # Configurar columnas
     tabla_productos.column("id", width=30, anchor="center")
     tabla_productos.column("nombre", width=200, anchor="w")
     tabla_productos.column("categoria", width=120, anchor="w")
-    tabla_productos.column("cantidad", width=80, anchor="center")
-    tabla_productos.column("precio_unitario", width=100, anchor="e")
+    tabla_productos.column("precio", width=80, anchor="center")
+    tabla_productos.column("cantidad", width=100, anchor="e")
 
     tabla_productos.pack(side="left", fill="both", expand=True)
     scrollbar_tabla.config(command=tabla_productos.yview)
@@ -126,7 +126,7 @@ def editar_operacion():
 
     ancho_ventana = 900
     alto_ventana = 600
-    centrar_ventana(ventana_nueva_operacion, ancho_ventana, alto_ventana)
+    centrar_ventana_interna(ventana_nueva_operacion, ancho_ventana, alto_ventana)
 
     # CONFIGURACIÓN DEL GRID PRINCIPAL
     ventana_nueva_operacion.grid_rowconfigure(0, weight=0)  # Header con título, observaciones, búsqueda y botones
@@ -185,7 +185,7 @@ def editar_operacion():
     scrollbar_tabla.pack(side="right", fill="y")
 
     # Treeview - Tabla de productos
-    columnas_productos = ("id", "nombre", "categoria", "cantidad", "precio_unitario")
+    columnas_productos = ("id", "nombre", "categoria", "precio", "cantidad")
     tabla_productos = ttk.Treeview(frame_tree_container, columns=columnas_productos,
                                    show="headings", yscrollcommand=scrollbar_tabla.set, height=10)
 
@@ -193,15 +193,15 @@ def editar_operacion():
     tabla_productos.heading("id", text="ID")
     tabla_productos.heading("nombre", text="Nombre")
     tabla_productos.heading("categoria", text="Categoría")
+    tabla_productos.heading("precio", text="Precio")
     tabla_productos.heading("cantidad", text="Cantidad")
-    tabla_productos.heading("precio_unitario", text="Precio Unit.")
 
     # Configurar columnas
     tabla_productos.column("id", width=30, anchor="center")
     tabla_productos.column("nombre", width=200, anchor="w")
     tabla_productos.column("categoria", width=120, anchor="w")
-    tabla_productos.column("cantidad", width=80, anchor="center")
-    tabla_productos.column("precio_unitario", width=100, anchor="e")
+    tabla_productos.column("precio", width=80, anchor="center")
+    tabla_productos.column("cantidad", width=100, anchor="e")
 
     tabla_productos.pack(side="left", fill="both", expand=True)
     scrollbar_tabla.config(command=tabla_productos.yview)
@@ -225,4 +225,7 @@ def editar_operacion():
 
 
 if __name__ == "__main__":
+    ventana = tk.Tk()
+    ventana.withdraw()
     nueva_operacion()
+    ventana.mainloop()
