@@ -64,14 +64,12 @@ def nueva_operacion():
     frame_botones_acciones = tk.Frame(frame_superior, bg=color_primario)
     frame_botones_acciones.grid(row=1, column=1, sticky="e")
 
-    boton_agregar_producto = tk.Button(frame_botones_acciones, text="Agregar", font=fuente_texto,
-                                       bg=color_secundario, fg=color_primario,
-                                       width=12, cursor="hand2")
+    boton_agregar_producto = ttk.Button(frame_botones_acciones, text="Agregar", style="BotonSecundario.TButton")
+    boton_agregar_producto.config(cursor="hand2")
     boton_agregar_producto.pack(side="left", padx=5)
 
-    boton_quitar_producto = tk.Button(frame_botones_acciones, text="Quitar", font=fuente_texto,
-                                      bg=color_secundario, fg=color_primario,
-                                      width=12, cursor="hand2")
+    boton_quitar_producto = ttk.Button(frame_botones_acciones, text="Quitar", style="BotonSecundario.TButton")
+    boton_quitar_producto.config(cursor="hand2")
     boton_quitar_producto.pack(side="left", padx=5)
 
 
@@ -115,15 +113,13 @@ def nueva_operacion():
     frame_botones_finales.grid(row=2, column=0, pady=(10, 20))
 
     # Botón Guardar
-    boton_guardar = tk.Button(frame_botones_finales, text="Guardar",
-                              font=fuente_texto, bg=color_secundario, fg=color_primario,
-                              width=18, cursor="hand2")
+    boton_guardar = ttk.Button(frame_botones_finales, text="Guardar", style="BotonSecundario.TButton")
+    boton_guardar.config(cursor="hand2")
     boton_guardar.pack(side="left", padx=10)
 
     # Botón Cancelar
-    boton_cancelar = tk.Button(frame_botones_finales, text="Cancelar",
-                               font=fuente_texto, bg=color_secundario, fg=color_primario,
-                               width=18, cursor="hand2",
+    boton_cancelar = ttk.Button(frame_botones_finales, text="Cancelar", style="BotonSecundario.TButton")
+    boton_cancelar.config(cursor="hand2",
                                command=ventana_nueva_operacion.destroy)
     boton_cancelar.pack(side="left", padx=10)
 
@@ -180,14 +176,12 @@ def editar_operacion():
     frame_botones_acciones = tk.Frame(frame_superior, bg=color_primario)
     frame_botones_acciones.grid(row=1, column=1, sticky="e")
 
-    boton_agregar_producto = tk.Button(frame_botones_acciones, text="Agregar", font=fuente_texto,
-                                       bg=color_secundario, fg=color_primario,
-                                       width=12, cursor="hand2")
+    boton_agregar_producto = ttk.Button(frame_botones_acciones, text="Agregar", style="BotonSecundario.TButton")
+    boton_agregar_producto.config(cursor="hand2")
     boton_agregar_producto.pack(side="left", padx=5)
 
-    boton_quitar_producto = tk.Button(frame_botones_acciones, text="Quitar", font=fuente_texto,
-                                      bg=color_secundario, fg=color_primario,
-                                      width=12, cursor="hand2")
+    boton_quitar_producto = ttk.Button(frame_botones_acciones, text="Quitar", style="BotonSecundario.TButton")
+    boton_quitar_producto.config(cursor="hand2")
     boton_quitar_producto.pack(side="left", padx=5)
 
     # ==================== FRAME TABLA - PRODUCTOS AGREGADOS ====================
@@ -229,15 +223,13 @@ def editar_operacion():
     frame_botones_finales.grid(row=2, column=0, pady=(10, 20))
 
     # Botón Guardar
-    boton_guardar = tk.Button(frame_botones_finales, text="Guardar",
-                              font=fuente_texto, bg=color_secundario, fg=color_primario,
-                              width=18, cursor="hand2")
+    boton_guardar = ttk.Button(frame_botones_finales, text="Guardar", style="BotonSecundario.TButton")
+    boton_guardar.config(cursor="hand2")
     boton_guardar.pack(side="left", padx=10)
 
     # Botón Cancelar
-    boton_cancelar = tk.Button(frame_botones_finales, text="Cancelar",
-                               font=fuente_texto, bg=color_secundario, fg=color_primario,
-                               width=18, cursor="hand2",
+    boton_cancelar = ttk.Button(frame_botones_finales, text="Cancelar", style="BotonSecundario.TButton")
+    boton_cancelar.config(cursor="hand2",
                                command=ventana_nueva_operacion.destroy)
     boton_cancelar.pack(side="left", padx=10)
 

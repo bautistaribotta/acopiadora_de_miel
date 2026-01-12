@@ -9,6 +9,7 @@ def mostrar_login():
     ventana_login.title("Login")
     ventana_login.resizable(False, False)
     ventana_login.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    configurar_estilos(ventana_login)
 
 
     # CENTRO LA VENTANA Y CONFIGURO EL GRID
@@ -69,7 +70,7 @@ def mostrar_login():
             messagebox.showerror("Error", "Usuario o contraseña incorrecta")
 
 
-    boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar")
+    boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar", style="BotonPrimario.TButton")
     boton_inicio_sesion.config(cursor="hand2", command=intentar_login)
     boton_inicio_sesion.grid(row=50, column=5, padx=(90, 8), pady=15)
 

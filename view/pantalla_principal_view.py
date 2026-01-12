@@ -3,9 +3,11 @@ from view.productos_view import *
 from view.remitos_view import *
 from controller.cotizaciones import *
 import tkinter as tk
+from tkinter import ttk
 
 def pantalla_administrador():
     ventana_principal = tk.Tk()
+    configurar_estilos(ventana_principal)
     ventana_principal.configure(bg=color_primario)
     ventana_principal.resizable(True, True)
     ventana_principal.title("Menu principal - Administrador")
@@ -29,20 +31,20 @@ def pantalla_administrador():
 
 
     # BOTONES
-    boton_productos = tk.Button(opciones_top, text="PRODUCTOS")
-    boton_productos.configure(bg=color_primario, fg=color_secundario, command=listado_productos, cursor="hand2")
+    boton_productos = ttk.Button(opciones_top, text="PRODUCTOS", style="BotonPrimario.TButton")
+    boton_productos.configure(command=listado_productos, cursor="hand2")
     boton_productos.grid(row=0, column=0, padx=20, pady=15)
 
-    boton_clientes = tk.Button(opciones_top, text="CLIENTES")
-    boton_clientes.configure(bg=color_primario, fg=color_secundario, command=listado_clientes, cursor="hand2")
+    boton_clientes = ttk.Button(opciones_top, text="CLIENTES", style="BotonPrimario.TButton")
+    boton_clientes.configure(command=listado_clientes, cursor="hand2")
     boton_clientes.grid(row=0, column=1, padx=20, pady=15)
 
-    boton_deudores = tk.Button(opciones_top, text="DEUDORES")
-    boton_deudores.configure(bg=color_primario, fg=color_secundario, cursor="hand2")
+    boton_deudores = ttk.Button(opciones_top, text="DEUDORES", style="BotonPrimario.TButton")
+    boton_deudores.configure(cursor="hand2")
     boton_deudores.grid(row=0, column=2, padx=20, pady=15)
 
-    boton_remitos = tk.Button(opciones_top, text="REMITOS")
-    boton_remitos.configure(bg=color_primario, fg=color_secundario, command=remitos, cursor="hand2")
+    boton_remitos = ttk.Button(opciones_top, text="REMITOS", style="BotonPrimario.TButton")
+    boton_remitos.configure(command=remitos, cursor="hand2")
     boton_remitos.grid(row=0, column=3, padx=20, pady=15)
 
 
@@ -78,6 +80,7 @@ def pantalla_administrador():
 
 def pantalla_usuario():
     ventana_principal = tk.Tk()
+    configurar_estilos(ventana_principal)
     ventana_principal.configure(bg=color_primario)
     ventana_principal.resizable(True, True)
     ventana_principal.title("Menu principal - Usuario")
@@ -101,16 +104,16 @@ def pantalla_usuario():
 
 
     # BOTONES
-    boton_productos = tk.Button(opciones_top, text="PRODUCTOS")
-    boton_productos.configure(bg=color_primario, fg=color_secundario, command=listado_productos, cursor="hand2")
+    boton_productos = ttk.Button(opciones_top, text="PRODUCTOS", style="BotonPrimario.TButton")
+    boton_productos.configure(command=listado_productos, cursor="hand2")
     boton_productos.grid(row=0, column=0, padx=20, pady=15)
 
-    boton_clientes = tk.Button(opciones_top, text="CLIENTES")
-    boton_clientes.configure(bg=color_primario, fg=color_secundario, command=listado_clientes, cursor="hand2")
+    boton_clientes = ttk.Button(opciones_top, text="CLIENTES", style="BotonPrimario.TButton")
+    boton_clientes.configure(command=listado_clientes, cursor="hand2")
     boton_clientes.grid(row=0, column=1, padx=20, pady=15)
 
-    boton_remitos = tk.Button(opciones_top, text="REMITOS")
-    boton_remitos.configure(bg=color_primario, fg=color_secundario, command=remitos, cursor="hand2")
+    boton_remitos = ttk.Button(opciones_top, text="REMITOS", style="BotonPrimario.TButton")
+    boton_remitos.configure(command=remitos, cursor="hand2")
     boton_remitos.grid(row=0, column=2, padx=20, pady=15)
 
 

@@ -141,18 +141,16 @@ def listado_productos():
     entry_buscar.pack(side="left")
 
     # BOTONES
-    boton_eliminar = tk.Button(frame_superior, text="Eliminar", font=fuente_texto)
-    boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10,
-                          cursor="hand2", command=ejecutar_eliminacion)
+    boton_eliminar = ttk.Button(frame_superior, text="Eliminar", style="BotonSecundario.TButton")
+    boton_eliminar.config(cursor="hand2", command=ejecutar_eliminacion)
     boton_eliminar.pack(side="right", padx=(5, 0))
 
-    boton_editar = tk.Button(frame_superior, text="Editar", font=fuente_texto)
-    boton_editar.config(bg=color_secundario, fg=color_primario, width=10, command=editar_producto_vista, cursor="hand2")
+    boton_editar = ttk.Button(frame_superior, text="Editar", style="BotonSecundario.TButton")
+    boton_editar.config(command=editar_producto_vista, cursor="hand2")
     boton_editar.pack(side="right", padx=5)
 
-    boton_agregar = tk.Button(frame_superior, text="Añadir", font=fuente_texto)
-    boton_agregar.config(bg=color_secundario, fg=color_primario, width=10,
-                         command=lambda: nuevo_producto_vista(actualizar_tabla), cursor="hand2")
+    boton_agregar = ttk.Button(frame_superior, text="Añadir", style="BotonSecundario.TButton")
+    boton_agregar.config(command=lambda: nuevo_producto_vista(actualizar_tabla), cursor="hand2")
     boton_agregar.pack(side="right", padx=5)
 
 
@@ -257,14 +255,12 @@ def nuevo_producto_vista(callback):
 
 
     # BOTONES
-    boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
-    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12,
-                         cursor="hand2", command=realizar_guardado)
+    boton_guardar = ttk.Button(frame_botones, text="Guardar", style="BotonSecundario.TButton")
+    boton_guardar.config(cursor="hand2", command=realizar_guardado)
     boton_guardar.pack(side="left", padx=5)
 
-    boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
-    boton_cancelar.config(bg=color_secundario, fg=color_primario, width=12,
-                          cursor="hand2", command=ventana_nuevo_producto.destroy)
+    boton_cancelar = ttk.Button(frame_botones, text="Cancelar", style="BotonSecundario.TButton")
+    boton_cancelar.config(cursor="hand2", command=ventana_nuevo_producto.destroy)
     boton_cancelar.pack(side="left", padx=5)
 
 
@@ -359,13 +355,12 @@ def editar_producto_vista():
 
 
     # BOTONES
-    boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
-    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12, cursor="hand2")
+    boton_guardar = ttk.Button(frame_botones, text="Guardar", style="BotonSecundario.TButton")
+    boton_guardar.config(cursor="hand2")
     boton_guardar.pack(side="left", padx=5)
 
-    boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
-    boton_cancelar.config(bg=color_secundario, fg=color_primario, width=12,
-                          cursor="hand2", command=ventana_editar_producto.destroy)
+    boton_cancelar = ttk.Button(frame_botones, text="Cancelar", style="BotonSecundario.TButton")
+    boton_cancelar.config(cursor="hand2", command=ventana_editar_producto.destroy)
     boton_cancelar.pack(side="left", padx=5)
 
 

@@ -162,19 +162,16 @@ def listado_clientes():
     entry_buscar.pack(side="left")
 
     # BOTONES
-    boton_eliminar = tk.Button(frame_superior, text="Eliminar")
-    boton_eliminar.config(bg=color_secundario, fg=color_primario, width=10,
-                          font=fuente_texto, cursor="hand2", command=ejecutar_eliminacion)
+    boton_eliminar = ttk.Button(frame_superior, text="Eliminar", style="BotonSecundario.TButton")
+    boton_eliminar.config(cursor="hand2", command=ejecutar_eliminacion)
     boton_eliminar.pack(side="right", padx=(5, 0))
 
-    boton_editar = tk.Button(frame_superior, text="Editar")
-    boton_editar.config(bg=color_secundario, fg=color_primario, width=10,
-                        font=fuente_texto, command=abrir_editar, cursor="hand2")
+    boton_editar = ttk.Button(frame_superior, text="Editar", style="BotonSecundario.TButton")
+    boton_editar.config(command=abrir_editar, cursor="hand2")
     boton_editar.pack(side="right", padx=5)
 
-    boton_agregar = tk.Button(frame_superior, text="Agregar")
-    boton_agregar.config(bg=color_secundario, fg=color_primario, text="Añadir", width=10,
-                         font=fuente_texto, command=lambda: nuevo_cliente_vista(actualizar_tabla), cursor="hand2")
+    boton_agregar = ttk.Button(frame_superior, text="Añadir", style="BotonSecundario.TButton")
+    boton_agregar.config(command=lambda: nuevo_cliente_vista(actualizar_tabla), cursor="hand2")
     boton_agregar.pack(side="right", padx=5)
 
 
@@ -303,14 +300,12 @@ def nuevo_cliente_vista(callback=None):
     frame_botones = tk.Frame(ventana_nuevo_cliente, bg=color_primario)
     frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
 
-    boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
-    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12,
-                         cursor="hand2", command=capturar_datos_cliente)
+    boton_guardar = ttk.Button(frame_botones, text="Guardar", style="BotonSecundario.TButton")
+    boton_guardar.config(cursor="hand2", command=capturar_datos_cliente)
     boton_guardar.pack(side="left", padx=5)
 
-    boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
-    boton_cancelar.config(bg=color_secundario, fg=color_primario, width=12,
-                          cursor="hand2", command=ventana_nuevo_cliente.destroy)
+    boton_cancelar = ttk.Button(frame_botones, text="Cancelar", style="BotonSecundario.TButton")
+    boton_cancelar.config(cursor="hand2", command=ventana_nuevo_cliente.destroy)
     boton_cancelar.pack(side="left", padx=5)
 
     # Función para mostrar/ocultar CUIT según la selección del combobox
@@ -471,13 +466,12 @@ def editar_cliente_vista(id_cliente, callback=None):
     frame_botones = tk.Frame(ventana_editar_cliente, bg=color_primario)
     frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
 
-    boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
-    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12, cursor="hand2", command=capturar_datos_edicion)
+    boton_guardar = ttk.Button(frame_botones, text="Guardar", style="BotonSecundario.TButton")
+    boton_guardar.config(cursor="hand2", command=capturar_datos_edicion)
     boton_guardar.pack(side="left", padx=5)
 
-    boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
-    boton_cancelar.config(bg=color_secundario, fg=color_primario, width=12,
-                          cursor="hand2", command=ventana_editar_cliente.destroy)
+    boton_cancelar = ttk.Button(frame_botones, text="Cancelar", style="BotonSecundario.TButton")
+    boton_cancelar.config(cursor="hand2", command=ventana_editar_cliente.destroy)
     boton_cancelar.pack(side="left", padx=5)
 
 
@@ -604,16 +598,16 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
 
 
     # BOTONES
-    boton_nueva = tk.Button(frame_botones, text="Nueva", font=fuente_texto, bg=color_secundario, fg=color_primario,
-                            width=8, cursor="hand2", command=nueva_operacion)
+    boton_nueva = ttk.Button(frame_botones, text="Nueva", style="BotonSecundario.TButton")
+    boton_nueva.config(cursor="hand2", command=nueva_operacion)
     boton_nueva.pack(side="left", padx=5)
 
-    boton_editar = tk.Button(frame_botones, text="Editar", font=fuente_texto, bg=color_secundario, fg=color_primario,
-                             width=8, cursor="hand2")
+    boton_editar = ttk.Button(frame_botones, text="Editar", style="BotonSecundario.TButton")
+    boton_editar.config(cursor="hand2")
     boton_editar.pack(side="left", padx=5)
 
-    boton_eliminar = tk.Button(frame_botones, text="Eliminar", font=fuente_texto, bg=color_secundario, fg=color_primario,
-                               width=8, cursor="hand2")
+    boton_eliminar = ttk.Button(frame_botones, text="Eliminar", style="BotonSecundario.TButton")
+    boton_eliminar.config(cursor="hand2")
     boton_eliminar.pack(side="left", padx=5)
 
 
