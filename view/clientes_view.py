@@ -95,9 +95,22 @@ def listado_clientes():
             tabla_clientes.insert("", "end", values=producto)
 
 
+    # FUNCION ABRIR EDITAR
+    def abrir_editar():
+        seleccion = tabla_clientes.selection()
+        if not seleccion:
+            messagebox.showwarning("Atención", "Seleccione un cliente para editar.",
+                                   parent=ventana_clientes)
+            return
+        
+        # Obtenemos el ID (columna 0)
+        item_id = tabla_clientes.item(seleccion[0])['values'][0]
+        editar_cliente_vista(item_id, actualizar_tabla)
+
+
     # MENU CONTEXTUAL (clic derecho)
     menu_contextual = tk.Menu(ventana_clientes, tearoff=0)
-    menu_contextual.add_command(label="Editar", command="") # IMPLEMENTAR FUNCION DE EDITAR
+    menu_contextual.add_command(label="Editar", command=abrir_editar)
     menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
 
 
@@ -156,7 +169,7 @@ def listado_clientes():
 
     boton_editar = tk.Button(frame_superior, text="Editar")
     boton_editar.config(bg=color_secundario, fg=color_primario, width=10,
-                        font=fuente_texto, command=editar_cliente_vista, cursor="hand2")
+                        font=fuente_texto, command=abrir_editar, cursor="hand2")
     boton_editar.pack(side="right", padx=5)
 
     boton_agregar = tk.Button(frame_superior, text="Agregar")
@@ -313,7 +326,7 @@ def nuevo_cliente_vista(callback=None):
     combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
 
 
-def editar_cliente_vista():
+def editar_cliente_vista(id_cliente, callback=None):
     global ventana_editar_cliente_instancia
     if ventana_editar_cliente_instancia is not None and ventana_editar_cliente_instancia.winfo_exists():
         ventana_editar_cliente_instancia.lift()
@@ -334,9 +347,12 @@ def editar_cliente_vista():
     ventana_editar_cliente.grid_columnconfigure(1, weight=2)
 
     # LABEL TITULO
-    label_titulo = tk.Label(ventana_editar_cliente, text="REGISTRAR CLIENTE")
+    label_titulo = tk.Label(ventana_editar_cliente, text="EDITAR CLIENTE")
     label_titulo.config(font=fuente_titulos, bg=color_primario, fg=color_secundario)
     label_titulo.grid(row=0, column=0, columnspan=2, pady=(50, 40), padx=20)
+
+    # BUSCAR DATOS DEL CLIENTE
+    cliente_a_editar = informacion_cliente_controlador(id_cliente)
 
     # NOMBRE
     cmd_validar_letra = ventana_editar_cliente.register(validar_solo_letras)
@@ -348,6 +364,7 @@ def editar_cliente_vista():
     entry_nombre = ttk.Entry(ventana_editar_cliente)
     entry_nombre.config(font=fuente_texto, width=20,
                         validate="key", validatecommand=(cmd_validar_letra, '%P'))
+    entry_nombre.insert(0, cliente_a_editar.nombre)
     entry_nombre.grid(row=1, column=1, sticky="w", padx=(0, 20), pady=10)
 
     # APELLIDO
@@ -360,6 +377,7 @@ def editar_cliente_vista():
     entry_apellido = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
     entry_apellido.config(font=fuente_texto, width=20,
                           validate="key", validatecommand=(cmd_validar_letra, '%P'))
+    entry_apellido.insert(0, cliente_a_editar.apellido)
     entry_apellido.grid(row=2, column=1, sticky="w", padx=(0, 20), pady=10)
 
     # TELEFONO
@@ -371,6 +389,7 @@ def editar_cliente_vista():
 
     entry_telefono = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
     entry_telefono.config(validate="key", validatecommand=(cmd_validar_numeros, '%P'))
+    entry_telefono.insert(0, cliente_a_editar.telefono)
     entry_telefono.grid(row=3, column=1, sticky="w", padx=(0, 20), pady=10)
 
     # LOCALIDAD
@@ -379,6 +398,7 @@ def editar_cliente_vista():
     label_localidad.grid(row=4, column=0, sticky="e", padx=(20, 10), pady=10)
 
     entry_localidad = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
+    entry_localidad.insert(0, cliente_a_editar.localidad)
     entry_localidad.grid(row=4, column=1, sticky="w", padx=(0, 20), pady=10)
 
     # CALLE
@@ -387,6 +407,7 @@ def editar_cliente_vista():
     label_direccion.grid(row=5, column=0, sticky="e", padx=(20, 10), pady=10)
 
     entry_direccion = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
+    entry_direccion.insert(0, cliente_a_editar.direccion)
     entry_direccion.grid(row=5, column=1, sticky="w", padx=(0, 20), pady=10)
 
     # FACTURA
@@ -397,7 +418,10 @@ def editar_cliente_vista():
     opciones_factura = ["No", "Si"]
     combobox_factura = ttk.Combobox(ventana_editar_cliente, values=opciones_factura)
     combobox_factura.config(state="readonly", font=fuente_texto, width=18)
-    combobox_factura.current(0)
+    
+    val_factura = "Si" if cliente_a_editar.factura_produccion == 1 else "No"
+    combobox_factura.set(val_factura)
+    
     combobox_factura.grid(row=6, column=1, sticky="w", padx=(0, 20), pady=10)
 
     # CUIT (Inicialmente oculto)
@@ -408,22 +432,12 @@ def editar_cliente_vista():
 
     entry_cuit = ttk.Entry(ventana_editar_cliente, font=fuente_texto, width=20)
     entry_cuit.config(validate="key", validatecommand=(cmd_validar_numeros, '%P'))
-
-    # FRAME BOTONES
-    frame_botones = tk.Frame(ventana_editar_cliente, bg=color_primario)
-    frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
-
-    boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
-    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12, cursor="hand2")
-    boton_guardar.pack(side="left", padx=5)
-
-    boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
-    boton_cancelar.config(bg=color_secundario, fg=color_primario, width=12,
-                          cursor="hand2", command=ventana_editar_cliente.destroy)
-    boton_cancelar.pack(side="left", padx=5)
+    
+    if cliente_a_editar.cuit:
+        entry_cuit.insert(0, cliente_a_editar.cuit)
 
     # Función para mostrar/ocultar CUIT según la selección del combobox
-    def actualizar_cuit(event):
+    def actualizar_cuit(event=None):
         if combobox_factura.get() == "Si":
             label_cuit.grid(row=7, column=0, sticky="e", padx=(20, 10), pady=10)
             entry_cuit.grid(row=7, column=1, sticky="w", padx=(0, 20), pady=10)
@@ -433,6 +447,38 @@ def editar_cliente_vista():
 
     # Vincular evento al combobox
     combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
+    # Ejecutar una vez para setear el estado inicial
+    actualizar_cuit()
+
+
+    # CAPTURA DE DATOS EDICION
+    def capturar_datos_edicion():
+        nom = entry_nombre.get()
+        apell = entry_apellido.get()
+        tel = entry_telefono.get()
+        local = entry_localidad.get()
+        direcc = entry_direccion.get()
+        fac = combobox_factura.get()
+        c_u_i_t = entry_cuit.get()
+
+        if fac == "No":
+            c_u_i_t = None
+        
+        editar_cliente_controlador(id_cliente, nom, apell, tel, local, direcc, fac, c_u_i_t, ventana_editar_cliente, callback)
+
+
+    # FRAME BOTONES
+    frame_botones = tk.Frame(ventana_editar_cliente, bg=color_primario)
+    frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
+
+    boton_guardar = tk.Button(frame_botones, text="Guardar", font=fuente_texto)
+    boton_guardar.config(bg=color_secundario, fg=color_primario, width=12, cursor="hand2", command=capturar_datos_edicion)
+    boton_guardar.pack(side="left", padx=5)
+
+    boton_cancelar = tk.Button(frame_botones, text="Cancelar", font=fuente_texto)
+    boton_cancelar.config(bg=color_secundario, fg=color_primario, width=12,
+                          cursor="hand2", command=ventana_editar_cliente.destroy)
+    boton_cancelar.pack(side="left", padx=5)
 
 
 def informacion_cliente_vista(id_cliente, ventana_clientes):

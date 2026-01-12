@@ -120,16 +120,6 @@ def pantalla_usuario():
     frame_valores.grid(row=0, column=5, padx=(0, 20), pady=15, sticky="e")
 
 
-    # DOLAR OFICIAL
-    label_oficial = tk.Label(frame_valores, text="Oficial:")
-    label_oficial.configure(bg=color_secundario, fg=color_primario, font=fuente_texto)
-    label_oficial.grid(row=0, column=0, padx=(0, 5), sticky="e")
-
-    dolar_oficial = get_cotizacion_oficial_venta()
-    label_valor_oficial = tk.Label(frame_valores, text=f"{dolar_oficial}")
-    label_valor_oficial.configure(bg=color_secundario, fg=color_primario, font=fuente_texto)
-    label_valor_oficial.grid(row=0, column=1, padx=(0, 20), sticky="w")
-
     ventana_principal.mainloop()
 
 

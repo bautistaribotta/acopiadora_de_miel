@@ -69,3 +69,22 @@ def buscador_clientes_controlador(criterio):
         return buscador_cliente_por_id(criterio)
     else:
         return buscador_cliente_por_nombre(criterio)
+
+
+def editar_cliente_controlador(id_cliente, nombre, apellido, telefono, localidad, direccion, factura, cuit, ventana, callback=None):
+    if not nombre or not apellido or not telefono:
+        messagebox.showwarning("Faltan datos",
+                               "Por favor complete los campos obligatorios.", parent=ventana)
+        return
+    factura = 1 if factura == "Si" else 0
+    obj_cliente_editado = Cliente(nombre, apellido, telefono, localidad, direccion, factura, cuit)
+
+    try:
+        editar_cliente(id_cliente, obj_cliente_editado)
+        messagebox.showinfo("Exito", "Cliente editado correctamente.", parent=ventana)
+
+        if callback:
+            callback()
+        ventana.destroy()
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo editar el cliente: {e}", parent=ventana)
