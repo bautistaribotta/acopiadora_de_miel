@@ -58,7 +58,7 @@ def mostrar_login():
     entry_clave.grid(row=25, column=5, padx=(80, 0), pady=0)
 
 
-    def intentar_login():
+    def intentar_login(event=None):
         usuario = opciones_usuario.get().lower()
         clave = entry_clave.get()
 
@@ -69,6 +69,8 @@ def mostrar_login():
         if not verificacion_inicio_sesion(usuario, clave, ventana_login):
             messagebox.showerror("Error", "Usuario o contraseña incorrecta")
 
+
+    ventana_login.bind('<Return>', attempting_login_wrapper := lambda event: intentar_login(event))
 
     boton_inicio_sesion = ttk.Button(frame_login_derecha, text="Entrar", style="BotonPrimario.TButton")
     boton_inicio_sesion.config(cursor="hand2", command=intentar_login)
