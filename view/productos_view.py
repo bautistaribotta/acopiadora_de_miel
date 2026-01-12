@@ -4,9 +4,20 @@ from tkinter import ttk
 from controller.validaciones import *
 from controller.productos_controlador import *
 
+ventana_productos_instancia = None
+ventana_nuevo_producto_instancia = None
+ventana_editar_producto_instancia = None
+
 
 def listado_productos():
+    global ventana_productos_instancia
+    if ventana_productos_instancia is not None and ventana_productos_instancia.winfo_exists():
+        ventana_productos_instancia.lift()
+        return
+
     ventana_productos = tk.Toplevel()
+    ventana_productos_instancia = ventana_productos
+
     ventana_productos.title("Productos")
     ventana_productos.geometry("800x600+0+85")
     ventana_productos.resizable(False, False)
@@ -146,7 +157,14 @@ def listado_productos():
 
 
 def nuevo_producto_vista(callback):
+    global ventana_nuevo_producto_instancia
+    if ventana_nuevo_producto_instancia is not None and ventana_nuevo_producto_instancia.winfo_exists():
+        ventana_nuevo_producto_instancia.lift()
+        return
+
     ventana_nuevo_producto = tk.Toplevel()
+    ventana_nuevo_producto_instancia = ventana_nuevo_producto
+
     ventana_nuevo_producto.title("Nuevo producto")
     ventana_nuevo_producto.configure(bg=color_primario)
     ventana_nuevo_producto.geometry("400x600+850+85")
@@ -251,7 +269,14 @@ def nuevo_producto_vista(callback):
 
 
 def editar_producto_vista():
+    global ventana_editar_producto_instancia
+    if ventana_editar_producto_instancia is not None and ventana_editar_producto_instancia.winfo_exists():
+        ventana_editar_producto_instancia.lift()
+        return
+
     ventana_editar_producto = tk.Toplevel()
+    ventana_editar_producto_instancia = ventana_editar_producto
+
     ventana_editar_producto.title("Editar producto")
     ventana_editar_producto.configure(bg=color_primario)
     ventana_editar_producto.geometry("400x600+850+85")

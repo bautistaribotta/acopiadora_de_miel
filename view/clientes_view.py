@@ -3,9 +3,21 @@ from estilos import *
 from controller.validaciones import *
 from controller.clientes_controlador import *
 
+ventana_clientes_instancia = None
+ventana_nuevo_cliente_instancia = None
+ventana_editar_cliente_instancia = None
+ventana_info_cliente_instancia = None
+
 
 def listado_clientes():
+    global ventana_clientes_instancia
+    if ventana_clientes_instancia is not None and ventana_clientes_instancia.winfo_exists():
+        ventana_clientes_instancia.lift()
+        return
+
     ventana_clientes = tk.Toplevel()
+    ventana_clientes_instancia = ventana_clientes
+
     ventana_clientes.title("Clientes")
     ventana_clientes.geometry("800x600+550+85")
     ventana_clientes.resizable(False, False)
@@ -154,7 +166,14 @@ def listado_clientes():
 
 
 def nuevo_cliente_vista(callback=None):
+    global ventana_nuevo_cliente_instancia
+    if ventana_nuevo_cliente_instancia is not None and ventana_nuevo_cliente_instancia.winfo_exists():
+        ventana_nuevo_cliente_instancia.lift()
+        return
+
     ventana_nuevo_cliente = tk.Toplevel()
+    ventana_nuevo_cliente_instancia = ventana_nuevo_cliente
+
     ventana_nuevo_cliente.title("Nuevo Cliente")
     ventana_nuevo_cliente.config(bg=color_primario)
     ventana_nuevo_cliente.geometry("400x600+120+85")
@@ -295,7 +314,14 @@ def nuevo_cliente_vista(callback=None):
 
 
 def editar_cliente_vista():
+    global ventana_editar_cliente_instancia
+    if ventana_editar_cliente_instancia is not None and ventana_editar_cliente_instancia.winfo_exists():
+        ventana_editar_cliente_instancia.lift()
+        return
+
     ventana_editar_cliente = tk.Toplevel()
+    ventana_editar_cliente_instancia = ventana_editar_cliente
+
     ventana_editar_cliente.title("Editar cliente")
     ventana_editar_cliente.config(bg=color_primario)
     ventana_editar_cliente.geometry("400x600+120+85")
@@ -410,6 +436,11 @@ def editar_cliente_vista():
 
 
 def informacion_cliente_vista(id_cliente, ventana_clientes):
+    global ventana_info_cliente_instancia
+    if ventana_info_cliente_instancia is not None and ventana_info_cliente_instancia.winfo_exists():
+        ventana_info_cliente_instancia.lift()
+        return
+
 
     # BUSCA EL CLIENTE Y LO INSTANCIA
     cliente = informacion_cliente_controlador(id_cliente)
@@ -426,7 +457,9 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
 
 
     # INICIA LA VISTA
+    # INICIA LA VISTA
     ventana_info_cliente = tk.Toplevel(ventana_clientes)
+    ventana_info_cliente_instancia = ventana_info_cliente
     ventana_info_cliente.title("Informacion del cliente")
     ventana_info_cliente.configure(bg=color_primario)
     ventana_info_cliente.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")

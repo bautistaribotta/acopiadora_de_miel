@@ -1,9 +1,19 @@
 import tkinter as tk
 from estilos import *
 
+ventana_remitos_instancia = None
+
+
 
 def remitos():
+    global ventana_remitos_instancia
+    if ventana_remitos_instancia is not None and ventana_remitos_instancia.winfo_exists():
+        ventana_remitos_instancia.lift()
+        return
+
     ventana_remitos = tk.Toplevel()
+    ventana_remitos_instancia = ventana_remitos
+
     ventana_remitos.title("Remitos")
     ventana_remitos.resizable(False, False)
     ventana_remitos.config(bg=color_primario)

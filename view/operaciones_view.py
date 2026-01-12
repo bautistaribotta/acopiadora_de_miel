@@ -2,9 +2,20 @@ import tkinter as tk
 from tkinter import ttk
 from estilos import *
 
+ventana_nueva_operacion_instancia = None
+ventana_editar_operacion_instancia = None
+
+
 
 def nueva_operacion():
+    global ventana_nueva_operacion_instancia
+    if ventana_nueva_operacion_instancia is not None and ventana_nueva_operacion_instancia.winfo_exists():
+        ventana_nueva_operacion_instancia.lift()
+        return
+
     ventana_nueva_operacion = tk.Toplevel()
+    ventana_nueva_operacion_instancia = ventana_nueva_operacion
+
     ventana_nueva_operacion.title("Nueva Operación")
     ventana_nueva_operacion.config(bg=color_primario)
     ventana_nueva_operacion.resizable(False, False)
@@ -118,7 +129,14 @@ def nueva_operacion():
 
 
 def editar_operacion():
+    global ventana_editar_operacion_instancia
+    if ventana_editar_operacion_instancia is not None and ventana_editar_operacion_instancia.winfo_exists():
+        ventana_editar_operacion_instancia.lift()
+        return
+
     ventana_nueva_operacion = tk.Toplevel()
+    ventana_editar_operacion_instancia = ventana_nueva_operacion
+
     ventana_nueva_operacion.title("Editar operacion")
     ventana_nueva_operacion.config(bg=color_primario)
     ventana_nueva_operacion.resizable(False, False)
