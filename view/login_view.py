@@ -48,7 +48,7 @@ def mostrar_login():
 
     # ICONO
     try:
-        ruta_user_ico = r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\user.ico"
+        ruta_user_ico = r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\usuario.ico"
         imagen_user_pil = Image.open(ruta_user_ico)
         imagen_user_pil = imagen_user_pil.resize((100, 100), Image.Resampling.LANCZOS)
         imagen_user = ImageTk.PhotoImage(imagen_user_pil)
