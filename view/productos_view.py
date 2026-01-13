@@ -66,10 +66,12 @@ def listado_productos():
                                    parent=ventana_productos)
             return
 
-        # Obtenemos el ID del item seleccionado (columna 0)
-        item_id = tabla_productos.item(seleccion[0])['values'][0]
+        # Obtenemos el ID del item seleccionado (columna 0) y el nombre (columna 1)
+        valores = tabla_productos.item(seleccion[0])['values']
+        item_id = valores[0]
+        nombre_producto = valores[1]
 
-        confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este producto?",
+        confirmar = messagebox.askyesno("Confirmar", f"¿Está seguro de eliminar '{nombre_producto}'?",
                                         parent=ventana_productos)
         if confirmar:
             if eliminar_producto_controlador(item_id, ventana_productos):
@@ -122,10 +124,27 @@ def listado_productos():
             menu_contextual.post(event.x_root, event.y_root)
 
 
+    # FUNCION ORDENAR COLUMNA
+    def ordenar_por_columna(tree, col, reverse):
+        l = [(tree.set(k, col), k) for k in tree.get_children('')]
+        
+        # Intentar convertir a int si es posible para ordenar numericamente
+        try:
+            l.sort(key=lambda t: int(t[0]), reverse=reverse)
+        except ValueError:
+            l.sort(reverse=reverse)
+
+        # Reordenar items
+        for index, (val, k) in enumerate(l):
+            tree.move(k, '', index)
+
+        # Actualizar el comando para invertir el orden en el próximo clic
+        tree.heading(col, command=lambda: ordenar_por_columna(tree, col, not reverse))
+
     # CONFIGURAR COLUMNAS DE LA TABLA (TREEVIEW)
-    tabla_productos.heading("id", text="ID")
-    tabla_productos.heading("nombre", text="Nombre")
-    tabla_productos.heading("categoria", text="Categoría")
+    tabla_productos.heading("id", text="ID", command=lambda: ordenar_por_columna(tabla_productos, "id", False))
+    tabla_productos.heading("nombre", text="Nombre", command=lambda: ordenar_por_columna(tabla_productos, "nombre", False))
+    tabla_productos.heading("categoria", text="Categoría", command=lambda: ordenar_por_columna(tabla_productos, "categoria", False))
     tabla_productos.heading("precio", text="Precio")
     tabla_productos.heading("cantidad", text="Cantidad")
 

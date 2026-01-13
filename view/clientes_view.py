@@ -66,10 +66,12 @@ def listado_clientes():
                                    parent=ventana_clientes)
             return
 
-        # Obtenemos el ID del item seleccionado (columna 0)
-        item_id = tabla_clientes.item(seleccion[0])['values'][0]
+        # Obtenemos el ID del item seleccionado (columna 0) y el nombre (columna 1)
+        valores = tabla_clientes.item(seleccion[0])['values']
+        item_id = valores[0]
+        nombre_cliente = valores[1]
 
-        confirmar = messagebox.askyesno("Confirmar", "¿Está seguro de eliminar este cliente?",
+        confirmar = messagebox.askyesno("Confirmar", f"¿Está seguro de eliminar al cliente '{nombre_cliente}'?",
                                         parent=ventana_clientes)
         if confirmar:
             if eliminar_cliente_controlador(item_id, ventana_clientes):
@@ -122,20 +124,39 @@ def listado_clientes():
 
 
     def captar_id_cliente(event):
-        seleccion = tabla_clientes.selection()
-
-        # Si no hay nada seleccionado (ej. clic en espacio blanco), no hacemos nada
-        if not seleccion:
+        # Verificar que el doble click sea sobre un item y no en los headers
+        item = tabla_clientes.identify_row(event.y)
+        if not item:
             return
 
-        id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
-        informacion_cliente_vista(id_cliente, ventana_clientes)
+        seleccion = tabla_clientes.selection()
+        if seleccion:
+            id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
+            informacion_cliente_vista(id_cliente, ventana_clientes)
+
+
+    # FUNCION ORDENAR COLUMNA
+    def ordenar_por_columna(tree, col, reverse):
+        l = [(tree.set(k, col), k) for k in tree.get_children('')]
+        
+        # Intentar convertir a int para ordenar ID numericamente, sino alfabetico
+        try:
+            l.sort(key=lambda t: int(t[0]), reverse=reverse)
+        except ValueError:
+            l.sort(reverse=reverse)
+
+        # Reordenar items
+        for index, (val, k) in enumerate(l):
+            tree.move(k, '', index)
+
+        # Actualizar el comando para invertir el orden en el próximo clic
+        tree.heading(col, command=lambda: ordenar_por_columna(tree, col, not reverse))
 
 
     # CONFIGURAR COLUMNAS
-    tabla_clientes.heading("id", text="ID")
-    tabla_clientes.heading("nombre", text="Nombre")
-    tabla_clientes.heading("localidad", text="Localidad")
+    tabla_clientes.heading("id", text="ID", command=lambda: ordenar_por_columna(tabla_clientes, "id", False))
+    tabla_clientes.heading("nombre", text="Nombre", command=lambda: ordenar_por_columna(tabla_clientes, "nombre", False))
+    tabla_clientes.heading("localidad", text="Localidad", command=lambda: ordenar_por_columna(tabla_clientes, "localidad", False))
     tabla_clientes.heading("telefono", text="Teléfono")
 
     tabla_clientes.column("id", width=80, anchor="center")
