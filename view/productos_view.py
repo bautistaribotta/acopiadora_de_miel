@@ -52,9 +52,13 @@ def listado_productos():
         for item in tabla_productos.get_children():
             tabla_productos.delete(item)
         # Vuelve a escribirla pero actualizada
-        clientes = listar_productos_controlador()
-        for cliente in clientes:
-            tabla_productos.insert("", "end", values=cliente)
+        # Vuelve a escribirla pero actualizada
+        productos = listar_productos_controlador()
+        for prod in productos:
+            # Convertir a lista para modificar visualmente el precio sin afectar datos reales
+            datos_visuales = list(prod)
+            datos_visuales[3] = f"${datos_visuales[3]}"
+            tabla_productos.insert("", "end", values=datos_visuales)
     actualizar_tabla()
 
 
@@ -94,7 +98,9 @@ def listado_productos():
 
         # Llenamos con los resultados de la búsqueda
         for producto in productos_encontrados:
-            tabla_productos.insert("", "end", values=producto)
+            datos_visuales = list(producto)
+            datos_visuales[3] = f"${datos_visuales[3]}"
+            tabla_productos.insert("", "end", values=datos_visuales)
 
 
 
@@ -146,7 +152,7 @@ def listado_productos():
     tabla_productos.heading("nombre", text="Nombre", command=lambda: ordenar_por_columna(tabla_productos, "nombre", False))
     tabla_productos.heading("categoria", text="Categoría", command=lambda: ordenar_por_columna(tabla_productos, "categoria", False))
     tabla_productos.heading("precio", text="Precio")
-    tabla_productos.heading("cantidad", text="Cantidad")
+    tabla_productos.heading("cantidad", text="Stock")
 
     tabla_productos.column("id", width=80, anchor="center")
     tabla_productos.column("nombre", width=250, anchor="w")
