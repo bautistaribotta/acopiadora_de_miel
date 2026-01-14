@@ -22,8 +22,12 @@ def listado_deudores():
     # FRAME SUPERIOR
     frame_superior = tk.Frame(ventana_listado_deudores, bg=color_primario, height=50)
     frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
-    # Placeholder para futura informacion
-    # tk.Label(frame_superior, text="Filtros / Info Total", bg="red").pack() 
+    # BUSCADOR
+    label_busqueda = tk.Label(frame_superior, text="Buscar cliente:", font=fuente_texto, bg=color_primario, fg=color_secundario)
+    label_busqueda.pack(side="left", padx=(0, 10))
+
+    entry_buscar = tk.Entry(frame_superior, bg=color_secundario, fg=color_primario, font=fuente_texto, width=25)
+    entry_buscar.pack(side="left") 
 
 
     # FRAME TABLA
