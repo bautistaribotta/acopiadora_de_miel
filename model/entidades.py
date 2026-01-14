@@ -24,5 +24,18 @@ class Remito:
 
 
 class Operacion:
-    def __init__(self):
-        pass
+    def __init__(self, id_cliente, monto_total, total_en_dolares, total_en_kilos_miel, valor_dolar, valor_kilo_miel, fecha=None):
+        self.id_cliente = id_cliente
+        self.monto_total = monto_total
+        self.total_en_dolares = total_en_dolares
+        self.total_en_kilos_miel = total_en_kilos_miel
+        self.valor_dolar = valor_dolar
+        self.valor_kilo_miel = valor_kilo_miel
+        self.fecha = fecha
+
+
+class DetalleOperacion:
+    def __init__(self, id_operacion, id_producto, cantidad):
+        self.id_operacion = id_operacion
+        self.id_producto = id_producto
+        self.cantidad = cantidad

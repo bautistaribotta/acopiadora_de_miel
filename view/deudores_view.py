@@ -2,9 +2,17 @@ import tkinter as tk
 from tkinter import ttk
 from estilos import *
 
+ventana_listado_deudores_instancia = None
+
 
 def listado_deudores():
+    global ventana_listado_deudores_instancia
+    if ventana_listado_deudores_instancia is not None and ventana_listado_deudores_instancia.winfo_exists():
+        ventana_listado_deudores_instancia.lift()
+        return
+
     ventana_listado_deudores = tk.Toplevel()
+    ventana_listado_deudores_instancia = ventana_listado_deudores
     ventana_listado_deudores.title("Listado de deudores")
     ventana_listado_deudores.configure(bg=color_primario)
     ventana_listado_deudores.resizable(False, False)

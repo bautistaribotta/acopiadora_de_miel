@@ -7,13 +7,13 @@ ventana_editar_operacion_instancia = None
 
 
 
-def nueva_operacion():
+def nueva_operacion(parent=None):
     global ventana_nueva_operacion_instancia
     if ventana_nueva_operacion_instancia is not None and ventana_nueva_operacion_instancia.winfo_exists():
         ventana_nueva_operacion_instancia.lift()
         return
 
-    ventana_nueva_operacion = tk.Toplevel()
+    ventana_nueva_operacion = tk.Toplevel(parent)
     ventana_nueva_operacion_instancia = ventana_nueva_operacion
 
     ventana_nueva_operacion.title("Nueva Operación")

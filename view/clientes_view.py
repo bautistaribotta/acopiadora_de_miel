@@ -698,7 +698,7 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
 
     # BOTONES
     boton_nueva = ttk.Button(frame_botones, text="Nueva", style="BotonSecundario.TButton")
-    boton_nueva.config(cursor="hand2", command=nueva_operacion, width=8)
+    boton_nueva.config(cursor="hand2", command=lambda: nueva_operacion(ventana_info_cliente), width=8)
     boton_nueva.pack(side="left", padx=(3, 5))
 
     boton_editar = ttk.Button(frame_botones, text="Editar", style="BotonSecundario.TButton")

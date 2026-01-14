@@ -4,7 +4,6 @@ from estilos import *
 ventana_remitos_instancia = None
 
 
-
 def remitos():
     global ventana_remitos_instancia
     if ventana_remitos_instancia is not None and ventana_remitos_instancia.winfo_exists():
