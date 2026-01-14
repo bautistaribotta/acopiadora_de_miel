@@ -18,11 +18,6 @@ class Producto:
         self.cantidad = cantidad
 
 
-class Remito:
-    def __init__(self):
-        pass
-
-
 class Operacion:
     def __init__(self, id_cliente, monto_total, total_en_dolares, total_en_kilos_miel, valor_dolar, valor_kilo_miel, fecha=None):
         self.id_cliente = id_cliente
@@ -39,3 +34,8 @@ class DetalleOperacion:
         self.id_operacion = id_operacion
         self.id_producto = id_producto
         self.cantidad = cantidad
+
+
+class Remito:
+    def __init__(self):
+        pass
