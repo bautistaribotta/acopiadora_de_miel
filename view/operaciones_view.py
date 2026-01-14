@@ -83,7 +83,7 @@ def nueva_operacion(parent=None):
     entry_cantidad = ttk.Entry(frame_agregar, width=10, font=fuente_texto)
     entry_cantidad.pack(side="left", padx=(0, 15))
     
-    btn_agregar = ttk.Button(frame_agregar, text="Agregar a Operación ->", style="BotonSecundario.TButton")
+    btn_agregar = ttk.Button(frame_agregar, text="Agregar al carrito", style="BotonSecundario.TButton")
     btn_agregar.config(cursor="hand2")
     btn_agregar.pack(side="left")
 
@@ -105,19 +105,17 @@ def nueva_operacion(parent=None):
     scrollbar_carrito = ttk.Scrollbar(frame_tabla_carrito)
     scrollbar_carrito.pack(side="right", fill="y")
     
-    cols_carrito = ("id", "nombre", "cantidad", "precio")
+    cols_carrito = ("nombre", "cantidad", "subtotal")
     tabla_carrito = ttk.Treeview(frame_tabla_carrito, columns=cols_carrito, show="headings", 
                                  yscrollcommand=scrollbar_carrito.set, height=15)
     
-    tabla_carrito.heading("id", text="ID")
     tabla_carrito.heading("nombre", text="Producto")
-    tabla_carrito.heading("cantidad", text="Cant.")
-    tabla_carrito.heading("precio", text="Unitario")
+    tabla_carrito.heading("cantidad", text="Cantidad")
+    tabla_carrito.heading("subtotal", text="Sub Total")
     
-    tabla_carrito.column("id", width=40, anchor="center")
     tabla_carrito.column("nombre", width=180, anchor="w")
-    tabla_carrito.column("cantidad", width=60, anchor="center")
-    tabla_carrito.column("precio", width=80, anchor="e")
+    tabla_carrito.column("cantidad", width=80, anchor="center")
+    tabla_carrito.column("subtotal", width=100, anchor="e")
     
     tabla_carrito.pack(side="left", fill="both", expand=True)
     scrollbar_carrito.config(command=tabla_carrito.yview)
