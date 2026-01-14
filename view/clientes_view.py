@@ -137,7 +137,10 @@ def listado_clientes():
             id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
 
             # GUARDAR GEOMETRIA ORIGINAL
-            original_geom = ventana_clientes.geometry()
+            # Solo si NO estamos ya en modo dividido (ventana info no existe), guardamos la original.
+            # Si ya existe, mantenemos la que se guardó la primera vez.
+            if ventana_info_cliente_instancia is None or not ventana_info_cliente_instancia.winfo_exists():
+                ventana_clientes.geometria_original = ventana_clientes.geometry()
 
             # --- LOGICA DE POSICIONAMIENTO Y RESIZE ---
             screen_width = ventana_clientes.winfo_screenwidth()
@@ -165,23 +168,21 @@ def listado_clientes():
                         tabla_clientes["displaycolumns"] = "#all"
                         entry_buscar.config(width=25)
                         
-                        # Restaurar botones (Es importante el orden para que queden igual que antes)
-                        # side="right" apila de derecha a izquierda.
-                        # El primero que se packea va al extremo derecho.
+                        # Restaurar botones
                         boton_eliminar.pack(side="right", padx=(5, 0))
                         boton_editar.pack(side="right", padx=5)
                         boton_agregar.pack(side="right", padx=5)
 
                         def restaurar():
                             if not ventana_clientes.winfo_exists(): return
-                            # Restaurar a geometria original
-                            ventana_clientes.geometry(original_geom)
+                            # Restaurar a geometria original guardada
+                            if hasattr(ventana_clientes, 'geometria_original'):
+                                ventana_clientes.geometry(ventana_clientes.geometria_original)
                             ventana_clientes.lift()
 
                         # Usamos un delay para asegurar que el cambio de geometría se aplique
                         # después de que el gestor de ventanas procese el cierre de la otra ventana.
                         ventana_clientes.after(100, restaurar)
-
                 except Exception:
                     pass
 
@@ -564,9 +565,10 @@ def editar_cliente_vista(id_cliente, callback=None):
 
 def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=None, on_close=None):
     global ventana_info_cliente_instancia
+    
+    # Si ya existe una instancia, la destruimos para crear la nueva con el nuevo cliente
     if ventana_info_cliente_instancia is not None and ventana_info_cliente_instancia.winfo_exists():
-        ventana_info_cliente_instancia.lift()
-        return
+        ventana_info_cliente_instancia.destroy()
 
 
     # BUSCA EL CLIENTE Y LO INSTANCIA
@@ -584,7 +586,6 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
 
 
     # INICIA LA VISTA
-    # INICIA LA VISTA
     ventana_info_cliente = tk.Toplevel(ventana_clientes)
     ventana_info_cliente_instancia = ventana_info_cliente
     ventana_info_cliente.title("Informacion del cliente")
@@ -596,7 +597,7 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     # Dimensiones y centrado
     ancho_ventana = 900
     alto_ventana = 600
-    
+
     if x_pos is not None and y_pos is not None:
         ventana_info_cliente.geometry(f"{ancho_ventana}x{alto_ventana}+{x_pos}+{y_pos}")
     else:
@@ -631,13 +632,13 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     # NOMBRE
     label_nombre_titulo = tk.Label(frame_datos, text="Nombre:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_nombre_titulo.grid(row=0, column=2, sticky="w", pady=5, padx=(10, 5))
-    label_nombre_valor = tk.Label(frame_datos, text=cliente.nombre, bg=color_primario, fg="white", font=("Arial", 10))
+    label_nombre_valor = tk.Label(frame_datos, text=cliente.nombre, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
     label_nombre_valor.grid(row=0, column=3, sticky="w", pady=5, padx=(0, 20))
 
     # APELLIDO
     label_apellido_titulo = tk.Label(frame_datos, text="Apellido:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_apellido_titulo.grid(row=0, column=4, sticky="w", pady=5, padx=(10, 5))
-    label_apellido_valor = tk.Label(frame_datos, text=cliente.apellido, bg=color_primario, fg="white", font=("Arial", 10))
+    label_apellido_valor = tk.Label(frame_datos, text=cliente.apellido, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
     label_apellido_valor.grid(row=0, column=5, sticky="w", pady=5, padx=(0, 0))
 
 
@@ -652,13 +653,13 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     # LOCALIDAD
     label_localidad_titulo = tk.Label(frame_datos, text="Localidad:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_localidad_titulo.grid(row=1, column=2, sticky="w", pady=5, padx=(10, 5))
-    label_localidad_valor = tk.Label(frame_datos, text=cliente.localidad, bg=color_primario, fg="white", font=("Arial", 10))
+    label_localidad_valor = tk.Label(frame_datos, text=cliente.localidad, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
     label_localidad_valor.grid(row=1, column=3, sticky="w", pady=5, padx=(0, 20))
 
     # DIRECCION
     label_direccion_titulo = tk.Label(frame_datos, text="Direccion:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_direccion_titulo.grid(row=1, column=4, sticky="w", pady=5, padx=(10, 5))
-    label_direccion_valor = tk.Label(frame_datos, text=cliente.direccion, bg=color_primario, fg="white", font=("Arial", 10))
+    label_direccion_valor = tk.Label(frame_datos, text=cliente.direccion, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
     label_direccion_valor.grid(row=1, column=5, sticky="w", pady=5, padx=(0, 0))
 
 
@@ -697,15 +698,15 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
 
     # BOTONES
     boton_nueva = ttk.Button(frame_botones, text="Nueva", style="BotonSecundario.TButton")
-    boton_nueva.config(cursor="hand2", command=nueva_operacion)
-    boton_nueva.pack(side="left", padx=5)
+    boton_nueva.config(cursor="hand2", command=nueva_operacion, width=8)
+    boton_nueva.pack(side="left", padx=(3, 5))
 
     boton_editar = ttk.Button(frame_botones, text="Editar", style="BotonSecundario.TButton")
-    boton_editar.config(cursor="hand2")
+    boton_editar.config(cursor="hand2", width=8)
     boton_editar.pack(side="left", padx=5)
 
     boton_eliminar = ttk.Button(frame_botones, text="Eliminar", style="BotonSecundario.TButton")
-    boton_eliminar.config(cursor="hand2")
+    boton_eliminar.config(cursor="hand2", width=8)
     boton_eliminar.pack(side="left", padx=5)
 
 

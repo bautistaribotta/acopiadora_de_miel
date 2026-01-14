@@ -88,10 +88,8 @@ def editar_producto_controlador(id_producto, nombre, categoria, unidad_medida, p
 def sumar_stock_controlador(id_producto, cantidad, ventana, callback=None):
     try:
         cantidad_float = float(cantidad)
-        if cantidad_float <= 0:
-            messagebox.showwarning("Atención", "La cantidad a sumar debe ser mayor a 0", parent=ventana)
-            return
-            
+        # Permitimos negativos para restar stock, solo validamos que sea numero
+        
         sumar_stock_db(id_producto, cantidad_float)
         messagebox.showinfo("Éxito", "Stock actualizado correctamente.", parent=ventana)
         
