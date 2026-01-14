@@ -4,38 +4,71 @@ from estilos import *
 
 
 def listado_deudores():
-    ventana_listado_deudores = tk.Toplevel(ventana)
+    ventana_listado_deudores = tk.Toplevel()
     ventana_listado_deudores.title("Listado de deudores")
     ventana_listado_deudores.configure(bg=color_primario)
-    ventana_listado_deudores.geometry("800x600")
     ventana_listado_deudores.resizable(False, False)
-    centrar_ventana_interna(ventana_listado_deudores, 800, 600)
-    ventana_listado_deudores.mainloop()
+    
+    # Aumentamos el ancho para que entren todas las columnas
+    ancho_ventana = 1200
+    alto_ventana = 600
+    centrar_ventana_interna(ventana_listado_deudores, ancho_ventana, alto_ventana)
+
+    # CONFIGURACION DEL GRID
+    ventana_listado_deudores.grid_rowconfigure(0, weight=0)  # Frame Superior
+    ventana_listado_deudores.grid_rowconfigure(1, weight=1)  # Frame Tabla
+    ventana_listado_deudores.grid_columnconfigure(0, weight=1)
+
+    # FRAME SUPERIOR
+    frame_superior = tk.Frame(ventana_listado_deudores, bg=color_primario, height=50)
+    frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
+    # Placeholder para futura informacion
+    # tk.Label(frame_superior, text="Filtros / Info Total", bg="red").pack() 
 
 
-    # Frame tabla
-    frame_tabla_deudores = tk.Frame(ventana_listado_deudores)
-    frame_tabla_deudores.configure()
-    frame_tabla_deudores.pack()
+    # FRAME TABLA
+    frame_tabla_deudores = tk.Frame(ventana_listado_deudores, bg=color_primario)
+    frame_tabla_deudores.grid(row=1, column=0, sticky="nsew", padx=20, pady=(10, 20))
 
-    # Treeview (Tabla)
-    columnas = ("id", "nombre", "debe")
-    tabla_deudores = ttk.Treeview(frame_tabla_deudores, columns=columnas, show="headings")
 
+    # SCROLLBAR
+    scrollbar = ttk.Scrollbar(frame_tabla_deudores)
+    scrollbar.pack(side="right", fill="y")
+
+
+    # TREEVIEW (Tabla)
+    columnas = ("id", "nombre", "monto_pesos", "monto_dolares_hist", "monto_dolares_actual", "monto_miel_hist", "monto_miel_actual")
+    
+    tabla_deudores = ttk.Treeview(frame_tabla_deudores, columns=columnas, show="headings", 
+                                  yscrollcommand=scrollbar.set, height=20)
+
+    # Definicion de Cabeceras
     tabla_deudores.heading("id", text="ID")
     tabla_deudores.heading("nombre", text="Nombre")
-    tabla_deudores.heading("debe", text="Total adeudado")
+    tabla_deudores.heading("monto_pesos", text="Pesos")
+    tabla_deudores.heading("monto_dolares_hist", text="USD (Hist)")
+    tabla_deudores.heading("monto_dolares_actual", text="USD (Hoy)")
+    tabla_deudores.heading("monto_miel_hist", text="Kg Miel (Hist)")
+    tabla_deudores.heading("monto_miel_actual", text="Kg Miel (Hoy)")
 
-    tabla_deudores.column("id", width=80, anchor="center")
+    # Definicion de Columnas
+    tabla_deudores.column("id", width=50, anchor="center")
     tabla_deudores.column("nombre", width=250, anchor="w")
-    tabla_deudores.column("debe", width=300, anchor="center")
+    tabla_deudores.column("monto_pesos", width=120, anchor="e")
+    tabla_deudores.column("monto_dolares_hist", width=120, anchor="e")
+    tabla_deudores.column("monto_dolares_actual", width=120, anchor="e")
+    tabla_deudores.column("monto_miel_hist", width=120, anchor="e")
+    tabla_deudores.column("monto_miel_actual", width=120, anchor="e")
 
-    tabla_deudores.pack()
+    # Aplicar Zebra Striping
+    tabla_deudores.tag_configure("impar", background=color_zebra)
 
+    tabla_deudores.pack(side="left", fill="both", expand=True)
+    scrollbar.config(command=tabla_deudores.yview)
 
 
 if __name__ == "__main__":
-    ventana = tk.Tk()
-    ventana.withdraw()
+    root = tk.Tk()
+    root.withdraw()
     listado_deudores()
-    ventana.mainloop()
+    root.mainloop()

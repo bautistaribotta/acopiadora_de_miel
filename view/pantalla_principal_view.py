@@ -2,6 +2,7 @@ from view.clientes_view import *
 from view.productos_view import *
 from view.remitos_view import *
 from controller.cotizaciones import *
+from deudores_view import listado_deudores
 import tkinter as tk
 from tkinter import ttk
 
@@ -40,7 +41,7 @@ def pantalla_administrador():
     boton_clientes.grid(row=0, column=1, padx=20, pady=15)
 
     boton_deudores = ttk.Button(opciones_top, text="DEUDORES", style="BotonPrimario.TButton")
-    boton_deudores.configure(cursor="hand2")
+    boton_deudores.configure(cursor="hand2", command=listado_deudores)
     boton_deudores.grid(row=0, column=2, padx=20, pady=15)
 
     boton_remitos = ttk.Button(opciones_top, text="REMITOS", style="BotonPrimario.TButton")
