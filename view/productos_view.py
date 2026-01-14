@@ -45,6 +45,7 @@ def listado_productos():
     columnas = ("id", "nombre", "categoria", "precio", "cantidad")
     tabla_productos = ttk.Treeview(frame_tabla, columns=columnas, show="headings",
                                    yscrollcommand=scrollbar.set, height=20)
+    tabla_productos.tag_configure("impar", background=color_zebra)
 
     # FUNCION PARA ACTUALIZAR LA TABLA (TREEVIEW)
     def actualizar_tabla():
@@ -52,13 +53,13 @@ def listado_productos():
         for item in tabla_productos.get_children():
             tabla_productos.delete(item)
         # Vuelve a escribirla pero actualizada
-        # Vuelve a escribirla pero actualizada
         productos = listar_productos_controlador()
-        for prod in productos:
+        for i, prod in enumerate(productos):
             # Convertir a lista para modificar visualmente el precio sin afectar datos reales
             datos_visuales = list(prod)
             datos_visuales[3] = f"${datos_visuales[3]}"
-            tabla_productos.insert("", "end", values=datos_visuales)
+            tag = "impar" if i % 2 != 0 else "par"
+            tabla_productos.insert("", "end", values=datos_visuales, tags=(tag,))
     actualizar_tabla()
 
 
@@ -97,10 +98,11 @@ def listado_productos():
             tabla_productos.delete(item)
 
         # Llenamos con los resultados de la búsqueda
-        for producto in productos_encontrados:
+        for i, producto in enumerate(productos_encontrados):
             datos_visuales = list(producto)
             datos_visuales[3] = f"${datos_visuales[3]}"
-            tabla_productos.insert("", "end", values=datos_visuales)
+            tag = "impar" if i % 2 != 0 else "par"
+            tabla_productos.insert("", "end", values=datos_visuales, tags=(tag,))
 
 
 
@@ -117,8 +119,24 @@ def listado_productos():
         editar_producto_vista(item_id, actualizar_tabla)
 
 
+    # FUNCION ABRIR SUMAR STOCK
+    def abrir_sumar_stock():
+        seleccion = tabla_productos.selection()
+        if not seleccion:
+            messagebox.showwarning("Atención", "Seleccione un producto.", parent=ventana_productos)
+            return
+
+        # Obtenemos el ID del item seleccionado
+        valores = tabla_productos.item(seleccion[0])['values']
+        item_id = valores[0]
+        nombre_producto = valores[1]
+        
+        sumar_stock_vista(item_id, nombre_producto, actualizar_tabla)
+
+
     # MENU CONTEXTUAL (Clic derecho)
     menu_contextual = tk.Menu(ventana_productos, tearoff=0)
+    menu_contextual.add_command(label="Sumar Stock", command=lambda: abrir_sumar_stock())
     menu_contextual.add_command(label="Editar", command=abrir_editar)
     menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
 
@@ -425,3 +443,37 @@ def editar_producto_vista(id_producto, callback=None):
 
 if __name__ == "__main__":
     listado_productos()
+
+
+def sumar_stock_vista(id_producto, nombre_producto, callback=None):
+    ventana_sumar = tk.Toplevel()
+    ventana_sumar.title("Sumar Stock")
+    ventana_sumar.config(bg=color_primario)
+    ventana_sumar.geometry("300x200")
+    centrar_ventana_interna(ventana_sumar, 300, 200)
+    ventana_sumar.resizable(False, False)
+    
+    # Label Titulo
+    tk.Label(ventana_sumar, text=f"Sumar a: {nombre_producto}", 
+             font=("Arial", 12, "bold"), bg=color_primario, fg=color_secundario).pack(pady=(20, 10))
+    
+    # Entry Cantidad
+    frame_entry = tk.Frame(ventana_sumar, bg=color_primario)
+    frame_entry.pack(pady=10)
+    
+    tk.Label(frame_entry, text="Cantidad:", font=("Arial", 10), bg=color_primario, fg="white").pack(side="left", padx=5)
+    
+    entry_cantidad = ttk.Entry(frame_entry, width=10, font=("Arial", 12))
+    entry_cantidad.pack(side="left", padx=5)
+    entry_cantidad.focus_set() # Foco automatico
+    
+    def confirmar(event=None):
+        cantidad = entry_cantidad.get()
+        sumar_stock_controlador(id_producto, cantidad, ventana_sumar, callback)
+        
+    # Bind Enter key
+    ventana_sumar.bind('<Return>', confirmar)
+    
+    # Boton Confirmar
+    btn_confirmar = ttk.Button(ventana_sumar, text="Confirmar", style="BotonSecundario.TButton", command=confirmar)
+    btn_confirmar.pack(pady=10)

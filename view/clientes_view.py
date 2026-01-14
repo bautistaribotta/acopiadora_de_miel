@@ -45,6 +45,7 @@ def listado_clientes():
     columnas = ("id", "nombre", "localidad", "telefono")
     tabla_clientes = ttk.Treeview(frame_tabla, columns=columnas, show="headings",
                                      yscrollcommand=scrollbar.set, height=20)
+    tabla_clientes.tag_configure("impar", background=color_zebra)
 
     # MOSTRAR LOS DATOS EN EL TREEVIEW
     def actualizar_tabla():
@@ -53,8 +54,9 @@ def listado_clientes():
             tabla_clientes.delete(item)
         # Vuelve a escribirla pero actualizada
         clientes = listar_clientes_controlador()
-        for cliente in clientes:
-            tabla_clientes.insert("", "end", values=cliente)
+        for i, cliente in enumerate(clientes):
+            tag = "impar" if i % 2 != 0 else "par"
+            tabla_clientes.insert("", "end", values=cliente, tags=(tag,))
     actualizar_tabla()
 
 
@@ -93,8 +95,9 @@ def listado_clientes():
             tabla_clientes.delete(item)
 
         # Llenamos con los resultados de la búsqueda
-        for producto in productos_encontrados:
-            tabla_clientes.insert("", "end", values=producto)
+        for i, producto in enumerate(productos_encontrados):
+            tag = "impar" if i % 2 != 0 else "par"
+            tabla_clientes.insert("", "end", values=producto, tags=(tag,))
 
 
     # FUNCION ABRIR EDITAR

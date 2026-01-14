@@ -64,6 +64,25 @@ def eliminar_producto(id_producto):
     conexion.close()
 
 
+def sumar_stock_db(id_producto, cantidad):
+    conexion = mysql.connector.connect(
+        host="localhost",
+        user="root",
+        password="root",
+        database="southern_honey_group"
+    )
+    cursor = conexion.cursor()
+
+    instruccion_sql = "UPDATE productos SET cantidad = cantidad + %s WHERE id = %s"
+    valores = (cantidad, id_producto)
+
+    cursor.execute(instruccion_sql, valores)
+    conexion.commit()
+
+    cursor.close()
+    conexion.close()
+
+
 def listar_producto_db():
     conexion = mysql.connector.connect(
         host="localhost",

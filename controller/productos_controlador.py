@@ -83,3 +83,23 @@ def editar_producto_controlador(id_producto, nombre, categoria, unidad_medida, p
         ventana.destroy()
     except Exception as e:
         messagebox.showerror("Error", f"No se pudo editar el producto: {e}", parent=ventana)
+
+
+def sumar_stock_controlador(id_producto, cantidad, ventana, callback=None):
+    try:
+        cantidad_float = float(cantidad)
+        if cantidad_float <= 0:
+            messagebox.showwarning("Atención", "La cantidad a sumar debe ser mayor a 0", parent=ventana)
+            return
+            
+        sumar_stock_db(id_producto, cantidad_float)
+        messagebox.showinfo("Éxito", "Stock actualizado correctamente.", parent=ventana)
+        
+        if callback:
+            callback()
+        ventana.destroy()
+
+    except ValueError:
+        messagebox.showerror("Error", "Ingrese un valor numérico válido", parent=ventana)
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo actualizar el stock: {e}", parent=ventana)
