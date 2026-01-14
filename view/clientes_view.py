@@ -132,7 +132,70 @@ def listado_clientes():
         seleccion = tabla_clientes.selection()
         if seleccion:
             id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
-            informacion_cliente_vista(id_cliente, ventana_clientes)
+
+            # GUARDAR GEOMETRIA ORIGINAL
+            original_geom = ventana_clientes.geometry()
+
+            # --- LOGICA DE POSICIONAMIENTO Y RESIZE ---
+            screen_width = ventana_clientes.winfo_screenwidth()
+            current_y = ventana_clientes.winfo_y()
+
+            info_width = 900
+            info_height = 600
+            margin = 20  # Margen para separar de los bordes y entre ventanas
+            
+            x_info = margin
+            # La lista se posiciona después de la info + margen
+            x_list = x_info + info_width + margin
+            
+            # Espacio restante para la lista, restando tambien el margen derecho
+            list_width = screen_width - x_list - margin
+            
+            # Aseguramos un mínimo
+            if list_width < 300: list_width = 300
+            
+            list_height = 600
+
+            def al_cerrar_info():
+                try:
+                    if ventana_clientes.winfo_exists():
+                        tabla_clientes["displaycolumns"] = "#all"
+                        entry_buscar.config(width=25)
+                        
+                        # Restaurar botones (Es importante el orden para que queden igual que antes)
+                        # side="right" apila de derecha a izquierda.
+                        # El primero que se packea va al extremo derecho.
+                        boton_eliminar.pack(side="right", padx=(5, 0))
+                        boton_editar.pack(side="right", padx=5)
+                        boton_agregar.pack(side="right", padx=5)
+
+                        def restaurar():
+                            if not ventana_clientes.winfo_exists(): return
+                            # Restaurar a geometria original
+                            ventana_clientes.geometry(original_geom)
+                            ventana_clientes.lift()
+
+                        # Usamos un delay para asegurar que el cambio de geometría se aplique
+                        # después de que el gestor de ventanas procese el cierre de la otra ventana.
+                        ventana_clientes.after(100, restaurar)
+
+                except Exception:
+                    pass
+
+            informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=x_info, y_pos=current_y, on_close=al_cerrar_info)
+
+            # Ajustar la ventana de listado
+            ventana_clientes.geometry(f"{list_width}x{list_height}+{x_list}+{current_y}")
+            # Mostrar solo ID y Nombre
+            tabla_clientes["displaycolumns"] = ("id", "nombre")
+            
+            # Ocultar botones
+            boton_agregar.pack_forget()
+            boton_editar.pack_forget()
+            boton_eliminar.pack_forget()
+            
+            # Ajustar ancho buscador (menos ancho si se desea, o mantener normal)
+            entry_buscar.config(width=20)
 
 
     # FUNCION ORDENAR COLUMNA
@@ -496,7 +559,7 @@ def editar_cliente_vista(id_cliente, callback=None):
     boton_cancelar.pack(side="left", padx=5)
 
 
-def informacion_cliente_vista(id_cliente, ventana_clientes):
+def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=None, on_close=None):
     global ventana_info_cliente_instancia
     if ventana_info_cliente_instancia is not None and ventana_info_cliente_instancia.winfo_exists():
         ventana_info_cliente_instancia.lift()
@@ -527,9 +590,20 @@ def informacion_cliente_vista(id_cliente, ventana_clientes):
 
 
     # Dimensiones y centrado
+    # Dimensiones y centrado
     ancho_ventana = 900
     alto_ventana = 600
-    centrar_ventana_interna(ventana_info_cliente, ancho_ventana, alto_ventana)
+    
+    if x_pos is not None and y_pos is not None:
+        ventana_info_cliente.geometry(f"{ancho_ventana}x{alto_ventana}+{x_pos}+{y_pos}")
+    else:
+        centrar_ventana_interna(ventana_info_cliente, ancho_ventana, alto_ventana)
+
+    if on_close:
+        def cerrar_wrapper():
+            on_close()
+            ventana_info_cliente.destroy()
+        ventana_info_cliente.protocol("WM_DELETE_WINDOW", cerrar_wrapper)
 
 
     # --- FRAME SUPERIOR (Datos y Botones) ---

@@ -1,7 +1,6 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
-
 from estilos import *
 from controller.login_controlador import verificacion_inicio_sesion
 
