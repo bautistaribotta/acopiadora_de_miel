@@ -58,6 +58,10 @@ def listado_productos():
             # Convertir a lista para modificar visualmente el precio sin afectar datos reales
             datos_visuales = list(prod)
             datos_visuales[3] = f"${datos_visuales[3]}"
+            try:
+                datos_visuales[4] = int(float(datos_visuales[4]))
+            except (ValueError, TypeError):
+                pass
             tag = "impar" if i % 2 != 0 else "par"
             tabla_productos.insert("", "end", values=datos_visuales, tags=(tag,))
     actualizar_tabla()
@@ -101,6 +105,10 @@ def listado_productos():
         for i, producto in enumerate(productos_encontrados):
             datos_visuales = list(producto)
             datos_visuales[3] = f"${datos_visuales[3]}"
+            try:
+                datos_visuales[4] = int(float(datos_visuales[4]))
+            except (ValueError, TypeError):
+                pass
             tag = "impar" if i % 2 != 0 else "par"
             tabla_productos.insert("", "end", values=datos_visuales, tags=(tag,))
 
