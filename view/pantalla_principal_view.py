@@ -44,10 +44,6 @@ def pantalla_administrador():
     boton_deudores.configure(cursor="hand2", command=listado_deudores)
     boton_deudores.grid(row=0, column=2, padx=20, pady=15)
 
-    boton_remitos = ttk.Button(opciones_top, text="REMITOS", style="BotonPrimario.TButton")
-    boton_remitos.configure(command=remitos, cursor="hand2")
-    boton_remitos.grid(row=0, column=3, padx=20, pady=15)
-
 
     # FRAME DERECHO - VALORES DOLAR
     frame_valores = tk.Frame(opciones_top)
