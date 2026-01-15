@@ -136,67 +136,76 @@ def listado_clientes():
         if seleccion:
             id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
 
-            # GUARDAR GEOMETRIA ORIGINAL
-            # Solo si NO estamos ya en modo dividido (ventana info no existe), guardamos la original.
-            # Si ya existe, mantenemos la que se guardó la primera vez.
-            if ventana_info_cliente_instancia is None or not ventana_info_cliente_instancia.winfo_exists():
+            # --- LOGICA GEOMETRIA ---
+            # Verificar si ya existe una ventana info (estamos cambiando de cliente)
+            is_switching = False
+            if ventana_info_cliente_instancia is not None:
+                try:
+                    if ventana_info_cliente_instancia.winfo_exists():
+                        is_switching = True
+                except:
+                    pass
+            
+            # Solo guardamos geometria si NO estamos switcheando (es la primera apertura)
+            if not is_switching:
                 ventana_clientes.geometria_original = ventana_clientes.geometry()
 
-            # --- LOGICA DE POSICIONAMIENTO Y RESIZE ---
+            # Calculos de posicion para Split View
             screen_width = ventana_clientes.winfo_screenwidth()
             current_y = ventana_clientes.winfo_y()
-
             info_width = 900
             info_height = 600
-            margin = 20  # Margen para separar de los bordes y entre ventanas
+            margin = 20
             
             x_info = margin
-            # La lista se posiciona después de la info + margen
             x_list = x_info + info_width + margin
-            
-            # Espacio restante para la lista, restando tambien el margen derecho
             list_width = screen_width - x_list - margin
-            
-            # Aseguramos un mínimo
             if list_width < 300: list_width = 300
-            
             list_height = 600
 
             def al_cerrar_info():
-                try:
-                    if ventana_clientes.winfo_exists():
+                def restaurar():
+                    # Si la ventana listado ya no existe, no hacemos nada
+                    if not ventana_clientes.winfo_exists(): return
+                    
+                    # Verificar si hay una ventana info ACTIVA (caso switch de cliente)
+                    # Si la hay, NO restauramos la geometria ni botones, mantenemos split view.
+                    if ventana_info_cliente_instancia is not None:
+                        try:
+                            if ventana_info_cliente_instancia.winfo_exists():
+                                return
+                        except: pass
+                    
+                    # SI llegamos aqui, es un cierre real. Restauramos.
+                    try:
+                        if hasattr(ventana_clientes, 'geometria_original'):
+                            ventana_clientes.geometry(ventana_clientes.geometria_original)
+                        
                         tabla_clientes["displaycolumns"] = "#all"
                         entry_buscar.config(width=25)
                         
-                        # Restaurar botones
                         boton_eliminar.pack(side="right", padx=(5, 0))
                         boton_editar.pack(side="right", padx=5)
-                        boton_agregar.pack(side="right", padx=5)
+                        boton_nuevo_cliente.pack(side="right", padx=5)
+                        
+                        ventana_clientes.lift()
+                    except Exception as e:
+                        print(f"Error restaurando ventana: {e}")
 
-                        def restaurar():
-                            if not ventana_clientes.winfo_exists(): return
-                            # Restaurar a geometria original guardada
-                            if hasattr(ventana_clientes, 'geometria_original'):
-                                ventana_clientes.geometry(ventana_clientes.geometria_original)
-                            ventana_clientes.lift()
+                # Usamos after para dar tiempo a que se destruya la ventana anterior o se cree la nueva
+                ventana_clientes.after(100, restaurar)
 
-                        # Usamos un delay para asegurar que el cambio de geometría se aplique
-                        # después de que el gestor de ventanas procese el cierre de la otra ventana.
-                        ventana_clientes.after(100, restaurar)
-                except Exception:
-                    pass
-
+            # Abrir info cliente
             informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=x_info, y_pos=current_y, on_close=al_cerrar_info)
 
-            # Ajustar la ventana de listado
-            ventana_clientes.geometry(f"{list_width}x{list_height}+{x_list}+{current_y}")
-            # Mostrar solo ID y Nombre
-            tabla_clientes["displaycolumns"] = ("id", "nombre")
-            
-            # Ocultar botones
-            boton_agregar.pack_forget()
-            boton_editar.pack_forget()
-            boton_eliminar.pack_forget()
+            # Aplicar cambios visuales a la lista (Split View)
+            try:
+                ventana_clientes.geometry(f"{list_width}x{list_height}+{x_list}+{current_y}")
+                tabla_clientes["displaycolumns"] = ("id", "nombre")
+                boton_nuevo_cliente.pack_forget()
+                boton_editar.pack_forget()
+                boton_eliminar.pack_forget()
+            except: pass
             
             # Ajustar ancho buscador (menos ancho si se desea, o mantener normal)
             entry_buscar.config(width=20)
@@ -258,9 +267,9 @@ def listado_clientes():
     boton_editar.config(command=abrir_editar, cursor="hand2")
     boton_editar.pack(side="right", padx=5)
 
-    boton_agregar = ttk.Button(frame_superior, text="Añadir", style="BotonSecundario.TButton")
-    boton_agregar.config(command=lambda: nuevo_cliente_vista(actualizar_tabla), cursor="hand2")
-    boton_agregar.pack(side="right", padx=5)
+    boton_nuevo_cliente = ttk.Button(frame_superior, text="Nuevo", style="BotonSecundario.TButton")
+    boton_nuevo_cliente.config(command=lambda: nuevo_cliente_vista(actualizar_tabla), cursor="hand2")
+    boton_nuevo_cliente.pack(side="right", padx=5)
 
 
 def nuevo_cliente_vista(callback=None):

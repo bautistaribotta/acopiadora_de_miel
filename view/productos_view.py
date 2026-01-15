@@ -205,9 +205,9 @@ def listado_productos():
     boton_editar.config(command=abrir_editar, cursor="hand2")
     boton_editar.pack(side="right", padx=5)
 
-    boton_agregar = ttk.Button(frame_superior, text="Añadir", style="BotonSecundario.TButton")
-    boton_agregar.config(command=lambda: nuevo_producto_vista(actualizar_tabla), cursor="hand2")
-    boton_agregar.pack(side="right", padx=5)
+    boton_nuevo_producto = ttk.Button(frame_superior, text="Nuevo", style="BotonSecundario.TButton")
+    boton_nuevo_producto.config(command=lambda: nuevo_producto_vista(actualizar_tabla), cursor="hand2")
+    boton_nuevo_producto.pack(side="right", padx=5)
 
 
 def nuevo_producto_vista(callback):

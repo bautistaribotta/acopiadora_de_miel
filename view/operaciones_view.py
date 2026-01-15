@@ -7,7 +7,6 @@ ventana_nueva_operacion_instancia = None
 ventana_editar_operacion_instancia = None
 
 
-
 def nueva_operacion(parent=None):
     global ventana_nueva_operacion_instancia
     if ventana_nueva_operacion_instancia is not None and ventana_nueva_operacion_instancia.winfo_exists():
@@ -37,19 +36,15 @@ def nueva_operacion(parent=None):
     frame_izq = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_izq.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
     
-    # Titulo
-    tk.Label(frame_izq, text="Buscar Producto", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(anchor="w", pady=(0, 10))
-    
-    # Buscador
+    # Buscador (Altura controlada para alinear con columna derecha)
     frame_search = tk.Frame(frame_izq, bg=color_primario)
-    frame_search.pack(fill="x", pady=(0, 10))
+    frame_search.pack(fill="x", pady=(10, 20)) # Padding aumentado
     
-    entry_buscar = ttk.Entry(frame_search, font=fuente_texto)
-    entry_buscar.pack(side="left", fill="x", expand=True, padx=(0, 5))
+    label_buscar = tk.Label(frame_search, text="Buscar:", font=fuente_titulos, bg=color_primario, fg=color_secundario)
+    label_buscar.pack(side="left", padx=(0, 10))
     
-    btn_buscar = ttk.Button(frame_search, text="Buscar", style="BotonSecundario.TButton")
-    btn_buscar.config(cursor="hand2")
-    btn_buscar.pack(side="left")
+    entry_buscar = ttk.Entry(frame_search, font=fuente_texto, width=25) # Ancho reducido
+    entry_buscar.pack(side="left")
 
     # Tabla Resultados Busqueda
     frame_tabla_busqueda = tk.Frame(frame_izq, bg=color_primario)
@@ -68,9 +63,9 @@ def nueva_operacion(parent=None):
     tabla_busqueda.heading("precio", text="Precio")
     
     tabla_busqueda.column("id", width=50, anchor="center")
-    tabla_busqueda.column("nombre", width=200, anchor="w")
+    tabla_busqueda.column("nombre", width=200, anchor="center")
     tabla_busqueda.column("stock", width=80, anchor="center")
-    tabla_busqueda.column("precio", width=80, anchor="e")
+    tabla_busqueda.column("precio", width=80, anchor="center")
     
     tabla_busqueda.pack(side="left", fill="both", expand=True)
     scrollbar_busqueda.config(command=tabla_busqueda.yview)
@@ -83,7 +78,13 @@ def nueva_operacion(parent=None):
     entry_cantidad = ttk.Entry(frame_agregar, width=10, font=fuente_texto)
     entry_cantidad.pack(side="left", padx=(0, 15))
     
-    btn_agregar = ttk.Button(frame_agregar, text="Agregar al carrito", style="BotonSecundario.TButton")
+    # Cargar icono carrito
+    img_carrito = Image.open(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\carrito.ico")
+    img_carrito = img_carrito.resize((20, 20))
+    icono_carrito = ImageTk.PhotoImage(img_carrito)
+
+    btn_agregar = ttk.Button(frame_agregar, image=icono_carrito, style="BotonSecundario.TButton")
+    btn_agregar.image = icono_carrito 
     btn_agregar.config(cursor="hand2")
     btn_agregar.pack(side="left")
 
@@ -92,11 +93,12 @@ def nueva_operacion(parent=None):
     frame_der = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_der.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
-    # Titulo
-    tk.Label(frame_der, text="Detalle de Operación", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(anchor="w", pady=(0, 10))
-
-    # Espaciador para alinear con la tabla de la izquierda (simulando altura del buscador)
-    tk.Frame(frame_der, bg=color_primario, height=30).pack(fill="x")
+    # Header Derecho (Alineado con el Buscador de la izquierda)
+    frame_header_der = tk.Frame(frame_der, bg=color_primario)
+    frame_header_der.pack(fill="x", pady=(10, 20)) # Mismo padding que search bar izquierda
+    
+    # Titulo centrado
+    tk.Label(frame_header_der, text="Listado de compra", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(anchor="center")
 
     # Tabla Carrito
     frame_tabla_carrito = tk.Frame(frame_der, bg=color_primario)
@@ -113,9 +115,9 @@ def nueva_operacion(parent=None):
     tabla_carrito.heading("cantidad", text="Cantidad")
     tabla_carrito.heading("subtotal", text="Sub Total")
     
-    tabla_carrito.column("nombre", width=180, anchor="w")
+    tabla_carrito.column("nombre", width=180, anchor="center")
     tabla_carrito.column("cantidad", width=80, anchor="center")
-    tabla_carrito.column("subtotal", width=100, anchor="e")
+    tabla_carrito.column("subtotal", width=100, anchor="center")
     
     tabla_carrito.pack(side="left", fill="both", expand=True)
     scrollbar_carrito.config(command=tabla_carrito.yview)
@@ -147,13 +149,17 @@ def nueva_operacion(parent=None):
     frame_final = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_final.grid(row=1, column=0, columnspan=2, pady=20)
     
-    btn_guardar_op = ttk.Button(frame_final, text="Guardar Operación", style="BotonSecundario.TButton")
-    btn_guardar_op.config(cursor="hand2", width=20)
-    btn_guardar_op.pack(side="left", padx=20)
+    btn_guardar_op = ttk.Button(frame_final, text="Guardar", style="BotonSecundario.TButton")
+    btn_guardar_op.config(cursor="hand2", width=8)
+    btn_guardar_op.pack(side="left", padx=10)
+
+    btn_guardar_remito = ttk.Button(frame_final, text="Guardar y Remito", style="BotonSecundario.TButton")
+    btn_guardar_remito.config(cursor="hand2", width=20) # Debe ser mas ancho por el texto
+    btn_guardar_remito.pack(side="left", padx=10)
     
     btn_cancelar_op = ttk.Button(frame_final, text="Cancelar", style="BotonSecundario.TButton")
-    btn_cancelar_op.config(cursor="hand2", width=20, command=ventana_nueva_operacion.destroy)
-    btn_cancelar_op.pack(side="left", padx=20)
+    btn_cancelar_op.config(cursor="hand2", width=8, command=ventana_nueva_operacion.destroy)
+    btn_cancelar_op.pack(side="left", padx=10)
 
 
 def editar_operacion():
@@ -267,7 +273,4 @@ def editar_operacion():
 
 
 if __name__ == "__main__":
-    ventana = tk.Tk()
-    ventana.withdraw()
     nueva_operacion()
-    ventana.mainloop()
