@@ -113,25 +113,13 @@ def listado_clientes():
         editar_cliente_vista(item_id, actualizar_tabla)
 
 
-    # MENU CONTEXTUAL (clic derecho)
-    menu_contextual = tk.Menu(ventana_clientes, tearoff=0)
-    menu_contextual.add_command(label="Editar", command=abrir_editar)
-    menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
-
-
-    def mostrar_menu(event):
-        item = tabla_clientes.identify_row(event.y)
-        if item:
-            tabla_clientes.selection_set(item)
-            menu_contextual.post(event.x_root, event.y_root)
-
-
-    def captar_id_cliente(event):
-        # Verificar que el doble click sea sobre un item y no en los headers
-        item = tabla_clientes.identify_row(event.y)
-        if not item:
-            return
-
+    def abrir_info_cliente_seleccionado(event=None):
+        # Si viene de un evento (Doble Click), verificar que sea sobre un item
+        if event:
+            item = tabla_clientes.identify_row(event.y)
+            if not item:
+                return
+        
         seleccion = tabla_clientes.selection()
         if seleccion:
             id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
@@ -211,6 +199,22 @@ def listado_clientes():
             entry_buscar.config(width=20)
 
 
+    # MENU CONTEXTUAL (clic derecho)
+    # Definido despues de la funcion para poder referenciarla
+    menu_contextual = tk.Menu(ventana_clientes, tearoff=0)
+    menu_contextual.add_command(label="Ver", command=abrir_info_cliente_seleccionado)
+    menu_contextual.add_separator()
+    menu_contextual.add_command(label="Editar", command=abrir_editar)
+    menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
+
+
+    def mostrar_menu(event):
+        item = tabla_clientes.identify_row(event.y)
+        if item:
+            tabla_clientes.selection_set(item)
+            menu_contextual.post(event.x_root, event.y_root)
+
+
     # FUNCION ORDENAR COLUMNA
     def ordenar_por_columna(tree, col, reverse):
         l = [(tree.set(k, col), k) for k in tree.get_children('')]
@@ -242,7 +246,7 @@ def listado_clientes():
 
     tabla_clientes.pack(side="left", fill="both", expand=True)
     tabla_clientes.bind("<Button-3>", mostrar_menu)
-    tabla_clientes.bind("<Double-1>", captar_id_cliente)
+    tabla_clientes.bind("<Double-1>", abrir_info_cliente_seleccionado)
     scrollbar.config(command=tabla_clientes.yview)
 
 
@@ -574,6 +578,7 @@ def editar_cliente_vista(id_cliente, callback=None):
 
 def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=None, on_close=None):
     global ventana_info_cliente_instancia
+    from PIL import Image, ImageTk
     
     # Si ya existe una instancia, la destruimos para crear la nueva con el nuevo cliente
     if ventana_info_cliente_instancia is not None and ventana_info_cliente_instancia.winfo_exists():
@@ -581,18 +586,9 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
 
 
     # BUSCA EL CLIENTE Y LO INSTANCIA
-    cliente = informacion_cliente_controlador(id_cliente)
-
-    fac_produccion = cliente.factura_produccion
-    if fac_produccion == 1:
-        fac_produccion = "Si"
-    else:
-        fac_produccion = "No"
-
-    cuit = cliente.cuit
-    if cuit is None:
-        cuit = "N/A"
-
+    cliente_original = informacion_cliente_controlador(id_cliente)
+    if not cliente_original:
+        return # Error o no encontrado
 
     # INICIA LA VISTA
     ventana_info_cliente = tk.Toplevel(ventana_clientes)
@@ -602,7 +598,6 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     ventana_info_cliente.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
 
 
-    # Dimensiones y centrado
     # Dimensiones y centrado
     ancho_ventana = 900
     alto_ventana = 600
@@ -624,15 +619,18 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     frame_superior.pack(side="top", fill="x", padx=20, pady=10)
 
 
+    # --- SUB-FRAME DERECHO (Botones) ---
+    # EMPAQUETAMOS ESTE PRIMERO (side=right) PARA QUE RESERVE SU ESPACIO FIJO
+    frame_derecho = tk.Frame(frame_superior, bg=color_primario)
+    frame_derecho.pack(side="right", fill="y", expand=False, padx=(20, 0)) 
+    
     # --- SUB-FRAME DATOS DEL CLIENTE (Izquierda) ---
+    # EMPAQUETAMOS ESTE DESPUES (side=left) PARA QUE OCUPE EL RESTO
     frame_datos = tk.Frame(frame_superior, bg=color_primario)
     frame_datos.pack(side="left", fill="both", expand=True)
-
-
+    
     # --- FILA 0: ID | Nombre | Apellido ---
-
     # ID
-
     label_id_titulo = tk.Label(frame_datos, text="ID:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_id_titulo.grid(row=0, column=0, sticky="w", pady=5, padx=(0, 5))
     label_id_valor = tk.Label(frame_datos, text=id_cliente, bg=color_primario, fg="white", font=("Arial", 10))
@@ -641,93 +639,107 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     # NOMBRE
     label_nombre_titulo = tk.Label(frame_datos, text="Nombre:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_nombre_titulo.grid(row=0, column=2, sticky="w", pady=5, padx=(10, 5))
-    label_nombre_valor = tk.Label(frame_datos, text=cliente.nombre, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
+    label_nombre_valor = tk.Label(frame_datos, text=cliente_original.nombre, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
     label_nombre_valor.grid(row=0, column=3, sticky="w", pady=5, padx=(0, 20))
 
     # APELLIDO
     label_apellido_titulo = tk.Label(frame_datos, text="Apellido:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_apellido_titulo.grid(row=0, column=4, sticky="w", pady=5, padx=(10, 5))
-    label_apellido_valor = tk.Label(frame_datos, text=cliente.apellido, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
+    label_apellido_valor = tk.Label(frame_datos, text=cliente_original.apellido, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
     label_apellido_valor.grid(row=0, column=5, sticky="w", pady=5, padx=(0, 0))
 
 
     # --- FILA 1: Telefono | Localidad | Calle ---
-
     # TELEFONO
     label_telefono_titulo = tk.Label(frame_datos, text="Teléfono:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_telefono_titulo.grid(row=1, column=0, sticky="w", pady=5, padx=(0, 5))
-    label_telefono_valor = tk.Label(frame_datos, text=cliente.telefono, bg=color_primario, fg="white", font=("Arial", 10))
+    label_telefono_valor = tk.Label(frame_datos, text=cliente_original.telefono, bg=color_primario, fg="white", font=("Arial", 10))
     label_telefono_valor.grid(row=1, column=1, sticky="w", pady=5, padx=(0, 20))
 
     # LOCALIDAD
     label_localidad_titulo = tk.Label(frame_datos, text="Localidad:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_localidad_titulo.grid(row=1, column=2, sticky="w", pady=5, padx=(10, 5))
-    label_localidad_valor = tk.Label(frame_datos, text=cliente.localidad, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
+    label_localidad_valor = tk.Label(frame_datos, text=cliente_original.localidad, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
     label_localidad_valor.grid(row=1, column=3, sticky="w", pady=5, padx=(0, 20))
 
     # DIRECCION
     label_direccion_titulo = tk.Label(frame_datos, text="Direccion:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_direccion_titulo.grid(row=1, column=4, sticky="w", pady=5, padx=(10, 5))
-    label_direccion_valor = tk.Label(frame_datos, text=cliente.direccion, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
+    label_direccion_valor = tk.Label(frame_datos, text=cliente_original.direccion, bg=color_primario, fg="white", font=("Arial", 10), wraplength=120, justify="left")
     label_direccion_valor.grid(row=1, column=5, sticky="w", pady=5, padx=(0, 0))
 
 
     # --- FILA 2: Factura | CUIT ---
+    val_fac = "Si" if cliente_original.factura_produccion == 1 else "No"
+    val_cuit = cliente_original.cuit if cliente_original.cuit else "N/A"
 
     # FACTURA
     label_factura_titulo = tk.Label(frame_datos, text="Factura:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_factura_titulo.grid(row=2, column=0, sticky="w", pady=5, padx=(0, 5))
-    label_factura_valor = tk.Label(frame_datos, text=fac_produccion, bg=color_primario, fg="white", font=("Arial", 10))
+    label_factura_valor = tk.Label(frame_datos, text=val_fac, bg=color_primario, fg="white", font=("Arial", 10))
     label_factura_valor.grid(row=2, column=1, sticky="w", pady=5, padx=(0, 20))
 
     # CUIT
     label_cuit_titulo = tk.Label(frame_datos, text="CUIT:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_cuit_titulo.grid(row=2, column=2, sticky="w", pady=5, padx=(10, 5))
-    label_cuit_valor = tk.Label(frame_datos, text=cuit, bg=color_primario, fg="white", font=("Arial", 10))
+    label_cuit_valor = tk.Label(frame_datos, text=val_cuit, bg=color_primario, fg="white", font=("Arial", 10))
     label_cuit_valor.grid(row=2, column=3, sticky="w", pady=5, padx=(0, 20))
 
 
-    # Configuración de pesos para que las columnas de valores se expandan si sobra espacio
+    # Configuración de pesos
     frame_datos.grid_columnconfigure(1, weight=1)
     frame_datos.grid_columnconfigure(3, weight=1)
     frame_datos.grid_columnconfigure(5, weight=1)
 
 
-    # --- SUB-FRAME DERECHO (Botones) ---
-    frame_derecho = tk.Frame(frame_superior, bg=color_primario)
-    frame_derecho.pack(side="right", fill="y", expand=False, padx=(30, 0))
+    # Configuración de pesos
+    frame_derecho.grid_rowconfigure(0, weight=1) # Espacio arriba
+    frame_derecho.grid_rowconfigure(3, weight=1) # Espacio abajo
 
-    # Usamos grid dentro del frame derecho para centrar el bloque de botones verticalmente
-    frame_derecho.grid_columnconfigure(0, weight=1)
-    frame_derecho.grid_rowconfigure(0, weight=1)
+    # Espaciador superior
+    tk.Label(frame_derecho, text="", bg=color_primario).grid(row=0, column=0, columnspan=2)
 
-    frame_botones = tk.Frame(frame_derecho, bg=color_primario)
-    frame_botones.grid(row=0, column=0)
+    # Validacion seleccion operacion
+    def check_seleccion_operacion(accion):
+        seleccion = tabla_transacciones.selection()
+        if not seleccion:
+            messagebox.showwarning("Atención", f"Seleccione una operación para {accion}.", parent=ventana_info_cliente)
+            return False
+        return True
 
+    def on_editar_operacion():
+        if check_seleccion_operacion("editar"):
+            # Logica de editar operacion aqui
+            pass
 
-    # BOTONES
-    boton_nueva = ttk.Button(frame_botones, text="Nueva", style="BotonSecundario.TButton")
-    boton_nueva.config(cursor="hand2", command=lambda: nueva_operacion(ventana_info_cliente), width=8)
-    boton_nueva.pack(side="left", padx=(3, 5))
+    def on_eliminar_operacion():
+        if check_seleccion_operacion("eliminar"):
+            # Logica de eliminar operacion aqui
+            pass
 
-    boton_editar = ttk.Button(frame_botones, text="Editar", style="BotonSecundario.TButton")
-    boton_editar.config(cursor="hand2", width=8)
-    boton_editar.pack(side="left", padx=5)
+    # BOTONES DE OPERACIONES FUTURAS (Editar, Eliminar)
+    boton_editar = ttk.Button(frame_derecho, text="Editar", style="BotonSecundario.TButton")
+    boton_editar.config(cursor="hand2", width=8, command=on_editar_operacion) 
+    
+    boton_eliminar = ttk.Button(frame_derecho, text="Eliminar", style="BotonSecundario.TButton")
+    boton_eliminar.config(cursor="hand2", width=8, command=on_eliminar_operacion) 
 
-    boton_eliminar = ttk.Button(frame_botones, text="Eliminar", style="BotonSecundario.TButton")
-    boton_eliminar.config(cursor="hand2", width=8)
-    boton_eliminar.pack(side="left", padx=5)
+    # Posicion (En el centro, row 1 y 2 reservadas, o row 1 con padding)
+    # Los ponemos en filas centrales
+    boton_editar.grid(row=1, column=0, padx=2, pady=5)
+    boton_eliminar.grid(row=1, column=1, padx=2, pady=5)
+    
+    # Espaciador inferior (si es necesario balancear mas o grid_rowconfigure alcanza)
+    tk.Label(frame_derecho, text="", bg=color_primario).grid(row=3, column=0, columnspan=2)
 
 
     # --- FRAME MEDIO (Tabla Debe/Haber) ---
     frame_medio = tk.Frame(ventana_info_cliente, bg=color_secundario)
     frame_medio.pack(side="top", fill="both", expand=True, padx=20, pady=(10, 30))
 
-
     # TREEVIEW
     columnas = ("fecha", "detalle", "debe", "haber", "saldo")
     tabla_transacciones = ttk.Treeview(frame_medio, columns=columnas, show="headings")
-
 
     # ESTILO PARA EL TREEVIEW
     estilo = ttk.Style()

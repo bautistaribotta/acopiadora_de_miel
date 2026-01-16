@@ -46,9 +46,10 @@ def nueva_operacion(parent=None):
     entry_buscar = ttk.Entry(frame_search, font=fuente_texto, width=25) # Ancho reducido
     entry_buscar.pack(side="left")
 
-    # Tabla Resultados Busqueda
+    # CREAMOS PRIMERO LA TABLA Y EL POPUP PARA PODER USARLAS
+    # PERO NO LAS EMPAQUETAMOS TODAVIA
     frame_tabla_busqueda = tk.Frame(frame_izq, bg=color_primario)
-    frame_tabla_busqueda.pack(fill="both", expand=True)
+    # Empaquetado diferido...
 
     scrollbar_busqueda = ttk.Scrollbar(frame_tabla_busqueda)
     scrollbar_busqueda.pack(side="right", fill="y")
@@ -70,23 +71,67 @@ def nueva_operacion(parent=None):
     tabla_busqueda.pack(side="left", fill="both", expand=True)
     scrollbar_busqueda.config(command=tabla_busqueda.yview)
 
-    # Frame Agregar (Cantidad y Boton)
+    # --- FUNCIONES POPUP CANTIDAD ---
+    def confirmar_agregar(cantidad, valores_producto, ventana_popup):
+        if not cantidad or not cantidad.isdigit() or int(cantidad) <= 0:
+            return 
+            
+        nombre = valores_producto[1]
+        # Agregar a tabla carrito (Simulacion por ahora)
+        tabla_carrito.insert("", "end", values=(nombre, cantidad))
+        ventana_popup.destroy()
+
+    def abrir_popup_cantidad(event=None):
+        seleccion = tabla_busqueda.selection()
+        if not seleccion:
+            return
+        
+        valores = tabla_busqueda.item(seleccion[0])['values']
+        
+        popup = tk.Toplevel(ventana_nueva_operacion)
+        popup.title("Cantidad")
+        popup.config(bg=color_primario)
+        popup.resizable(False, False)
+        centrar_ventana_interna(popup, 300, 150)
+        
+        tk.Label(popup, text=f"Producto: {valores[1]}", bg=color_primario, fg="white", font=fuente_texto).pack(pady=10)
+        tk.Label(popup, text="Cantidad:", bg=color_primario, fg="white").pack()
+        
+        entry_cant = ttk.Entry(popup, width=10, font=fuente_texto)
+        entry_cant.pack(pady=5)
+        entry_cant.focus_set()
+        
+        def on_confirm():
+            confirmar_agregar(entry_cant.get(), valores, popup)
+            
+        btn_ok = ttk.Button(popup, text="Agregar", style="BotonSecundario.TButton", command=on_confirm)
+        btn_ok.pack(pady=10)
+        
+        popup.bind('<Return>', lambda e: on_confirm())
+
+    # Vincular doble click
+    tabla_busqueda.bind("<Double-1>", abrir_popup_cantidad)
+
+
+    # AHORA SI: FRAME AGREGAR (Boton) AL FINAL DEL FRAME IZQ
+    # Lo empaquetamos con side="bottom" para que quede clavado abajo
     frame_agregar = tk.Frame(frame_izq, bg=color_primario)
-    frame_agregar.pack(fill="x", pady=15)
-    
-    tk.Label(frame_agregar, text="Cantidad:", bg=color_primario, fg="white", font=fuente_texto).pack(side="left", padx=(0,5))
-    entry_cantidad = ttk.Entry(frame_agregar, width=10, font=fuente_texto)
-    entry_cantidad.pack(side="left", padx=(0, 15))
+    frame_agregar.pack(side="bottom", fill="x", pady=15)
     
     # Cargar icono carrito
     img_carrito = Image.open(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\carrito.ico")
     img_carrito = img_carrito.resize((20, 20))
     icono_carrito = ImageTk.PhotoImage(img_carrito)
 
-    btn_agregar = ttk.Button(frame_agregar, image=icono_carrito, style="BotonSecundario.TButton")
+    btn_agregar = ttk.Button(frame_agregar, image=icono_carrito, text=" Agregar al carrito", compound="left", style="BotonSecundario.TButton")
     btn_agregar.image = icono_carrito 
-    btn_agregar.config(cursor="hand2")
+    btn_agregar.config(cursor="hand2", command=abrir_popup_cantidad)
+    # Sin padding horizontal extra para que alinee con el borde de la tabla
     btn_agregar.pack(side="left")
+
+
+    # FINALMENTE EMPAQUETAMOS LA TABLA PARA QUE OCUPE EL ESPACIO RESTANTE
+    frame_tabla_busqueda.pack(fill="both", expand=True)
 
 
     # ========================== COLUMNA DERECHA: DETALLE OPERACION (CARRITO) ==========================
@@ -100,32 +145,10 @@ def nueva_operacion(parent=None):
     # Titulo centrado
     tk.Label(frame_header_der, text="Listado de compra", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(anchor="center")
 
-    # Tabla Carrito
-    frame_tabla_carrito = tk.Frame(frame_der, bg=color_primario)
-    frame_tabla_carrito.pack(fill="both", expand=True)
-
-    scrollbar_carrito = ttk.Scrollbar(frame_tabla_carrito)
-    scrollbar_carrito.pack(side="right", fill="y")
-    
-    cols_carrito = ("nombre", "cantidad", "subtotal")
-    tabla_carrito = ttk.Treeview(frame_tabla_carrito, columns=cols_carrito, show="headings", 
-                                 yscrollcommand=scrollbar_carrito.set, height=15)
-    
-    tabla_carrito.heading("nombre", text="Producto")
-    tabla_carrito.heading("cantidad", text="Cantidad")
-    tabla_carrito.heading("subtotal", text="Sub Total")
-    
-    tabla_carrito.column("nombre", width=180, anchor="center")
-    tabla_carrito.column("cantidad", width=80, anchor="center")
-    tabla_carrito.column("subtotal", width=100, anchor="center")
-    
-    tabla_carrito.pack(side="left", fill="both", expand=True)
-    scrollbar_carrito.config(command=tabla_carrito.yview)
-
-    # Botones y Totales del Carrito
+    # Botones y Totales del Carrito (LO CREAMOS Y EMPAQUETAMOS ABAJO PRIMERO)
     frame_acciones_carrito = tk.Frame(frame_der, bg=color_primario)
-    frame_acciones_carrito.pack(fill="x", pady=10)
-    
+    frame_acciones_carrito.pack(side="bottom", fill="x", pady=15) # Padding 15 para igualar al lado izquierdo
+
     # Cargar icono tacho
     img_tacho = Image.open(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\tacho.ico")
     img_tacho = img_tacho.resize((20, 20))
@@ -145,13 +168,30 @@ def nueva_operacion(parent=None):
     tk.Label(frame_acciones_carrito, text="Total:", bg=color_primario, fg="white", font=("Arial", 12)).pack(side="right")
 
 
+    # Tabla Carrito (AHORA SI EMPAQUETAMOS PARA LLENAR EL CENTRO)
+    frame_tabla_carrito = tk.Frame(frame_der, bg=color_primario)
+    frame_tabla_carrito.pack(fill="both", expand=True)
+
+    scrollbar_carrito = ttk.Scrollbar(frame_tabla_carrito)
+    scrollbar_carrito.pack(side="right", fill="y")
+    
+    cols_carrito = ("nombre", "cantidad")
+    tabla_carrito = ttk.Treeview(frame_tabla_carrito, columns=cols_carrito, show="headings", 
+                                 yscrollcommand=scrollbar_carrito.set, height=15)
+    
+    tabla_carrito.heading("nombre", text="Producto")
+    tabla_carrito.heading("cantidad", text="Cantidad")
+    
+    tabla_carrito.column("nombre", width=180, anchor="center")
+    tabla_carrito.column("cantidad", width=50, anchor="center")
+    
+    tabla_carrito.pack(side="left", fill="both", expand=True)
+    scrollbar_carrito.config(command=tabla_carrito.yview)
+
+
     # ========================== FRAME INFERIOR: ACCIONES FINALES ==========================
     frame_final = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_final.grid(row=1, column=0, columnspan=2, pady=20)
-    
-    btn_guardar_op = ttk.Button(frame_final, text="Guardar", style="BotonSecundario.TButton")
-    btn_guardar_op.config(cursor="hand2", width=8)
-    btn_guardar_op.pack(side="left", padx=10)
 
     btn_guardar_remito = ttk.Button(frame_final, text="Guardar y Remito", style="BotonSecundario.TButton")
     btn_guardar_remito.config(cursor="hand2", width=20) # Debe ser mas ancho por el texto
