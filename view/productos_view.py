@@ -127,8 +127,8 @@ def listado_productos():
         editar_producto_vista(item_id, actualizar_tabla)
 
 
-    # FUNCION ABRIR SUMAR STOCK
-    def abrir_sumar_stock():
+    # FUNCION ABRIR EDITAR STOCK
+    def abrir_editar_stock():
         seleccion = tabla_productos.selection()
         if not seleccion:
             messagebox.showwarning("Atención", "Seleccione un producto.", parent=ventana_productos)
@@ -144,7 +144,8 @@ def listado_productos():
 
     # MENU CONTEXTUAL (Clic derecho)
     menu_contextual = tk.Menu(ventana_productos, tearoff=0)
-    menu_contextual.add_command(label="Sumar Stock", command=lambda: abrir_sumar_stock())
+    menu_contextual.add_command(label="Editar stock", command=abrir_editar_stock)
+    menu_contextual.add_separator()
     menu_contextual.add_command(label="Editar", command=abrir_editar)
     menu_contextual.add_command(label="Eliminar", command=ejecutar_eliminacion)
 
@@ -455,7 +456,7 @@ if __name__ == "__main__":
 
 def modificar_stock_vista(id_producto, nombre_producto, callback=None):
     ventana_stock = tk.Toplevel()
-    ventana_stock.title("Modificar Stock")
+    ventana_stock.title("Editar Stock")
     ventana_stock.config(bg=color_primario)
     ventana_stock.geometry("300x200")
     centrar_ventana_interna(ventana_stock, 300, 200)

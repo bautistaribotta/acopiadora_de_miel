@@ -71,15 +71,98 @@ def nueva_operacion(parent=None):
     tabla_busqueda.pack(side="left", fill="both", expand=True)
     scrollbar_busqueda.config(command=tabla_busqueda.yview)
 
+    # ----------------------------------------------------------------------------------
+    # --- LOGICA DE ACTUALIZACION DE STOCK VISUAL ---
+    # ----------------------------------------------------------------------------------
+    from controller.productos_controlador import buscador_productos_controlador
+
+    def obtener_cantidades_carrito():
+        """Retorna un diccionario {id_producto: cantidad_en_carrito}"""
+        cantidades = {}
+        for item in tabla_carrito.get_children():
+            valores = tabla_carrito.item(item)['values']
+            # valores ahorea seran (id, nombre, cantidad)
+            try:
+                item_id = valores[0]
+                cantidad = int(valores[2])
+            except:
+                continue
+            
+            if item_id in cantidades:
+                cantidades[item_id] += cantidad
+            else:
+                cantidades[item_id] = cantidad
+        return cantidades
+
+    def actualizar_listado_busqueda(filtro=""):
+        # Obtener lo que ya esta en el carrito para restarlo visualmente
+        en_carrito = obtener_cantidades_carrito()
+
+        # Limpiar tabla
+        for item in tabla_busqueda.get_children():
+            tabla_busqueda.delete(item)
+            
+        productos = buscador_productos_controlador(filtro)
+        for prod in productos:
+            # prod = (id, nombre, categoria, precio, stock, ...)
+            p_id = prod[0]
+            p_nombre = prod[1]
+            p_stock_real = prod[4]
+            p_precio = prod[3]
+
+            # Calcular stock visual
+            try:
+                stock_visual = int(float(p_stock_real) - en_carrito.get(p_id, 0))
+            except:
+                stock_visual = 0
+
+            # La tabla espera: (id, nombre, stock, precio)
+            valores_mostrar = (p_id, p_nombre, stock_visual, f"${p_precio}")
+            tabla_busqueda.insert("", "end", values=valores_mostrar)
+
+    def on_buscar_keyrelease(event):
+        actualizar_listado_busqueda(entry_buscar.get())
+        
+    # Vincular evento de busqueda
+    entry_buscar.bind("<KeyRelease>", on_buscar_keyrelease)
+    
+    # Cargar todos al inicio (diferido para que tabla_carrito exista)
+    ventana_nueva_operacion.after(100, lambda: actualizar_listado_busqueda(""))
+
+
     # --- FUNCIONES POPUP CANTIDAD ---
     def confirmar_agregar(cantidad, valores_producto, ventana_popup):
         if not cantidad or not cantidad.isdigit() or int(cantidad) <= 0:
             return 
+        
+        id_prod = valores_producto[0]
+        nombre = valores_producto[1] 
+        cant_nueva = int(cantidad)
+        
+        # Verificar si ya existe en el carrito para sumar
+        item_existente = None
+        cant_actual = 0
+        
+        for item in tabla_carrito.get_children():
+            vals = tabla_carrito.item(item)['values']
+            # vals = (id, nombre, cantidad)
+            if str(vals[0]) == str(id_prod):
+                item_existente = item
+                cant_actual = int(vals[2])
+                break
+        
+        if item_existente:
+            # Actualizar existente
+            nueva_total = cant_actual + cant_nueva
+            tabla_carrito.item(item_existente, values=(id_prod, nombre, nueva_total))
+        else:
+            # Insertar nuevo
+            tabla_carrito.insert("", "end", values=(id_prod, nombre, cant_nueva))
             
-        nombre = valores_producto[1]
-        # Agregar a tabla carrito (Simulacion por ahora)
-        tabla_carrito.insert("", "end", values=(nombre, cantidad))
         ventana_popup.destroy()
+        
+        # ACTUALIZAR STOCK VISUAL
+        actualizar_listado_busqueda(entry_buscar.get())
 
     def abrir_popup_cantidad(event=None):
         seleccion = tabla_busqueda.selection()
@@ -87,25 +170,34 @@ def nueva_operacion(parent=None):
             return
         
         valores = tabla_busqueda.item(seleccion[0])['values']
+        # valores = [id, nombre, stock, precio]
         
         popup = tk.Toplevel(ventana_nueva_operacion)
         popup.title("Cantidad")
         popup.config(bg=color_primario)
         popup.resizable(False, False)
+        try:
+            popup.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+        except: pass
         centrar_ventana_interna(popup, 300, 150)
         
-        tk.Label(popup, text=f"Producto: {valores[1]}", bg=color_primario, fg="white", font=fuente_texto).pack(pady=10)
-        tk.Label(popup, text="Cantidad:", bg=color_primario, fg="white").pack()
+        tk.Label(popup, text=f"Producto: {valores[1]}", bg=color_primario, fg="white", font=fuente_texto).pack(pady=(15, 10))
         
-        entry_cant = ttk.Entry(popup, width=10, font=fuente_texto)
-        entry_cant.pack(pady=5)
+        # Frame para alinear label y entry horizontalmente
+        frame_input = tk.Frame(popup, bg=color_primario)
+        frame_input.pack(pady=5)
+
+        tk.Label(frame_input, text="Cantidad:", bg=color_primario, fg="white", font=fuente_texto).pack(side="left", padx=5)
+        
+        entry_cant = ttk.Entry(frame_input, width=10, font=fuente_texto)
+        entry_cant.pack(side="left", padx=5)
         entry_cant.focus_set()
         
         def on_confirm():
             confirmar_agregar(entry_cant.get(), valores, popup)
             
         btn_ok = ttk.Button(popup, text="Agregar", style="BotonSecundario.TButton", command=on_confirm)
-        btn_ok.pack(pady=10)
+        btn_ok.pack(pady=15)
         
         popup.bind('<Return>', lambda e: on_confirm())
 
@@ -149,6 +241,12 @@ def nueva_operacion(parent=None):
     frame_acciones_carrito = tk.Frame(frame_der, bg=color_primario)
     frame_acciones_carrito.pack(side="bottom", fill="x", pady=15) # Padding 15 para igualar al lado izquierdo
 
+    # Funcion Quitar del carrito
+    def quitar_item_carrito(event=None):
+        seleccion = tabla_carrito.selection()
+        if seleccion:
+            tabla_carrito.delete(seleccion[0])
+
     # Cargar icono tacho
     img_tacho = Image.open(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\tacho.ico")
     img_tacho = img_tacho.resize((20, 20))
@@ -157,7 +255,7 @@ def nueva_operacion(parent=None):
     # Boton Eliminar (Derecha)
     btn_quitar = ttk.Button(frame_acciones_carrito, image=icono_tacho, style="BotonSecundario.TButton")
     btn_quitar.image = icono_tacho 
-    btn_quitar.config(cursor="hand2")
+    btn_quitar.config(cursor="hand2", command=quitar_item_carrito)
     btn_quitar.pack(side="right", padx=(10, 0))
 
     # Total (A la izquierda del boton)
@@ -175,18 +273,101 @@ def nueva_operacion(parent=None):
     scrollbar_carrito = ttk.Scrollbar(frame_tabla_carrito)
     scrollbar_carrito.pack(side="right", fill="y")
     
-    cols_carrito = ("nombre", "cantidad")
+    # Agregamos ID a las columnas pero definimos cuales mostrar
+    cols_carrito = ("id", "nombre", "cantidad")
     tabla_carrito = ttk.Treeview(frame_tabla_carrito, columns=cols_carrito, show="headings", 
                                  yscrollcommand=scrollbar_carrito.set, height=15)
     
-    tabla_carrito.heading("nombre", text="Producto")
-    tabla_carrito.heading("cantidad", text="Cantidad")
+    # Configuramos para mostrar solo nombre y cantidad
+    tabla_carrito["displaycolumns"] = ("nombre", "cantidad")
     
-    tabla_carrito.column("nombre", width=180, anchor="center")
-    tabla_carrito.column("cantidad", width=50, anchor="center")
+    tabla_carrito.heading("nombre", text="Producto")
+    tabla_carrito.heading("cantidad", text="Cant.")
+    
+    tabla_carrito.column("nombre", width=200, anchor="w") 
+    tabla_carrito.column("cantidad", width=30, anchor="center") 
     
     tabla_carrito.pack(side="left", fill="both", expand=True)
+    
+    # ----------------------------------------------------
+    # ACTUALIZAR LOGICA QUITAR PARA REFRESCAR LISTA IZQ
+    # ----------------------------------------------------
+    def quitar_item_carrito_wrapper(event=None):
+        seleccion = tabla_carrito.selection()
+        if seleccion:
+            tabla_carrito.delete(seleccion[0])
+            actualizar_listado_busqueda(entry_buscar.get()) # Refrescar lista productos para devolver stock visual
+            
+    tabla_carrito.bind("<Double-1>", quitar_item_carrito_wrapper)
+    btn_quitar.config(command=quitar_item_carrito_wrapper) # Re-vincular boton
+    
     scrollbar_carrito.config(command=tabla_carrito.yview)
+
+    # FUNCION EDITAR CANTIDAD CARRITO
+    def editar_cantidad_carrito():
+        seleccion = tabla_carrito.selection()
+        if not seleccion:
+            return
+            
+        item_c = tabla_carrito.item(seleccion[0])
+        valores = item_c['values']
+        # valores = (id, nombre, cantidad)
+        item_id = valores[0]
+        nombre_prod = valores[1]
+        cant_actual = valores[2]
+
+        popup = tk.Toplevel(ventana_nueva_operacion)
+        popup.title("Editar Cantidad")
+        popup.config(bg=color_primario)
+        try:
+            popup.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+        except: pass
+        popup.resizable(False, False)
+        centrar_ventana_interna(popup, 300, 150)
+        
+        tk.Label(popup, text=f"Producto: {nombre_prod}", bg=color_primario, fg="white", font=fuente_texto).pack(pady=(15, 10))
+        
+        frame_input = tk.Frame(popup, bg=color_primario)
+        frame_input.pack(pady=5)
+
+        tk.Label(frame_input, text="Cantidad:", bg=color_primario, fg="white", font=fuente_texto).pack(side="left", padx=5)
+        
+        entry_cant = ttk.Entry(frame_input, width=10, font=fuente_texto)
+        entry_cant.insert(0, str(cant_actual)) # Pre-llenar valor actual
+        entry_cant.pack(side="left", padx=5)
+        entry_cant.focus_set()
+        entry_cant.select_range(0, tk.END) # Seleccionar todo para facilitar edicion rapida
+        
+        def on_confirm_edit():
+            nueva_cant = entry_cant.get()
+            if not nueva_cant or not nueva_cant.isdigit() or int(nueva_cant) <= 0:
+                return
+            
+            # Actualizar fila carrito
+            tabla_carrito.item(seleccion[0], values=(item_id, nombre_prod, nueva_cant))
+            popup.destroy()
+            
+            # Actualizar stock visual (ahora resta la nueva cantidad)
+            actualizar_listado_busqueda(entry_buscar.get())
+
+        btn_ok = ttk.Button(popup, text="Confirmar", style="BotonSecundario.TButton", command=on_confirm_edit)
+        btn_ok.pack(pady=15)
+        
+        popup.bind('<Return>', lambda e: on_confirm_edit())
+
+
+    # MENU CONTEXTUAL CARRITO
+    menu_carrito = tk.Menu(ventana_nueva_operacion, tearoff=0)
+    menu_carrito.add_command(label="Editar cant.", command=editar_cantidad_carrito) 
+    menu_carrito.add_command(label="Eliminar", command=quitar_item_carrito_wrapper)
+
+    def mostrar_menu_carrito(event):
+        item = tabla_carrito.identify_row(event.y)
+        if item:
+            tabla_carrito.selection_set(item)
+            menu_carrito.post(event.x_root, event.y_root)
+
+    tabla_carrito.bind("<Button-3>", mostrar_menu_carrito)
 
 
     # ========================== FRAME INFERIOR: ACCIONES FINALES ==========================
