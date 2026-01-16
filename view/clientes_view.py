@@ -55,8 +55,20 @@ def listado_clientes():
         # Vuelve a escribirla pero actualizada
         clientes = listar_clientes_controlador()
         for i, cliente in enumerate(clientes):
+            # cliente = (id, nombre, apellido, localidad, telefono)
+            c_id = cliente[0]
+            c_nom = cliente[1]
+            c_ape = cliente[2]
+            c_loc = cliente[3]
+            c_tel = cliente[4]
+            
+            # Concatenamos nombre y apellido en el frontend
+            nombre_completo = f"{c_nom} {c_ape}"
+            
+            valores = (c_id, nombre_completo, c_loc, c_tel)
+            
             tag = "impar" if i % 2 != 0 else "par"
-            tabla_clientes.insert("", "end", values=cliente, tags=(tag,))
+            tabla_clientes.insert("", "end", values=valores, tags=(tag,))
     actualizar_tabla()
 
 
@@ -96,8 +108,18 @@ def listado_clientes():
 
         # Llenamos con los resultados de la búsqueda
         for i, producto in enumerate(productos_encontrados):
+            # producto = (id, nombre, apellido, localidad, telefono)
+            p_id = producto[0]
+            p_nom = producto[1]
+            p_ape = producto[2]
+            p_loc = producto[3]
+            p_tel = producto[4]
+            
+            nombre_completo = f"{p_nom} {p_ape}"
+            valores = (p_id, nombre_completo, p_loc, p_tel)
+            
             tag = "impar" if i % 2 != 0 else "par"
-            tabla_clientes.insert("", "end", values=producto, tags=(tag,))
+            tabla_clientes.insert("", "end", values=valores, tags=(tag,))
 
 
     # FUNCION ABRIR EDITAR

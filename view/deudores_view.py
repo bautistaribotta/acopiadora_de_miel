@@ -15,6 +15,9 @@ def listado_deudores():
     ventana_listado_deudores_instancia = ventana_listado_deudores
     ventana_listado_deudores.title("Listado de deudores")
     ventana_listado_deudores.configure(bg=color_primario)
+    try:
+        ventana_listado_deudores.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    except: pass
     ventana_listado_deudores.resizable(False, False)
     
     # Aumentamos el ancho para que entren todas las columnas

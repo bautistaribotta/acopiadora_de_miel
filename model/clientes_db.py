@@ -79,8 +79,8 @@ def listar_clientes_db():
     )
     cursor = conexion.cursor()
 
-    # Selecciono las columnas en el mismo orden que el Treeview (id, nombre, localidad, telefono)
-    instruccion = "SELECT id, CONCAT_WS(' ', nombre, apellido), localidad, telefono FROM clientes"
+    # Selecciono las columnas separadas para concatenar en el frontend y permitir busquedas separadas pero mostrar igual
+    instruccion = "SELECT id, nombre, apellido, localidad, telefono FROM clientes"
     cursor.execute(instruccion)
     resultados = cursor.fetchall()
 
@@ -123,7 +123,7 @@ def buscador_cliente_por_id(id_cliente):
     )
     cursor = conexion.cursor()
 
-    intruccion_sql = f"SELECT id, CONCAT_WS(' ', nombre, apellido), localidad, telefono FROM clientes WHERE id LIKE %s"
+    intruccion_sql = f"SELECT id, nombre, apellido, localidad, telefono FROM clientes WHERE id LIKE %s"
     valor = (f"%{id_cliente}%",)
     cursor.execute(intruccion_sql, valor)
     resultados = cursor.fetchall()
@@ -133,7 +133,7 @@ def buscador_cliente_por_id(id_cliente):
     return resultados
 
 
-def buscador_cliente_por_nombre(nombre_cliente):
+def buscador_cliente_por_nombre(criterio):
     conexion = mysql.connector.connect(
         host="localhost",
         user="root",
@@ -142,8 +142,9 @@ def buscador_cliente_por_nombre(nombre_cliente):
     )
     cursor = conexion.cursor()
 
-    intruccion_sql = "SELECT id, CONCAT_WS(' ', nombre, apellido), localidad, telefono FROM clientes WHERE nombre LIKE %s"
-    valor = (f"%{nombre_cliente}%",)
+    # Buscar en nombre O apellido
+    intruccion_sql = "SELECT id, nombre, apellido, localidad, telefono FROM clientes WHERE nombre LIKE %s OR apellido LIKE %s"
+    valor = (f"%{criterio}%", f"%{criterio}%")
     cursor.execute(intruccion_sql, valor)
     resultados = cursor.fetchall()
 
