@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
-from estilos import *
+from view.estilos import color_primario, color_secundario, fuente_texto, configurar_estilos, centrar_ventana
 from controller.login_controlador import verificacion_inicio_sesion
 
 
@@ -55,8 +55,8 @@ def mostrar_login():
         label_icono = tk.Label(contenedor_login, image=imagen_user, bg=color_secundario)
         label_icono.image = imagen_user
         label_icono.pack(pady=(0, 30))
-    except Exception as e:
-        print(f"No se pudo cargar usuario.ico: {e}")
+    except Exception:
+        pass
 
     # FORMULARIO
     frame_form = tk.Frame(contenedor_login, bg=color_secundario)
