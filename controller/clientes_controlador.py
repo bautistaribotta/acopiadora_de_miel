@@ -15,7 +15,7 @@ def nuevo_cliente_controlador(nombre, apellido, telefono, localidad, direccion, 
         nuevo_cliente_db(nuevo_obj_cliente)
         messagebox.showinfo("Exito",
                             "Cliente guardado correctamente.", parent=ventana)
-        # Si callback se mantienen en None, no ejecuta nada
+        # Si callback es None, no ejecuto nada
         if callback:
             callback()
         ventana.destroy()
@@ -24,7 +24,7 @@ def nuevo_cliente_controlador(nombre, apellido, telefono, localidad, direccion, 
 
 
 def informacion_cliente_controlador(id_cliente):
-    # Me aseguro que le id sea un int limpio
+    # Me aseguro que el ID sea un int limpio
     try:
         id_limpio = int(id_cliente)
     except ValueError:
@@ -33,7 +33,7 @@ def informacion_cliente_controlador(id_cliente):
     # Busco en la base de datos
     resultado = buscar_cliente_id(id_limpio)
 
-    # Verifico por las dudas
+    # Verifico por si acaso
     if resultado is None:
         return None
 

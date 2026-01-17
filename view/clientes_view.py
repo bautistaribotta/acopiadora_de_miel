@@ -1,5 +1,5 @@
-from operaciones_view import *
-from estilos import *
+from view.operaciones_view import *
+from view.estilos import *
 from controller.validaciones import *
 from controller.clientes_controlador import *
 
@@ -22,37 +22,40 @@ def listado_clientes():
     ventana_clientes.geometry("800x600+550+85")
     ventana_clientes.resizable(False, False)
     ventana_clientes.configure(bg=color_primario)
-    ventana_clientes.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_clientes.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
 
-    # CONFIGURACION DEL GRID
+    # Configuro el grid
     ventana_clientes.grid_rowconfigure(0, weight=0)  # Buscador y Botones
     ventana_clientes.grid_rowconfigure(1, weight=1)  # Tabla
     ventana_clientes.grid_columnconfigure(0, weight=1)
 
 
-    # FRAME TABLA
+    # Configuro el frame para la tabla
     frame_tabla = tk.Frame(ventana_clientes, bg=color_primario)
     frame_tabla.grid(row=1, column=0, sticky="nsew", padx=20, pady=(10, 20))
 
 
-    # SCROLLBAR
+    # Añado el scrollbar
     scrollbar = ttk.Scrollbar(frame_tabla)
     scrollbar.pack(side="right", fill="y")
 
 
-    # TREEVIEW (TABLA)
+    # Configuro el Treeview (Tabla)
     columnas = ("id", "nombre", "localidad", "telefono")
     tabla_clientes = ttk.Treeview(frame_tabla, columns=columnas, show="headings",
                                      yscrollcommand=scrollbar.set, height=20)
     tabla_clientes.tag_configure("impar", background=color_zebra)
 
-    # MOSTRAR LOS DATOS EN EL TREEVIEW
+    # Defino la función para mostrar datos en el Treeview
     def actualizar_tabla():
-        # Limpia la tabla
+        # Limpio la tabla
         for item in tabla_clientes.get_children():
             tabla_clientes.delete(item)
-        # Vuelve a escribirla pero actualizada
+        # Vuelvo a escribirla actualizada
         clientes = listar_clientes_controlador()
         for i, cliente in enumerate(clientes):
             # cliente = (id, nombre, apellido, localidad, telefono)
@@ -62,7 +65,7 @@ def listado_clientes():
             c_loc = cliente[3]
             c_tel = cliente[4]
             
-            # Concatenamos nombre y apellido en el frontend
+            # Concateno nombre y apellido en el frontend
             nombre_completo = f"{c_nom} {c_ape}"
             
             valores = (c_id, nombre_completo, c_loc, c_tel)
@@ -72,7 +75,7 @@ def listado_clientes():
     actualizar_tabla()
 
 
-    # ELIMINAR CLIENTE
+    # Defino la función para eliminar un cliente
     def ejecutar_eliminacion():
         seleccion = tabla_clientes.selection()
         if not seleccion:
@@ -80,7 +83,7 @@ def listado_clientes():
                                    parent=ventana_clientes)
             return
 
-        # Obtenemos el ID del item seleccionado (columna 0) y el nombre (columna 1)
+        # Obtengo el ID del ítem seleccionado (columna 0) y el nombre (columna 1)
         valores = tabla_clientes.item(seleccion[0])['values']
         item_id = valores[0]
         nombre_cliente = valores[1]
@@ -92,7 +95,7 @@ def listado_clientes():
                 actualizar_tabla()
 
 
-    # FUNCION DE BUSCAR PRODUCTOS
+    # Defino la función para buscar clientes
     def filtrar_tabla(event):
         texto_busqueda = entry_buscar.get()
 
@@ -102,11 +105,11 @@ def listado_clientes():
 
         productos_encontrados = buscador_clientes_controlador(texto_busqueda)
 
-        # Limpiamos la tabla actual
+        # Limpio la tabla actual
         for item in tabla_clientes.get_children():
             tabla_clientes.delete(item)
 
-        # Llenamos con los resultados de la búsqueda
+        # Lleno la tabla con los resultados
         for i, producto in enumerate(productos_encontrados):
             # producto = (id, nombre, apellido, localidad, telefono)
             p_id = producto[0]
@@ -122,7 +125,7 @@ def listado_clientes():
             tabla_clientes.insert("", "end", values=valores, tags=(tag,))
 
 
-    # FUNCION ABRIR EDITAR
+    # Defino la función para abrir la edición
     def abrir_editar():
         seleccion = tabla_clientes.selection()
         if not seleccion:
@@ -130,13 +133,13 @@ def listado_clientes():
                                    parent=ventana_clientes)
             return
         
-        # Obtenemos el ID (columna 0)
+        # Obtengo el ID (columna 0)
         item_id = tabla_clientes.item(seleccion[0])['values'][0]
         editar_cliente_vista(item_id, actualizar_tabla)
 
 
     def abrir_info_cliente_seleccionado(event=None):
-        # Si viene de un evento (Doble Click), verificar que sea sobre un item
+        # Si viene de un evento (Doble Click), verifico que sea sobre un ítem
         if event:
             item = tabla_clientes.identify_row(event.y)
             if not item:
@@ -146,8 +149,8 @@ def listado_clientes():
         if seleccion:
             id_cliente = tabla_clientes.item(seleccion[0])['values'][0]
 
-            # --- LOGICA GEOMETRIA ---
-            # Verificar si ya existe una ventana info (estamos cambiando de cliente)
+            # --- Implemento lógica de geometría ---
+            # Verifico si ya existe una ventana info (estoy cambiando de cliente)
             is_switching = False
             if ventana_info_cliente_instancia is not None:
                 try:
@@ -156,11 +159,11 @@ def listado_clientes():
                 except:
                     pass
             
-            # Solo guardamos geometria si NO estamos switcheando (es la primera apertura)
+            # Solo guardo geometría si NO estoy cambiando (es la primera apertura)
             if not is_switching:
                 ventana_clientes.geometria_original = ventana_clientes.geometry()
 
-            # Calculos de posicion para Split View
+            # Calculo la posición para Split View
             screen_width = ventana_clientes.winfo_screenwidth()
             current_y = ventana_clientes.winfo_y()
             info_width = 900
@@ -175,18 +178,18 @@ def listado_clientes():
 
             def al_cerrar_info():
                 def restaurar():
-                    # Si la ventana listado ya no existe, no hacemos nada
+                    # Si la ventana listado ya no existe, no hago nada
                     if not ventana_clientes.winfo_exists(): return
                     
-                    # Verificar si hay una ventana info ACTIVA (caso switch de cliente)
-                    # Si la hay, NO restauramos la geometria ni botones, mantenemos split view.
+                    # Verifico si hay una ventana info ACTIVA (caso cambio de cliente)
+                    # Si la hay, NO restauro la geometría ni botones, mantengo split view.
                     if ventana_info_cliente_instancia is not None:
                         try:
                             if ventana_info_cliente_instancia.winfo_exists():
                                 return
                         except: pass
                     
-                    # SI llegamos aqui, es un cierre real. Restauramos.
+                    # Si llego aquí, es un cierre real. Restauro.
                     try:
                         if hasattr(ventana_clientes, 'geometria_original'):
                             ventana_clientes.geometry(ventana_clientes.geometria_original)
@@ -199,16 +202,16 @@ def listado_clientes():
                         boton_nuevo_cliente.pack(side="right", padx=5)
                         
                         ventana_clientes.lift()
-                    except Exception as e:
-                        print(f"Error restaurando ventana: {e}")
+                    except Exception:
+                        pass
 
-                # Usamos after para dar tiempo a que se destruya la ventana anterior o se cree la nueva
+                # Uso after para dar tiempo a que se destruya la ventana anterior o se cree la nueva
                 ventana_clientes.after(100, restaurar)
 
             # Abrir info cliente
             informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=x_info, y_pos=current_y, on_close=al_cerrar_info)
 
-            # Aplicar cambios visuales a la lista (Split View)
+            # Aplico cambios visuales a la lista (Split View)
             try:
                 ventana_clientes.geometry(f"{list_width}x{list_height}+{x_list}+{current_y}")
                 tabla_clientes["displaycolumns"] = ("id", "nombre")
@@ -217,12 +220,12 @@ def listado_clientes():
                 boton_eliminar.pack_forget()
             except: pass
             
-            # Ajustar ancho buscador (menos ancho si se desea, o mantener normal)
+            # Ajusto ancho buscador
             entry_buscar.config(width=20)
 
 
-    # MENU CONTEXTUAL (clic derecho)
-    # Definido despues de la funcion para poder referenciarla
+    # Configuro el menú contextual (clic derecho)
+    # Lo defino después de la función para poder referenciarla
     menu_contextual = tk.Menu(ventana_clientes, tearoff=0)
     menu_contextual.add_command(label="Ver", command=abrir_info_cliente_seleccionado)
     menu_contextual.add_separator()
@@ -237,25 +240,25 @@ def listado_clientes():
             menu_contextual.post(event.x_root, event.y_root)
 
 
-    # FUNCION ORDENAR COLUMNA
+    # Defino la función para ordenar columnas
     def ordenar_por_columna(tree, col, reverse):
         l = [(tree.set(k, col), k) for k in tree.get_children('')]
         
-        # Intentar convertir a int para ordenar ID numericamente, sino alfabetico
+        # Intento convertir a int para ordenar ID numéricamente, sino alfabético
         try:
             l.sort(key=lambda t: int(t[0]), reverse=reverse)
         except ValueError:
             l.sort(reverse=reverse)
 
-        # Reordenar items
+        # Reordeno los ítems
         for index, (val, k) in enumerate(l):
             tree.move(k, '', index)
 
-        # Actualizar el comando para invertir el orden en el próximo clic
+        # Actualizo el comando para invertir el orden en el próximo clic
         tree.heading(col, command=lambda: ordenar_por_columna(tree, col, not reverse))
 
 
-    # CONFIGURAR COLUMNAS
+    # Configuro las columnas
     tabla_clientes.heading("id", text="ID", command=lambda: ordenar_por_columna(tabla_clientes, "id", False))
     tabla_clientes.heading("nombre", text="Nombre", command=lambda: ordenar_por_columna(tabla_clientes, "nombre", False))
     tabla_clientes.heading("localidad", text="Localidad", command=lambda: ordenar_por_columna(tabla_clientes, "localidad", False))
@@ -272,11 +275,11 @@ def listado_clientes():
     scrollbar.config(command=tabla_clientes.yview)
 
 
-    # FRAME SUPERIOR - BUSCADOR Y BOTONES
+    # Configuro el frame superior - Buscador y Botones
     frame_superior = tk.Frame(ventana_clientes, bg=color_primario)
     frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
 
-    # BUSCADOR
+    # Configuro el buscador
     label_busqueda = tk.Label(frame_superior, text="Buscar:", font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_busqueda.pack(side="left", padx=(0, 10))
 
@@ -284,7 +287,7 @@ def listado_clientes():
     entry_buscar.bind("<KeyRelease>", filtrar_tabla)
     entry_buscar.pack(side="left")
 
-    # BOTONES
+    # Configuro los botones
     boton_eliminar = ttk.Button(frame_superior, text="Eliminar", style="BotonSecundario.TButton")
     boton_eliminar.config(cursor="hand2", command=ejecutar_eliminacion)
     boton_eliminar.pack(side="right", padx=(5, 0))
@@ -311,15 +314,18 @@ def nuevo_cliente_vista(callback=None):
     ventana_nuevo_cliente.config(bg=color_primario)
     ventana_nuevo_cliente.geometry("400x600+120+85")
     ventana_nuevo_cliente.resizable(False, False)
-    ventana_nuevo_cliente.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_nuevo_cliente.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
 
-    # CONFIGURACION DEL GRID
+    # Configuro el grid
     ventana_nuevo_cliente.grid_columnconfigure(0, weight=1)
     ventana_nuevo_cliente.grid_columnconfigure(1, weight=2)
 
 
-    # LABEL TITULO
+    # Añado el título
     label_titulo = tk.Label(ventana_nuevo_cliente, text="REGISTRAR CLIENTE")
     label_titulo.config(font=fuente_titulos, bg=color_primario, fg=color_secundario)
     label_titulo.grid(row=0, column=0, columnspan=2, pady=(50, 40), padx=20)
@@ -403,7 +409,7 @@ def nuevo_cliente_vista(callback=None):
     entry_cuit.config(validate="key", validatecommand=(cmd_validar_numeros, '%P'))
 
 
-    # CAPTURA DE DATOS
+    # Capturo los datos
     def capturar_datos_cliente():
         nom = entry_nombre.get()
         apell = entry_apellido.get()
@@ -419,7 +425,7 @@ def nuevo_cliente_vista(callback=None):
         nuevo_cliente_controlador(nom, apell, tel, local, direcc, fac, c_u_i_t, ventana_nuevo_cliente, callback)
 
 
-    # FRAME BOTONES
+    # Configuro el frame de botones
     frame_botones = tk.Frame(ventana_nuevo_cliente, bg=color_primario)
     frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
 
@@ -431,7 +437,7 @@ def nuevo_cliente_vista(callback=None):
     boton_cancelar.config(cursor="hand2", command=ventana_nuevo_cliente.destroy)
     boton_cancelar.pack(side="left", padx=5)
 
-    # Función para mostrar/ocultar CUIT según la selección del combobox
+    # Creo función para mostrar/ocultar CUIT según la selección del combobox
     def actualizar_cuit(event):
         if combobox_factura.get() == "Si":
             label_cuit.grid(row=7, column=0, sticky="e", padx=(20, 10), pady=10)
@@ -440,7 +446,7 @@ def nuevo_cliente_vista(callback=None):
             label_cuit.grid_remove()
             entry_cuit.grid_remove()
 
-    # Vincular evento al combobox
+    # Vinculo el evento al combobox
     combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
 
 
@@ -457,19 +463,22 @@ def editar_cliente_vista(id_cliente, callback=None):
     ventana_editar_cliente.config(bg=color_primario)
     ventana_editar_cliente.geometry("400x600+120+85")
     ventana_editar_cliente.resizable(False, False)
-    ventana_editar_cliente.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_editar_cliente.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
 
-    # CONFIGURACION DEL GRID
+    # Configuro el grid
     ventana_editar_cliente.grid_columnconfigure(0, weight=1)
     ventana_editar_cliente.grid_columnconfigure(1, weight=2)
 
-    # LABEL TITULO
+    # Añado el título
     label_titulo = tk.Label(ventana_editar_cliente, text="EDITAR CLIENTE")
     label_titulo.config(font=fuente_titulos, bg=color_primario, fg=color_secundario)
     label_titulo.grid(row=0, column=0, columnspan=2, pady=(50, 40), padx=20)
 
-    # BUSCAR DATOS DEL CLIENTE
+    # Busco los datos del cliente
     cliente_a_editar = informacion_cliente_controlador(id_cliente)
 
     # NOMBRE
@@ -554,7 +563,7 @@ def editar_cliente_vista(id_cliente, callback=None):
     if cliente_a_editar.cuit:
         entry_cuit.insert(0, cliente_a_editar.cuit)
 
-    # Función para mostrar/ocultar CUIT según la selección del combobox
+    # Crea función para mostrar/ocultar CUIT según la selección del combobox
     def actualizar_cuit(event=None):
         if combobox_factura.get() == "Si":
             label_cuit.grid(row=7, column=0, sticky="e", padx=(20, 10), pady=10)
@@ -563,13 +572,13 @@ def editar_cliente_vista(id_cliente, callback=None):
             label_cuit.grid_remove()
             entry_cuit.grid_remove()
 
-    # Vincular evento al combobox
+    # Vinculo el evento al combobox
     combobox_factura.bind("<<ComboboxSelected>>", actualizar_cuit)
-    # Ejecutar una vez para setear el estado inicial
+    # Ejecuto una vez para setear el estado inicial
     actualizar_cuit()
 
 
-    # CAPTURA DE DATOS EDICION
+    # Capturo los datos de la edición
     def capturar_datos_edicion():
         nom = entry_nombre.get()
         apell = entry_apellido.get()
@@ -585,7 +594,7 @@ def editar_cliente_vista(id_cliente, callback=None):
         editar_cliente_controlador(id_cliente, nom, apell, tel, local, direcc, fac, c_u_i_t, ventana_editar_cliente, callback)
 
 
-    # FRAME BOTONES
+    # Configuro el frame de botones
     frame_botones = tk.Frame(ventana_editar_cliente, bg=color_primario)
     frame_botones.grid(row=8, column=0, columnspan=2, pady=(30, 20))
 
@@ -602,25 +611,28 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     global ventana_info_cliente_instancia
     from PIL import Image, ImageTk
     
-    # Si ya existe una instancia, la destruimos para crear la nueva con el nuevo cliente
+    # Si ya existe una instancia, la destruyo para crear la nueva con el nuevo cliente
     if ventana_info_cliente_instancia is not None and ventana_info_cliente_instancia.winfo_exists():
         ventana_info_cliente_instancia.destroy()
 
 
-    # BUSCA EL CLIENTE Y LO INSTANCIA
+    # Busco el cliente y lo instancio
     cliente_original = informacion_cliente_controlador(id_cliente)
     if not cliente_original:
         return # Error o no encontrado
 
-    # INICIA LA VISTA
+    # Inicio la vista
     ventana_info_cliente = tk.Toplevel(ventana_clientes)
     ventana_info_cliente_instancia = ventana_info_cliente
     ventana_info_cliente.title("Informacion del cliente")
     ventana_info_cliente.configure(bg=color_primario)
-    ventana_info_cliente.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_info_cliente.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
 
-    # Dimensiones y centrado
+    # Configuro dimensiones y centrado
     ancho_ventana = 900
     alto_ventana = 600
 
@@ -636,22 +648,22 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
         ventana_info_cliente.protocol("WM_DELETE_WINDOW", cerrar_wrapper)
 
 
-    # --- FRAME SUPERIOR (Datos y Botones) ---
+    # --- Configuro Frame Superior (Datos y Botones) ---
     frame_superior = tk.Frame(ventana_info_cliente, bg=color_primario)
     frame_superior.pack(side="top", fill="x", padx=20, pady=10)
 
 
-    # --- SUB-FRAME DERECHO (Botones) ---
-    # EMPAQUETAMOS ESTE PRIMERO (side=right) PARA QUE RESERVE SU ESPACIO FIJO
+    # --- Configuro Sub-Frame Derecho (Botones) ---
+    # Empaqueto este primero (side=right) para que reserve su espacio fijo
     frame_derecho = tk.Frame(frame_superior, bg=color_primario)
     frame_derecho.pack(side="right", fill="y", expand=False, padx=(20, 0)) 
     
-    # --- SUB-FRAME DATOS DEL CLIENTE (Izquierda) ---
-    # EMPAQUETAMOS ESTE DESPUES (side=left) PARA QUE OCUPE EL RESTO
+    # --- Configuro Sub-Frame Datos del Cliente (Izquierda) ---
+    # Empaqueto este despues (side=left) para que ocupe el resto
     frame_datos = tk.Frame(frame_superior, bg=color_primario)
     frame_datos.pack(side="left", fill="both", expand=True)
     
-    # --- FILA 0: ID | Nombre | Apellido ---
+    # --- Fila 0: ID | Nombre | Apellido ---
     # ID
     label_id_titulo = tk.Label(frame_datos, text="ID:", bg=color_primario, fg="white", font=("Arial", 10, "bold"))
     label_id_titulo.grid(row=0, column=0, sticky="w", pady=5, padx=(0, 5))
@@ -708,20 +720,20 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     label_cuit_valor.grid(row=2, column=3, sticky="w", pady=5, padx=(0, 20))
 
 
-    # Configuración de pesos
+    # Configuro los pesos
     frame_datos.grid_columnconfigure(1, weight=1)
     frame_datos.grid_columnconfigure(3, weight=1)
     frame_datos.grid_columnconfigure(5, weight=1)
 
 
-    # Configuración de pesos
+    # Configuro los pesos
     frame_derecho.grid_rowconfigure(0, weight=1) # Espacio arriba
     frame_derecho.grid_rowconfigure(3, weight=1) # Espacio abajo
 
-    # Espaciador superior
+    # Añado un espaciador superior
     tk.Label(frame_derecho, text="", bg=color_primario).grid(row=0, column=0, columnspan=2)
 
-    # Validacion seleccion operacion
+    # Valido la selección de la operación
     def check_seleccion_operacion(accion):
         seleccion = tabla_transacciones.selection()
         if not seleccion:
@@ -739,23 +751,23 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
             # Logica de eliminar operacion aqui
             pass
 
-    # BOTONES DE OPERACIONES FUTURAS (Editar, Eliminar)
+    # Botones de operaciones futuras (Editar, Eliminar)
     boton_editar = ttk.Button(frame_derecho, text="Editar", style="BotonSecundario.TButton")
     boton_editar.config(cursor="hand2", width=8, command=on_editar_operacion) 
     
     boton_eliminar = ttk.Button(frame_derecho, text="Eliminar", style="BotonSecundario.TButton")
     boton_eliminar.config(cursor="hand2", width=8, command=on_eliminar_operacion) 
 
-    # Posicion (En el centro, row 1 y 2 reservadas, o row 1 con padding)
-    # Los ponemos en filas centrales
+    # Posición (En el centro, row 1 y 2 reservadas, o row 1 con padding)
+    # Los coloco en filas centrales
     boton_editar.grid(row=1, column=0, padx=2, pady=5)
     boton_eliminar.grid(row=1, column=1, padx=2, pady=5)
     
-    # Espaciador inferior (si es necesario balancear mas o grid_rowconfigure alcanza)
+    # Espaciador inferior
     tk.Label(frame_derecho, text="", bg=color_primario).grid(row=3, column=0, columnspan=2)
 
 
-    # --- FRAME MEDIO (Tabla Debe/Haber) ---
+    # --- Configuro Frame Medio (Tabla Debe/Haber) ---
     frame_medio = tk.Frame(ventana_info_cliente, bg=color_secundario)
     frame_medio.pack(side="top", fill="both", expand=True, padx=20, pady=(10, 30))
 
@@ -763,7 +775,7 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     columnas = ("fecha", "detalle", "debe", "haber", "saldo")
     tabla_transacciones = ttk.Treeview(frame_medio, columns=columnas, show="headings")
 
-    # ESTILO PARA EL TREEVIEW
+    # Configuro el estilo para el Treeview
     estilo = ttk.Style()
     estilo.configure("Treeview", font=("Arial", 10), rowheight=22)
     estilo.configure("Treeview.Heading", font=("Arial", 11, "bold"))

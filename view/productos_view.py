@@ -1,5 +1,5 @@
 import tkinter as tk
-from estilos import *
+from view.estilos import *
 from tkinter import ttk
 from controller.validaciones import *
 from controller.productos_controlador import *
@@ -22,40 +22,43 @@ def listado_productos():
     ventana_productos.geometry("800x600+0+85")
     ventana_productos.resizable(False, False)
     ventana_productos.configure(bg=color_primario)
-    ventana_productos.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_productos.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
 
-    # CONFIGURACION DEL GRID
+    # Configuro el grid
     ventana_productos.grid_rowconfigure(0, weight=0)  # Buscador y Botones
     ventana_productos.grid_rowconfigure(1, weight=1)  # Tabla
     ventana_productos.grid_columnconfigure(0, weight=1)
 
 
-    # FRAME TABLA
+    # Configuro el frame para la tabla
     frame_tabla = tk.Frame(ventana_productos, bg=color_primario)
     frame_tabla.grid(row=1, column=0, sticky="nsew", padx=20, pady=(10, 20))
 
 
-    # SCROLLBAR
+    # Añado el scrollbar
     scrollbar = ttk.Scrollbar(frame_tabla)
     scrollbar.pack(side="right", fill="y")
 
 
-    # TREEVIEW (TABLA)
+    # Configuro el Treeview (Tabla)
     columnas = ("id", "nombre", "categoria", "precio", "cantidad")
     tabla_productos = ttk.Treeview(frame_tabla, columns=columnas, show="headings",
                                    yscrollcommand=scrollbar.set, height=20)
     tabla_productos.tag_configure("impar", background=color_zebra)
 
-    # FUNCION PARA ACTUALIZAR LA TABLA (TREEVIEW)
+    # Defino la función para actualizar la tabla (Treeview)
     def actualizar_tabla():
-        # Limpia la tabla
+        # Limpio la tabla
         for item in tabla_productos.get_children():
             tabla_productos.delete(item)
-        # Vuelve a escribirla pero actualizada
+        # Vuelvo a escribirla actualizada
         productos = listar_productos_controlador()
         for i, prod in enumerate(productos):
-            # Convertir a lista para modificar visualmente el precio sin afectar datos reales
+            # Convierto a lista para modificar visualmente el precio sin afectar datos reales
             datos_visuales = list(prod)
             datos_visuales[3] = f"${datos_visuales[3]}"
             try:
@@ -67,7 +70,7 @@ def listado_productos():
     actualizar_tabla()
 
 
-    # FUNCION ELIMINAR PRODUCTO
+    # Defino la función para eliminar un producto
     def ejecutar_eliminacion():
         seleccion = tabla_productos.selection()
         if not seleccion:
@@ -75,7 +78,7 @@ def listado_productos():
                                    parent=ventana_productos)
             return
 
-        # Obtenemos el ID del item seleccionado (columna 0) y el nombre (columna 1)
+        # Obtengo el ID del ítem seleccionado (columna 0) y el nombre (columna 1)
         valores = tabla_productos.item(seleccion[0])['values']
         item_id = valores[0]
         nombre_producto = valores[1]
@@ -87,7 +90,7 @@ def listado_productos():
                 actualizar_tabla()
 
 
-    # FUNCION DE BUSCAR PRODUCTOS
+    # Defino la función para buscar productos
     def filtrar_tabla(event):
         texto_busqueda = entry_buscar.get()
 
@@ -97,11 +100,11 @@ def listado_productos():
 
         productos_encontrados = buscador_productos_controlador(texto_busqueda)
 
-        # Limpiamos la tabla actual
+        # Limpio la tabla actual
         for item in tabla_productos.get_children():
             tabla_productos.delete(item)
 
-        # Llenamos con los resultados de la búsqueda
+        # Lleno la tabla con los resultados
         for i, producto in enumerate(productos_encontrados):
             datos_visuales = list(producto)
             datos_visuales[3] = f"${datos_visuales[3]}"
@@ -114,7 +117,7 @@ def listado_productos():
 
 
 
-    # FUNCION ABRIR EDITAR
+    # Defino la función para abrir la edición
     def abrir_editar():
         seleccion = tabla_productos.selection()
         if not seleccion:
@@ -122,19 +125,19 @@ def listado_productos():
                                    parent=ventana_productos)
             return
 
-        # Obtenemos el ID del item seleccionado (columna 0)
+        # Obtengo el ID del ítem seleccionado (columna 0)
         item_id = tabla_productos.item(seleccion[0])['values'][0]
         editar_producto_vista(item_id, actualizar_tabla)
 
 
-    # FUNCION ABRIR EDITAR STOCK
+    # Defino la función para abrir la edición de stock
     def abrir_editar_stock():
         seleccion = tabla_productos.selection()
         if not seleccion:
             messagebox.showwarning("Atención", "Seleccione un producto.", parent=ventana_productos)
             return
 
-        # Obtenemos el ID del item seleccionado
+        # Obtengo el ID del ítem seleccionado
         valores = tabla_productos.item(seleccion[0])['values']
         item_id = valores[0]
         nombre_producto = valores[1]
@@ -142,7 +145,7 @@ def listado_productos():
         modificar_stock_vista(item_id, nombre_producto, actualizar_tabla)
 
 
-    # MENU CONTEXTUAL (Clic derecho)
+    # Configuro el menú contextual (Clic derecho)
     menu_contextual = tk.Menu(ventana_productos, tearoff=0)
     menu_contextual.add_command(label="Editar stock", command=abrir_editar_stock)
     menu_contextual.add_separator()
@@ -157,24 +160,24 @@ def listado_productos():
             menu_contextual.post(event.x_root, event.y_root)
 
 
-    # FUNCION ORDENAR COLUMNA
+    # Defino la función para ordenar columnas
     def ordenar_por_columna(tree, col, reverse):
         l = [(tree.set(k, col), k) for k in tree.get_children('')]
         
-        # Intentar convertir a int si es posible para ordenar numericamente
+        # Intento convertir a int para ordenar numéricamente
         try:
             l.sort(key=lambda t: int(t[0]), reverse=reverse)
         except ValueError:
             l.sort(reverse=reverse)
 
-        # Reordenar items
+        # Reordeno los ítems
         for index, (val, k) in enumerate(l):
             tree.move(k, '', index)
 
-        # Actualizar el comando para invertir el orden en el próximo clic
+        # Actualizo el comando para invertir el orden en el próximo clic
         tree.heading(col, command=lambda: ordenar_por_columna(tree, col, not reverse))
 
-    # CONFIGURAR COLUMNAS DE LA TABLA (TREEVIEW)
+    # Configuro las columnas de la tabla
     tabla_productos.heading("id", text="ID", command=lambda: ordenar_por_columna(tabla_productos, "id", False))
     tabla_productos.heading("nombre", text="Nombre", command=lambda: ordenar_por_columna(tabla_productos, "nombre", False))
     tabla_productos.heading("categoria", text="Categoría", command=lambda: ordenar_por_columna(tabla_productos, "categoria", False))
@@ -192,11 +195,11 @@ def listado_productos():
     scrollbar.config(command=tabla_productos.yview)
 
 
-    # FRAME SUPERIOR - BUSCADOR Y BOTONES
+    # Configuro el frame superior - Buscador y Botones
     frame_superior = tk.Frame(ventana_productos, bg=color_primario)
     frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
 
-    # BUSCADOR
+    # Configuro el buscador
     label_buscar = tk.Label(frame_superior, text="Buscar:")
     label_buscar.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_buscar.pack(side="left", padx=(0, 10))
@@ -205,7 +208,7 @@ def listado_productos():
     entry_buscar.bind("<KeyRelease>", filtrar_tabla)
     entry_buscar.pack(side="left")
 
-    # BOTONES
+    # Configuro los botones
     boton_eliminar = ttk.Button(frame_superior, text="Eliminar", style="BotonSecundario.TButton")
     boton_eliminar.config(cursor="hand2", command=ejecutar_eliminacion)
     boton_eliminar.pack(side="right", padx=(5, 0))
@@ -232,15 +235,18 @@ def nuevo_producto_vista(callback):
     ventana_nuevo_producto.configure(bg=color_primario)
     ventana_nuevo_producto.geometry("400x600+850+85")
     ventana_nuevo_producto.resizable(False, False)
-    ventana_nuevo_producto.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_nuevo_producto.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
 
-    # CONFIGURACION DEL GRID
+    # Configuro el grid
     ventana_nuevo_producto.grid_columnconfigure(0, weight=1)
     ventana_nuevo_producto.grid_columnconfigure(1, weight=2)
 
 
-    # LABEL TITULO
+    # Añado el título
     label_titulo = tk.Label(ventana_nuevo_producto, text="REGISTRAR PRODUCTO")
     label_titulo.config(bg=color_primario, fg=color_secundario, font=fuente_titulos)
     label_titulo.grid(row=0, column=0, columnspan=2, padx=20 ,pady=(50, 40))
@@ -255,7 +261,7 @@ def nuevo_producto_vista(callback):
     entry_nombre.grid(row=1, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
-    # CATEGORIA + MENU DESPLEGABLE
+    # Configuro categoría y menú desplegable
     label_categoria = tk.Label(ventana_nuevo_producto, text="Categoria:")
     label_categoria.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_categoria.grid(row=2, column=0, sticky="e", padx=(20, 10), pady=10)
@@ -313,13 +319,13 @@ def nuevo_producto_vista(callback):
         )
 
 
-    # FRAME BOTONES
+    # Configuro el frame de botones
     frame_botones = tk.Frame(ventana_nuevo_producto)
     frame_botones.config(bg=color_primario, height= 20)
     frame_botones.grid(row=9, column=0, columnspan=2, pady=30)
 
 
-    # BOTONES
+    # Agrego los botones
     boton_guardar = ttk.Button(frame_botones, text="Guardar", style="BotonSecundario.TButton")
     boton_guardar.config(cursor="hand2", command=realizar_guardado)
     boton_guardar.pack(side="left", padx=5)
@@ -342,20 +348,23 @@ def editar_producto_vista(id_producto, callback=None):
     ventana_editar_producto.configure(bg=color_primario)
     ventana_editar_producto.geometry("400x600+850+85")
     ventana_editar_producto.resizable(False, False)
-    ventana_editar_producto.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_editar_producto.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
 
-    # CONFIGURACION DEL GRID
+    # Configuro el grid
     ventana_editar_producto.grid_columnconfigure(0, weight=1)
     ventana_editar_producto.grid_columnconfigure(1, weight=2)
 
 
-    # LABEL TITULO
+    # Añado el título
     label_titulo = tk.Label(ventana_editar_producto, text="EDITAR PRODUCTO")
     label_titulo.config(bg=color_primario, fg=color_secundario, font=fuente_titulos)
     label_titulo.grid(row=0, column=0, columnspan=2, padx=20, pady=(50, 40))
 
-    # BUSCAR DATOS
+    # Busco los datos
     producto_a_editar = informacion_producto_controlador(id_producto)
 
     # NOMBRE
@@ -368,13 +377,13 @@ def editar_producto_vista(id_producto, callback=None):
     entry_nombre.grid(row=1, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
-    # CATEGORIA + MENU DESPLEGABLE
+    # Configuro categoría y menú desplegable
     label_categoria = tk.Label(ventana_editar_producto, text="Categoria:")
     label_categoria.config(font=fuente_texto, bg=color_primario, fg=color_secundario)
     label_categoria.grid(row=2, column=0, sticky="e", padx=(20, 10), pady=10)
 
 
-    # ---------------- FALTAN MAS CATEGORIAS ----------------
+    # ---------------- Faltan más categorías ----------------
     lista_categorias = ["Alimento", "Cera", "Estampa", "Insumos", "Madera", "Medicamentos", "Miel", "Otros"]
     combobox_categoria = ttk.Combobox(ventana_editar_producto)
     combobox_categoria.config(font=fuente_texto, values=lista_categorias, state="readonly")
@@ -420,7 +429,7 @@ def editar_producto_vista(id_producto, callback=None):
     entry_cantidad.grid(row=5, column=1, sticky="w", padx=(0, 20), pady=10)
 
 
-    # CAPTURAR EDICION
+    # Capturo los datos editados
     def capturar_datos_edicion():
         editar_producto_controlador(
             id_producto,
@@ -434,13 +443,13 @@ def editar_producto_vista(id_producto, callback=None):
         )
 
 
-    # FRAME BOTONES
+    # Configuro el frame de botones
     frame_botones = tk.Frame(ventana_editar_producto)
     frame_botones.config(bg=color_primario, height=20)
     frame_botones.grid(row=9, column=0, columnspan=2, pady=30)
 
 
-    # BOTONES
+    # Agrego los botones
     boton_guardar = ttk.Button(frame_botones, text="Guardar", style="BotonSecundario.TButton")
     boton_guardar.config(cursor="hand2", command=capturar_datos_edicion)
     boton_guardar.pack(side="left", padx=5)

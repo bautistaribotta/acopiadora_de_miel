@@ -14,7 +14,7 @@ def nuevo_producto_controlador(nombre, categoria, unidad_medida, precio_unidad, 
     try:
         nuevo_producto(nuevo_obj_producto)
         messagebox.showinfo("Exito", "Producto creado correctamente.", parent=ventana)
-        # Si callback se mantienen en None, no ejecuta nada
+        # Si callback es None, no ejecuto nada
         if callback:
             callback()
         ventana.destroy()
@@ -88,7 +88,7 @@ def editar_producto_controlador(id_producto, nombre, categoria, unidad_medida, p
 def sumar_stock_controlador(id_producto, cantidad, ventana, callback=None):
     try:
         cantidad_float = float(cantidad)
-        # Permitimos negativos para restar stock, solo validamos que sea numero
+        # Permito negativos para restar stock, solo valido que sea número
         
         sumar_stock_db(id_producto, cantidad_float)
         messagebox.showinfo("Éxito", "Stock actualizado correctamente.", parent=ventana)

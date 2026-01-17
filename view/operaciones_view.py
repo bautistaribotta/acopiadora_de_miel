@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk
 from PIL import Image, ImageTk
-from estilos import *
+from view.estilos import *
 
 ventana_nueva_operacion_instancia = None
 ventana_editar_operacion_instancia = None
@@ -19,49 +19,53 @@ def nueva_operacion(parent=None):
     ventana_nueva_operacion.title("Nueva Operación")
     ventana_nueva_operacion.config(bg=color_primario)
     ventana_nueva_operacion.resizable(False, False)
-    ventana_nueva_operacion.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_nueva_operacion.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
-    # Tamaño inicial mas chico para seleccion de cliente
+    # Configuro el tamaño inicial más chico para selección de cliente
     ancho_ventana = 500
     alto_ventana = 500
-    # Permitir redimensionar para evitar problemas de visualizacion
+    # Permito redimensionar para evitar problemas de visualización
     ventana_nueva_operacion.resizable(True, True)
     centrar_ventana_interna(ventana_nueva_operacion, ancho_ventana, alto_ventana)
 
-    # --- LOGICA DE SELECCION DE CLIENTE ---
+    # --- Lógica de selección de cliente ---
     from controller.clientes_controlador import listar_clientes_controlador, buscador_clientes_controlador
     
     # Variables de estado
     cliente_seleccionado_id = None
     cliente_seleccionado_nombre = None
     
-    # Variables de UI para la interfaz de operacion (necesarias para nonlocal)
+    # Variables de UI para la interfaz de operación (necesarias para nonlocal)
     entry_buscar = None
     tabla_busqueda = None
     tabla_carrito = None
     btn_quitar = None
 
-    # Frame contenedor principal para poder cambiar vistas
+    # Configuro el frame contenedor principal para poder cambiar vistas
     frame_principal = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_principal.pack(fill="both", expand=True)
 
     def mostrar_seleccion_cliente():
-        # Limpiar frame principal
+        # Limpio el frame principal
         for widget in frame_principal.winfo_children():
             widget.destroy()
         
-        # TITULO
+        # Añado el título
         tk.Label(frame_principal, text="Seleccione un cliente", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(pady=(20, 10))
 
-        # BUSCADOR
+        # Configuro el buscador
         frame_buscador = tk.Frame(frame_principal, bg=color_primario)
+
         frame_buscador.pack(fill="x", padx=20, pady=10)
         
         tk.Label(frame_buscador, text="Buscar:", font=fuente_texto, bg=color_primario, fg=color_secundario).pack(side="left", padx=(0, 10))
         entry_buscar_cli = ttk.Entry(frame_buscador, font=fuente_texto, width=30)
         entry_buscar_cli.pack(side="left")
 
-        # TABLA CLIENTES (SOLO ID y NOMBRE)
+        # Configuro la tabla de clientes (SOLO ID y NOMBRE)
         frame_tabla_cli = tk.Frame(frame_principal, bg=color_primario)
         frame_tabla_cli.pack(fill="both", expand=True, padx=20, pady=10)
         
@@ -117,7 +121,7 @@ def nueva_operacion(parent=None):
 
         tabla_cli.bind("<Double-1>", seleccionar_cliente)
         
-        # FRAME BOTONES INFERIOR (ELEGIR / CANCELAR)
+        # Configuro el frame de botones inferior (Elegir / Cancelar)
         frame_botones_sel = tk.Frame(frame_principal, bg=color_primario)
         frame_botones_sel.pack(side="bottom", pady=20)
         
@@ -129,28 +133,28 @@ def nueva_operacion(parent=None):
 
         
     def mostrar_interfaz_operacion(id_cliente, nombre_cliente):
-        # Aumentar tamaño para vista completa
+        # Aumento el tamaño para vista completa
         centrar_ventana_interna(ventana_nueva_operacion, 1200, 600)
         ventana_nueva_operacion.resizable(True, True)
 
-        # Limpiar frame principal
+        # Limpio el frame principal
         for widget in frame_principal.winfo_children():
             widget.destroy()
             
-        # Actualizar titulo ventana
+        # Actualizo el título de la ventana
         ventana_nueva_operacion.title(f"Nueva Operación - Cliente: {nombre_cliente}")
 
-        # RE-CREAR LA INTERFAZ DE OPERACION DENTRO DE frame_principal
+        # Re-creo la interfaz de operación dentro de frame_principal
         frame_principal.grid_columnconfigure(0, weight=1) 
         frame_principal.grid_columnconfigure(1, weight=1) 
         frame_principal.grid_rowconfigure(0, weight=1) 
         frame_principal.grid_rowconfigure(1, weight=0)
 
-        # ========================== COLUMNA IZQUIERDA ==========================
+        # ========================== Configuro Columna Izquierda ==========================
         frame_izq = tk.Frame(frame_principal, bg=color_primario)
         frame_izq.grid(row=0, column=0, sticky="nsew", padx=10, pady=10)
         
-        # Buscador
+        # Configuro el buscador
         frame_search = tk.Frame(frame_izq, bg=color_primario)
         frame_search.pack(fill="x", pady=(10, 20))
         
@@ -162,7 +166,7 @@ def nueva_operacion(parent=None):
         entry_buscar = ttk.Entry(frame_search, font=fuente_texto, width=25)
         entry_buscar.pack(side="left")
 
-        # Frame Tabla Busqueda
+        # Configuro el frame de tabla de búsqueda
         frame_tabla_busqueda = tk.Frame(frame_izq, bg=color_primario)
         scrollbar_busqueda = ttk.Scrollbar(frame_tabla_busqueda)
         scrollbar_busqueda.pack(side="right", fill="y")
@@ -183,20 +187,20 @@ def nueva_operacion(parent=None):
         tabla_busqueda.pack(side="left", fill="both", expand=True)
         scrollbar_busqueda.config(command=tabla_busqueda.yview)
 
-        # Frame Agregar
+        # Configuro el frame para agregar
         frame_agregar = tk.Frame(frame_izq, bg=color_primario)
         frame_agregar.pack(side="bottom", fill="x", pady=15)
         
-        img_carrito = Image.open(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\carrito.ico")
+        img_carrito = Image.open(obtener_ruta_recurso("carrito.ico"))
         img_carrito = img_carrito.resize((20, 20))
         icono_carrito = ImageTk.PhotoImage(img_carrito)
         btn_agregar = ttk.Button(frame_agregar, image=icono_carrito, text=" Agregar al carrito", compound="left", style="BotonSecundario.TButton")
         btn_agregar.image = icono_carrito
         btn_agregar.pack(side="left")
 
-        frame_tabla_busqueda.pack(fill="both", expand=True) # Pack table
+        frame_tabla_busqueda.pack(fill="both", expand=True) # Empaqueto la tabla
 
-        # ========================== COLUMNA DERECHA ==========================
+        # ========================== Configuro Columna Derecha ==========================
         frame_der = tk.Frame(frame_principal, bg=color_primario)
         frame_der.grid(row=0, column=1, sticky="nsew", padx=10, pady=10)
 
@@ -205,7 +209,7 @@ def nueva_operacion(parent=None):
         frame_acciones_carrito = tk.Frame(frame_der, bg=color_primario)
         frame_acciones_carrito.pack(side="bottom", fill="x", pady=15)
 
-        img_tacho = Image.open(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\tacho.ico")
+        img_tacho = Image.open(obtener_ruta_recurso("tacho.ico"))
         img_tacho = img_tacho.resize((20, 20))
         icono_tacho = ImageTk.PhotoImage(img_tacho)
         btn_quitar = ttk.Button(frame_acciones_carrito, image=icono_tacho, style="BotonSecundario.TButton")
@@ -234,7 +238,7 @@ def nueva_operacion(parent=None):
         tabla_carrito.pack(side="left", fill="both", expand=True)
         scrollbar_carrito.config(command=tabla_carrito.yview)
 
-        # ========================== FRAME INFERIOR ==========================
+        # ========================== Configuro Frame Inferior ==========================
         frame_final = tk.Frame(frame_principal, bg=color_primario)
         frame_final.grid(row=1, column=0, columnspan=2, pady=20)
         
@@ -244,18 +248,18 @@ def nueva_operacion(parent=None):
         btn_cancelar = ttk.Button(frame_final, text="Cancelar", style="BotonSecundario.TButton", cursor="hand2", command=ventana_nueva_operacion.destroy)
         btn_cancelar.pack(side="left", padx=10)
 
-        # --- LOGICA FUNCIONAL CONECTADA ---
+        # --- Conecto lógica funcional ---
         setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agregar, btn_quitar, ventana_nueva_operacion)
 
 
-    # Iniciar flujo
+    # Inicio el flujo
     mostrar_seleccion_cliente()
 
 def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agregar, btn_quitar, ventana_root):
     from controller.productos_controlador import buscador_productos_controlador
 
     def obtener_cantidades_carrito():
-        """Retorna un diccionario {id_producto: cantidad_en_carrito}"""
+        """Retorno un diccionario {id_producto: cantidad_en_carrito}"""
         cantidades = {}
         for item in tabla_carrito.get_children():
             valores = tabla_carrito.item(item)['values']
@@ -272,10 +276,10 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         return cantidades
 
     def actualizar_listado_busqueda(filtro=""):
-        # Obtener lo que ya esta en el carrito para restarlo visualmente
+        # Obtengo lo que ya está en el carrito para restarlo visualmente
         en_carrito = obtener_cantidades_carrito()
 
-        # Limpiar tabla
+        # Limpio la tabla
         for item in tabla_busqueda.get_children():
             tabla_busqueda.delete(item)
             
@@ -287,7 +291,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
             p_stock_real = prod[4]
             p_precio = prod[3]
 
-            # Calcular stock visual
+            # Calculo stock visual
             try:
                 stock_visual = int(float(p_stock_real) - en_carrito.get(p_id, 0))
             except:
@@ -301,10 +305,10 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         
     entry_buscar.bind("<KeyRelease>", on_buscar_keyrelease)
     
-    # Cargar inicio (diferido)
+    # Cargo inicio (diferido)
     ventana_root.after(100, lambda: actualizar_listado_busqueda(""))
 
-    # --- FUNCIONES POPUP CANTIDAD ---
+    # --- Funciones Popup Cantidad ---
     def confirmar_agregar(cantidad, valores_producto, ventana_popup):
         if not cantidad or not cantidad.isdigit() or int(cantidad) <= 0:
             return 
@@ -313,7 +317,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         nombre = valores_producto[1] 
         cant_nueva = int(cantidad)
         
-        # Verificar si ya existe en el carrito
+        # Verifico si ya existe en el carrito
         item_existente = None
         cant_actual = 0
         
@@ -344,7 +348,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         popup.config(bg=color_primario)
         popup.resizable(False, False)
         try:
-            popup.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+            popup.iconbitmap(obtener_ruta_recurso("colmena.ico"))
         except: pass
         centrar_ventana_interna(popup, 300, 150)
         
@@ -368,7 +372,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
     tabla_busqueda.bind("<Double-1>", abrir_popup_cantidad)
     btn_agregar.config(command=abrir_popup_cantidad)
 
-    # --- LOGICA QUITAR DEL CARRITO ---
+    # --- Lógica quitar del carrito ---
     def quitar_item_carrito_wrapper(event=None):
         seleccion = tabla_carrito.selection()
         if seleccion:
@@ -378,7 +382,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
     tabla_carrito.bind("<Double-1>", quitar_item_carrito_wrapper)
     btn_quitar.config(command=quitar_item_carrito_wrapper)
 
-    # --- EDITAR CANTIDAD CARRITO ---
+    # --- Editar cantidad carrito ---
     def editar_cantidad_carrito():
         seleccion = tabla_carrito.selection()
         if not seleccion: return
@@ -393,7 +397,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         popup.title("Editar Cantidad")
         popup.config(bg=color_primario)
         try:
-            popup.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+            popup.iconbitmap(obtener_ruta_recurso("colmena.ico"))
         except: pass
         popup.resizable(False, False)
         centrar_ventana_interna(popup, 300, 150)
@@ -422,7 +426,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         btn_ok.pack(pady=15)
         popup.bind('<Return>', lambda e: on_confirm_edit())
 
-    # MENU CONTEXTUAL
+    # Configuro el menú contextual
     menu_carrito = tk.Menu(ventana_root, tearoff=0)
     menu_carrito.add_command(label="Editar cant.", command=editar_cantidad_carrito) 
     menu_carrito.add_command(label="Eliminar", command=quitar_item_carrito_wrapper)
@@ -440,7 +444,7 @@ if __name__ == "__main__":
     nueva_operacion()
 
 
-    # CREAMOS PRIMERO LA TABLA Y EL POPUP ... (Este bloque ya fue removido/reemplazado arriba, borramos lo viejo)
+    # Este bloque ya fue removido/reemplazado arriba, borro lo viejo
     pass
     
 
@@ -537,7 +541,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         popup.config(bg=color_primario)
         popup.resizable(False, False)
         try:
-            popup.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+            popup.iconbitmap(obtener_ruta_recurso("colmena.ico"))
         except: pass
         centrar_ventana_interna(popup, 300, 150)
         
@@ -586,7 +590,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         popup.title("Editar Cantidad")
         popup.config(bg=color_primario)
         try:
-            popup.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+            popup.iconbitmap(obtener_ruta_recurso("colmena.ico"))
         except: pass
         popup.resizable(False, False)
         centrar_ventana_interna(popup, 300, 150)
@@ -641,32 +645,35 @@ def editar_operacion():
     ventana_nueva_operacion.title("Editar operacion")
     ventana_nueva_operacion.config(bg=color_primario)
     ventana_nueva_operacion.resizable(False, False)
-    ventana_nueva_operacion.iconbitmap(r"C:\Users\bauti\PycharmProjects\Acopiadora_de_miel\recursos\colmena.ico")
+    try:
+        ventana_nueva_operacion.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
 
     ancho_ventana = 900
     alto_ventana = 600
     centrar_ventana_interna(ventana_nueva_operacion, ancho_ventana, alto_ventana)
 
-    # CONFIGURACIÓN DEL GRID PRINCIPAL
+    # Configuro el grid principal
     ventana_nueva_operacion.grid_rowconfigure(0, weight=0)  # Header con título, observaciones, búsqueda y botones
     ventana_nueva_operacion.grid_rowconfigure(1, weight=1)  # Tabla productos
     ventana_nueva_operacion.grid_rowconfigure(2, weight=0)  # Botones finales
     ventana_nueva_operacion.grid_columnconfigure(0, weight=1)
 
-    # ==================== FRAME SUPERIOR - MATRIZ 2x2 ====================
+    # ==================== Configuro Frame Superior - Matriz 2x2 ====================
     frame_superior = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
 
-    # Configurar grid del frame superior (2 columnas)
+    # Configuro el grid del frame superior (2 columnas)
     frame_superior.grid_columnconfigure(0, weight=1)
     frame_superior.grid_columnconfigure(1, weight=1)
 
-    # FILA 0, COLUMNA 0 - TÍTULO
+    # Fila 0, Columna 0 - Título
     label_titulo_tabla = tk.Label(frame_superior, text="Nueva operacion",
                                   font=fuente_titulos, bg=color_primario, fg=color_secundario)
     label_titulo_tabla.grid(row=0, column=0, sticky="w", pady=(0, 15))
 
-    # FILA 1, COLUMNA 0 - BÚSQUEDA
+    # Fila 1, Columna 0 - Búsqueda
     frame_busqueda = tk.Frame(frame_superior, bg=color_primario)
     frame_busqueda.grid(row=1, column=0, sticky="w")
 
@@ -677,7 +684,7 @@ def editar_operacion():
     entry_buscar_producto = ttk.Entry(frame_busqueda, font=fuente_texto, width=30)
     entry_buscar_producto.pack(side="left")
 
-    # FILA 1, COLUMNA 1 - BOTONES AGREGAR/QUITAR
+    # Fila 1, Columna 1 - Botones Agregar/Quitar
     frame_botones_acciones = tk.Frame(frame_superior, bg=color_primario)
     frame_botones_acciones.grid(row=1, column=1, sticky="e")
 
@@ -689,31 +696,31 @@ def editar_operacion():
     boton_quitar_producto.config(cursor="hand2")
     boton_quitar_producto.pack(side="left", padx=5)
 
-    # ==================== FRAME TABLA - PRODUCTOS AGREGADOS ====================
+    # ==================== Configuro Frame Tabla - Productos Agregados ====================
     frame_tabla = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_tabla.grid(row=1, column=0, sticky="nsew", padx=20, pady=(10, 10))
 
-    # Frame contenedor del Treeview
+    # Configuro el frame contenedor del Treeview
     frame_tree_container = tk.Frame(frame_tabla, bg=color_primario)
     frame_tree_container.pack(side="top", fill="both", expand=True)
 
-    # Scrollbar
+    # Añado el scrollbar
     scrollbar_tabla = ttk.Scrollbar(frame_tree_container)
     scrollbar_tabla.pack(side="right", fill="y")
 
-    # Treeview - Tabla de productos
+    # Configuro el Treeview - Tabla de productos
     columnas_productos = ("id", "nombre", "categoria", "precio", "cantidad")
     tabla_productos = ttk.Treeview(frame_tree_container, columns=columnas_productos,
                                    show="headings", yscrollcommand=scrollbar_tabla.set, height=10)
 
-    # Configurar encabezados
+    # Configuro encabezados
     tabla_productos.heading("id", text="ID")
     tabla_productos.heading("nombre", text="Nombre")
     tabla_productos.heading("categoria", text="Categoría")
     tabla_productos.heading("precio", text="Precio")
     tabla_productos.heading("cantidad", text="Cantidad")
 
-    # Configurar columnas
+    # Configuro columnas
     tabla_productos.column("id", width=30, anchor="center")
     tabla_productos.column("nombre", width=200, anchor="w")
     tabla_productos.column("categoria", width=120, anchor="w")
@@ -723,7 +730,7 @@ def editar_operacion():
     tabla_productos.pack(side="left", fill="both", expand=True)
     scrollbar_tabla.config(command=tabla_productos.yview)
 
-    # ==================== FRAME BOTONES FINALES ====================
+    # ==================== Configuro Frame Botones Finales ====================
     frame_botones_finales = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_botones_finales.grid(row=2, column=0, pady=(10, 20))
 

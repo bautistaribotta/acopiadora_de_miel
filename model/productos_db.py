@@ -53,8 +53,8 @@ def listar_producto_db():
 
 def buscar_producto_id(id_producto):
     """
-    Tener en cuenta que esta funcion usa el = es para solo usar uno, para buscar entre los productos
-    en un buscador en tiempo real, se debe usar la funcion "buscador_producto_por_id"
+    Tengo en cuenta que esta función usa el = para usar solo uno. Para buscar entre los productos
+    en tiempo real usaría "buscador_producto_por_id"
     """
     with abrir_conexion() as (cursor, conexion):
         intruccion_sql = f"SELECT id, nombre, categoria, precio, cantidad, unidad_medida FROM productos WHERE id = %s"
