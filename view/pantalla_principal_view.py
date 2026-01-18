@@ -49,7 +49,7 @@ def mostrar_logo_central(ventana):
         label_logo.image = imagen_logo  # Mantengo referencia
         label_logo.grid(row=0, column=0)
     except Exception:
-        # Si falla la imagen, muestro un texto o nada
+        # Si falla la imagen, muestro un texto
         tk.Label(frame_central, text="Southern Honey Group", font=("Arial", 30, "bold"), 
                  bg=color_primario, fg=color_secundario).grid(row=0, column=0)
 

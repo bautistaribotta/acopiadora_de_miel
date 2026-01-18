@@ -48,93 +48,109 @@ def nueva_operacion(parent=None):
     frame_principal = tk.Frame(ventana_nueva_operacion, bg=color_primario)
     frame_principal.pack(fill="both", expand=True)
 
-    def mostrar_seleccion_cliente():
+    # Estado compartido simplificado
+    items_carrito = {}
+
+    def mostrar_seleccion_cliente(carrito_data=None):
         # Limpio el frame principal
         for widget in frame_principal.winfo_children():
             widget.destroy()
         
-        # Añado el título
-        tk.Label(frame_principal, text="Seleccione un cliente", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(pady=(20, 10))
+        # Guardo el carrito si viene
+        nonlocal items_carrito
+        if carrito_data is not None:
+            items_carrito = carrito_data
 
-        # Configuro el buscador
+        # Configuro el layout principal
+        frame_principal.grid_columnconfigure(0, weight=1) # Columna Izquierda
+        frame_principal.grid_columnconfigure(1, weight=1) # Columna Derecha
+        frame_principal.grid_rowconfigure(0, weight=0) # Títulos
+        frame_principal.grid_rowconfigure(1, weight=0) # Search / Spacer
+        frame_principal.grid_rowconfigure(2, weight=1) # Table / Details
+        frame_principal.grid_rowconfigure(3, weight=0) # Botones
+
+        # --- TITULOS (Row 0) ---
+        tk.Label(frame_principal, text="Seleccione un cliente", font=fuente_titulos, bg=color_primario, fg=color_secundario).grid(row=0, column=0, pady=(20, 10))
+        tk.Label(frame_principal, text="Detalles de la Operación", font=fuente_titulos, bg=color_primario, fg=color_secundario).grid(row=0, column=1, pady=(20, 10))
+
+        # --- COLUMNA IZQUIERDA (Search Row 1, Table Row 2) ---
+        # Buscador
         frame_buscador = tk.Frame(frame_principal, bg=color_primario)
-
-        frame_buscador.pack(fill="x", padx=20, pady=10)
+        frame_buscador.grid(row=1, column=0, sticky="ew", padx=20, pady=(0, 10))
         
-        tk.Label(frame_buscador, text="Buscar:", font=fuente_texto, bg=color_primario, fg=color_secundario).pack(side="left", padx=(0, 10))
-        entry_buscar_cli = ttk.Entry(frame_buscador, font=fuente_texto, width=30)
-        entry_buscar_cli.pack(side="left")
+        tk.Label(frame_buscador, text="Buscar:", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(side="left", padx=(0, 10))
+        entry_buscar_cli = ttk.Entry(frame_buscador, font=fuente_texto, width=25)
+        entry_buscar_cli.pack(side="left", fill="x", expand=True)
 
-        # Configuro la tabla de clientes (SOLO ID y NOMBRE)
-        frame_tabla_cli = tk.Frame(frame_principal, bg=color_primario)
-        frame_tabla_cli.pack(fill="both", expand=True, padx=20, pady=10)
+        # Tabla Clientes
+        frame_tabla_wrapper = tk.Frame(frame_principal, bg=color_primario)
+        frame_tabla_wrapper.grid(row=2, column=0, sticky="nsew", padx=20, pady=(0, 20))
         
-        scrollbar_cli = ttk.Scrollbar(frame_tabla_cli)
+        scrollbar_cli = ttk.Scrollbar(frame_tabla_wrapper)
         scrollbar_cli.pack(side="right", fill="y")
         
         cols_cli = ("id", "nombre")
-        tabla_cli = ttk.Treeview(frame_tabla_cli, columns=cols_cli, show="headings", yscrollcommand=scrollbar_cli.set, height=12)
+        tabla_cli = ttk.Treeview(frame_tabla_wrapper, columns=cols_cli, show="headings", yscrollcommand=scrollbar_cli.set, height=8)
         
         tabla_cli.heading("id", text="ID")
         tabla_cli.heading("nombre", text="Nombre")
-        
         tabla_cli.column("id", width=50, anchor="center")
-        tabla_cli.column("nombre", width=350, anchor="w")
+        tabla_cli.column("nombre", width=280, anchor="w")
         
         tabla_cli.pack(side="left", fill="both", expand=True)
         scrollbar_cli.config(command=tabla_cli.yview)
 
+        # --- COLUMNA DERECHA ---
+        # Label Observaciones (Row 1 para alinear con buscador)
+        frame_lbl_obs = tk.Frame(frame_principal, bg=color_primario)
+        frame_lbl_obs.grid(row=1, column=1, sticky="sw", padx=20, pady=(0, 10))
+        tk.Label(frame_lbl_obs, text="Observaciones", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(anchor="w")
+
+        # Detalle (Text area) en Row 2 (alineado arriba con Tabla)
+        frame_detalles = tk.Frame(frame_principal, bg=color_primario)
+        frame_detalles.grid(row=2, column=1, sticky="nsw", padx=20, pady=(0, 20)) 
+        
+        txt_detalle = tk.Text(frame_detalles, font=fuente_texto, height=8, width=40)
+        txt_detalle.pack(fill="x", pady=(0, 10))
+
+        # Método de Pago
+        tk.Label(frame_detalles, text="Método de Pago:", font=fuente_texto, bg=color_primario, fg="white").pack(anchor="w", pady=(10, 5))
+        combo_pago = ttk.Combobox(frame_detalles, values=["Contado", "Cuenta Corriente"], state="readonly", font=fuente_texto)
+        combo_pago.pack(fill="x", pady=(0, 20))
+        combo_pago.current(0)
+        
+        # --- BOTONES (Row 3 - Spanning) ---
+        frame_botones = tk.Frame(frame_principal, bg=color_primario)
+        frame_botones.grid(row=3, column=0, columnspan=2, pady=20)
+        
+        # Boton Guardar y Remito
+        btn_guardar = ttk.Button(frame_botones, text="Guardar y Remito", style="BotonSecundario.TButton")
+        btn_guardar.pack(side="left", padx=(0, 10))
+        
+        # Boton Cancelar
+        btn_cancelar = ttk.Button(frame_botones, text="Cancelar", style="BotonSecundario.TButton", command=ventana_nueva_operacion.destroy)
+        btn_cancelar.pack(side="left", padx=(0, 10))
+
+        # Lógica de carga de clientes
         def llenar_tabla_clientes(filtro=""):
             for item in tabla_cli.get_children():
                 tabla_cli.delete(item)
-            
             if filtro:
                 clientes = buscador_clientes_controlador(filtro)
             else:
-                clientes = listar_clientes_controlador()
-                
+                clientes = listar_clientes_controlador()   
             for cli in clientes:
-                # cli = (id, nombre, apellido, localidad, telefono)
-                c_id = cli[0]
-                c_nom = cli[1]
-                c_ape = cli[2]
-                
-                nombre_completo = f"{c_nom} {c_ape}"
-                
-                vals = (c_id, nombre_completo)
+                c_id, c_nom, c_ape = cli[0], cli[1], cli[2]
+                vals = (c_id, f"{c_nom} {c_ape}")
                 tabla_cli.insert("", "end", values=vals)
 
         llenar_tabla_clientes()
         entry_buscar_cli.bind("<KeyRelease>", lambda e: llenar_tabla_clientes(entry_buscar_cli.get()))
 
-        def seleccionar_cliente(event=None):
-            selection = tabla_cli.selection()
-            if not selection:
-                return
-            
-            item = tabla_cli.item(selection[0])
-            vals = item['values']
-            c_id = vals[0]
-            c_nom = vals[1]
-            
-            mostrar_interfaz_operacion(c_id, c_nom)
-
-        tabla_cli.bind("<Double-1>", seleccionar_cliente)
         
-        # Configuro el frame de botones inferior (Elegir / Cancelar)
-        frame_botones_sel = tk.Frame(frame_principal, bg=color_primario)
-        frame_botones_sel.pack(side="bottom", pady=20)
-        
-        btn_elegir = ttk.Button(frame_botones_sel, text="Elegir", style="BotonSecundario.TButton", command=seleccionar_cliente)
-        btn_elegir.pack(side="left", padx=10)
-        
-        btn_cancelar = ttk.Button(frame_botones_sel, text="Cancelar", style="BotonSecundario.TButton", command=ventana_nueva_operacion.destroy)
-        btn_cancelar.pack(side="left", padx=10)
-
-        
-    def mostrar_interfaz_operacion(id_cliente, nombre_cliente):
+    def mostrar_interfaz_operacion():
         # Aumento el tamaño para vista completa
-        centrar_ventana_interna(ventana_nueva_operacion, 1200, 600)
+        centrar_ventana_interna(ventana_nueva_operacion, 950, 600)
         ventana_nueva_operacion.resizable(True, True)
 
         # Limpio el frame principal
@@ -142,7 +158,7 @@ def nueva_operacion(parent=None):
             widget.destroy()
             
         # Actualizo el título de la ventana
-        ventana_nueva_operacion.title(f"Nueva Operación - Cliente: {nombre_cliente}")
+        ventana_nueva_operacion.title("Nueva Operación - Selección de Productos")
 
         # Re-creo la interfaz de operación dentro de frame_principal
         frame_principal.grid_columnconfigure(0, weight=1) 
@@ -179,7 +195,7 @@ def nueva_operacion(parent=None):
         tabla_busqueda.heading("stock", text="Stock")
         tabla_busqueda.heading("precio", text="Precio")
         
-        tabla_busqueda.column("id", width=50, anchor="center")
+        tabla_busqueda.column("id", width=80, anchor="center")
         tabla_busqueda.column("nombre", width=200, anchor="center")
         tabla_busqueda.column("stock", width=80, anchor="center")
         tabla_busqueda.column("precio", width=80, anchor="center")
@@ -242,7 +258,18 @@ def nueva_operacion(parent=None):
         frame_final = tk.Frame(frame_principal, bg=color_primario)
         frame_final.grid(row=1, column=0, columnspan=2, pady=20)
         
-        boton_siguiente = ttk.Button(frame_final, text="Siguiente", style="BotonSecundario.TButton", cursor="hand2")
+        # Función para ir a la siguiente pantalla (Selección Cliente)
+        def ir_siguiente():
+            # Extraigo los items del carrito para pasarlos
+            datos_carrito = {}
+            for item in tabla_carrito.get_children():
+                # values = (id, nombre, cantidad)
+                vals = tabla_carrito.item(item)['values']
+                datos_carrito[vals[0]] = vals[2] # id: cantidad
+            
+            mostrar_seleccion_cliente(datos_carrito)
+
+        boton_siguiente = ttk.Button(frame_final, text="Siguiente", style="BotonSecundario.TButton", cursor="hand2", command=ir_siguiente)
         boton_siguiente.pack(side="left", padx=10)
         
         boton_cancelar = ttk.Button(frame_final, text="Cancelar", style="BotonSecundario.TButton", cursor="hand2", command=ventana_nueva_operacion.destroy)
@@ -252,8 +279,8 @@ def nueva_operacion(parent=None):
         setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, boton_agregar, boton_quitar, ventana_nueva_operacion)
 
 
-    # Inicio el flujo
-    mostrar_seleccion_cliente()
+    # Inicio el flujo mostrando primero la interfaz de operacion (Productos)
+    mostrar_interfaz_operacion()
 
 def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agregar, btn_quitar, ventana_root):
     from controller.productos_controlador import buscador_productos_controlador
