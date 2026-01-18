@@ -2,7 +2,7 @@ from contextlib import contextmanager
 import mysql.connector
 
 # --- CONFIGURACION DE LA BASE DE DATOS ---
-DB_CONFIG = {
+db_configuracion = {
     "host": "localhost",
     "user": "root",
     "password": "root",
@@ -21,12 +21,12 @@ def abrir_conexion():
         with abrir_conexion() as (cursor, conexion):
             cursor.execute(...)
             ...
-    (No olvides hacer conexion.commit() si modificas datos)
+    (No olvidar hacer conexion.commit() si modifica datos)
     """
     conexion = None
     cursor = None
     try:
-        conexion = mysql.connector.connect(**DB_CONFIG)
+        conexion = mysql.connector.connect(**db_configuracion)
         cursor = conexion.cursor()
         yield cursor, conexion
     except mysql.connector.Error as err:
