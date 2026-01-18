@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from view.estilos import *
 
@@ -61,6 +61,9 @@ def nueva_operacion(parent=None):
         if carrito_data is not None:
             items_carrito = carrito_data
 
+        # Actualizo el título de la ventana
+        ventana_nueva_operacion.title("Nueva Operación - 2: Selección del cliente y detalles")
+
         # Configuro el layout principal
         frame_principal.grid_columnconfigure(0, weight=1) # Columna Izquierda
         frame_principal.grid_columnconfigure(1, weight=1) # Columna Derecha
@@ -103,12 +106,12 @@ def nueva_operacion(parent=None):
         # --- COLUMNA DERECHA ---
         # Label Observaciones (Row 1 para alinear con buscador)
         frame_lbl_obs = tk.Frame(frame_principal, bg=color_primario)
-        frame_lbl_obs.grid(row=1, column=1, sticky="sw", padx=20, pady=(0, 10))
+        frame_lbl_obs.grid(row=1, column=1, sticky="ew", padx=20, pady=(0, 10))
         tk.Label(frame_lbl_obs, text="Observaciones", font=fuente_titulos, bg=color_primario, fg=color_secundario).pack(anchor="w")
 
         # Detalle (Text area) en Row 2 (alineado arriba con Tabla)
         frame_detalles = tk.Frame(frame_principal, bg=color_primario)
-        frame_detalles.grid(row=2, column=1, sticky="nsw", padx=20, pady=(0, 20)) 
+        frame_detalles.grid(row=2, column=1, sticky="nsew", padx=20, pady=(0, 20)) 
         
         txt_detalle = tk.Text(frame_detalles, font=fuente_texto, height=8, width=40)
         txt_detalle.pack(fill="x", pady=(0, 10))
@@ -158,7 +161,7 @@ def nueva_operacion(parent=None):
             widget.destroy()
             
         # Actualizo el título de la ventana
-        ventana_nueva_operacion.title("Nueva Operación - Selección de Productos")
+        ventana_nueva_operacion.title("Nueva Operación - 1: Selección de Productos")
 
         # Re-creo la interfaz de operación dentro de frame_principal
         frame_principal.grid_columnconfigure(0, weight=1) 
@@ -267,6 +270,10 @@ def nueva_operacion(parent=None):
                 vals = tabla_carrito.item(item)['values']
                 datos_carrito[vals[0]] = vals[2] # id: cantidad
             
+            if not datos_carrito:
+                messagebox.showwarning("Atención", "No se seleccionó ningún producto.", parent=ventana_nueva_operacion)
+                return
+
             mostrar_seleccion_cliente(datos_carrito)
 
         boton_siguiente = ttk.Button(frame_final, text="Siguiente", style="BotonSecundario.TButton", cursor="hand2", command=ir_siguiente)
@@ -536,6 +543,15 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
         id_prod = valores_producto[0]
         nombre = valores_producto[1] 
         cant_nueva = int(cantidad)
+
+        # Validacion de stock
+        try:
+            stock_disponible = int(valores_producto[2])
+            if cant_nueva > stock_disponible:
+                messagebox.showwarning("Error de stock", f"No hay suficiente stock. Disponible: {stock_disponible}", parent=ventana_popup)
+                return
+        except ValueError:
+            pass # Si por alguna razon el stock no es numero, pasamos (o manejamos error)
         
         # Verificar si ya existe en el carrito
         item_existente = None
