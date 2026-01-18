@@ -772,7 +772,7 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     frame_medio.pack(side="top", fill="both", expand=True, padx=20, pady=(10, 30))
 
     # TREEVIEW
-    columnas = ("fecha", "detalle", "debe", "haber", "saldo")
+    columnas = ("fecha", "detalle", "debe", "haber")
     tabla_transacciones = ttk.Treeview(frame_medio, columns=columnas, show="headings")
 
     # Configuro el estilo para el Treeview
@@ -784,13 +784,11 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     tabla_transacciones.heading("detalle", text="Detalle")
     tabla_transacciones.heading("debe", text="Debe")
     tabla_transacciones.heading("haber", text="Haber")
-    tabla_transacciones.heading("saldo", text="Saldo")
 
     tabla_transacciones.column("fecha", width=100, anchor="center")
     tabla_transacciones.column("detalle", width=350, anchor="w")
-    tabla_transacciones.column("debe", width=100, anchor="e")
-    tabla_transacciones.column("haber", width=100, anchor="e")
-    tabla_transacciones.column("saldo", width=100, anchor="e")
+    tabla_transacciones.column("debe", width=150, anchor="e")
+    tabla_transacciones.column("haber", width=150, anchor="e")
 
     scrollbar = ttk.Scrollbar(frame_medio, orient="vertical", command=tabla_transacciones.yview)
     tabla_transacciones.configure(yscroll=scrollbar.set)

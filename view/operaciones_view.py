@@ -42,7 +42,7 @@ def nueva_operacion(parent=None):
     entry_buscar = None
     tabla_busqueda = None
     tabla_carrito = None
-    btn_quitar = None
+    boton_quitar = None
 
     # Configuro el frame contenedor principal para poder cambiar vistas
     frame_principal = tk.Frame(ventana_nueva_operacion, bg=color_primario)
@@ -161,7 +161,7 @@ def nueva_operacion(parent=None):
         label_buscar = tk.Label(frame_search, text="Buscar:", font=fuente_titulos, bg=color_primario, fg=color_secundario)
         label_buscar.pack(side="left", padx=(0, 10))
         
-        nonlocal entry_buscar, tabla_busqueda, tabla_carrito, btn_quitar
+        nonlocal entry_buscar, tabla_busqueda, tabla_carrito, boton_quitar
         
         entry_buscar = ttk.Entry(frame_search, font=fuente_texto, width=25)
         entry_buscar.pack(side="left")
@@ -194,9 +194,9 @@ def nueva_operacion(parent=None):
         img_carrito = Image.open(obtener_ruta_recurso("carrito.ico"))
         img_carrito = img_carrito.resize((20, 20))
         icono_carrito = ImageTk.PhotoImage(img_carrito)
-        btn_agregar = ttk.Button(frame_agregar, image=icono_carrito, text=" Agregar al carrito", compound="left", style="BotonSecundario.TButton")
-        btn_agregar.image = icono_carrito
-        btn_agregar.pack(side="left")
+        boton_agregar = ttk.Button(frame_agregar, image=icono_carrito, text=" Agregar al carrito", compound="left", style="BotonSecundario.TButton")
+        boton_agregar.image = icono_carrito
+        boton_agregar.pack(side="left")
 
         frame_tabla_busqueda.pack(fill="both", expand=True) # Empaqueto la tabla
 
@@ -212,9 +212,9 @@ def nueva_operacion(parent=None):
         img_tacho = Image.open(obtener_ruta_recurso("tacho.ico"))
         img_tacho = img_tacho.resize((20, 20))
         icono_tacho = ImageTk.PhotoImage(img_tacho)
-        btn_quitar = ttk.Button(frame_acciones_carrito, image=icono_tacho, style="BotonSecundario.TButton")
-        btn_quitar.image = icono_tacho
-        btn_quitar.pack(side="right", padx=(10, 0))
+        boton_quitar = ttk.Button(frame_acciones_carrito, image=icono_tacho, style="BotonSecundario.TButton")
+        boton_quitar.image = icono_tacho
+        boton_quitar.pack(side="right", padx=(10, 0))
 
         lbl_total_pesos = tk.Label(frame_acciones_carrito, text="$ 0.00", bg=color_primario, fg="white", font=("Arial", 12, "bold"))
         lbl_total_pesos.pack(side="right", padx=(5, 0))
@@ -242,14 +242,14 @@ def nueva_operacion(parent=None):
         frame_final = tk.Frame(frame_principal, bg=color_primario)
         frame_final.grid(row=1, column=0, columnspan=2, pady=20)
         
-        btn_guardar = ttk.Button(frame_final, text="Guardar y Remito", style="BotonSecundario.TButton", cursor="hand2", width=20)
-        btn_guardar.pack(side="left", padx=10)
+        boton_siguiente = ttk.Button(frame_final, text="Siguiente", style="BotonSecundario.TButton", cursor="hand2")
+        boton_siguiente.pack(side="left", padx=10)
         
-        btn_cancelar = ttk.Button(frame_final, text="Cancelar", style="BotonSecundario.TButton", cursor="hand2", command=ventana_nueva_operacion.destroy)
-        btn_cancelar.pack(side="left", padx=10)
+        boton_cancelar = ttk.Button(frame_final, text="Cancelar", style="BotonSecundario.TButton", cursor="hand2", command=ventana_nueva_operacion.destroy)
+        boton_cancelar.pack(side="left", padx=10)
 
         # --- Conecto lógica funcional ---
-        setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agregar, btn_quitar, ventana_nueva_operacion)
+        setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, boton_agregar, boton_quitar, ventana_nueva_operacion)
 
 
     # Inicio el flujo
