@@ -15,13 +15,14 @@ def listado_deudores():
     ventana_listado_deudores_instancia = ventana_listado_deudores
     ventana_listado_deudores.title("Listado de deudores")
     ventana_listado_deudores.configure(bg=color_primario)
+
     try:
         ventana_listado_deudores.iconbitmap(obtener_ruta_recurso("colmena.ico"))
     except: pass
     ventana_listado_deudores.resizable(False, False)
     
     # Aumento el ancho para que entren todas las columnas
-    ancho_ventana = 1200
+    ancho_ventana = 1350
     alto_ventana = 600
     centrar_ventana_interna(ventana_listado_deudores, ancho_ventana, alto_ventana)
 
@@ -52,7 +53,7 @@ def listado_deudores():
 
 
     # Configuro el Treeview (Tabla)
-    columnas = ("id", "nombre", "monto_pesos", "monto_dolares_hist", "monto_dolares_actual", "monto_miel_hist", "monto_miel_actual")
+    columnas = ("id", "nombre", "fecha", "monto_pesos", "monto_dolares_hist", "monto_dolares_actual", "monto_miel_hist", "monto_miel_actual")
     
     tabla_deudores = ttk.Treeview(frame_tabla_deudores, columns=columnas, show="headings", 
                                   yscrollcommand=scrollbar.set, height=20)
@@ -60,6 +61,7 @@ def listado_deudores():
     # Defino las cabeceras
     tabla_deudores.heading("id", text="ID")
     tabla_deudores.heading("nombre", text="Nombre")
+    tabla_deudores.heading("fecha", text="Fecha")
     tabla_deudores.heading("monto_pesos", text="Pesos")
     tabla_deudores.heading("monto_dolares_hist", text="USD (Hist)")
     tabla_deudores.heading("monto_dolares_actual", text="USD (Hoy)")
@@ -69,6 +71,7 @@ def listado_deudores():
     # Defino las columnas
     tabla_deudores.column("id", width=50, anchor="center")
     tabla_deudores.column("nombre", width=250, anchor="w")
+    tabla_deudores.column("fecha", width=100, anchor="center")
     tabla_deudores.column("monto_pesos", width=120, anchor="e")
     tabla_deudores.column("monto_dolares_hist", width=120, anchor="e")
     tabla_deudores.column("monto_dolares_actual", width=120, anchor="e")
@@ -83,7 +86,4 @@ def listado_deudores():
 
 
 if __name__ == "__main__":
-    root = tk.Tk()
-    root.withdraw()
     listado_deudores()
-    root.mainloop()

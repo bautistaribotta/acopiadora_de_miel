@@ -307,7 +307,7 @@ def nuevo_cliente_vista(callback=None):
         ventana_nuevo_cliente_instancia.lift()
         return
 
-    ventana_nuevo_cliente = tk.Toplevel()
+    ventana_nuevo_cliente = tk.Toplevel(ventana_clientes_instancia)
     ventana_nuevo_cliente_instancia = ventana_nuevo_cliente
 
     ventana_nuevo_cliente.title("Nuevo Cliente")
@@ -456,7 +456,7 @@ def editar_cliente_vista(id_cliente, callback=None):
         ventana_editar_cliente_instancia.lift()
         return
 
-    ventana_editar_cliente = tk.Toplevel()
+    ventana_editar_cliente = tk.Toplevel(ventana_clientes_instancia)
     ventana_editar_cliente_instancia = ventana_editar_cliente
 
     ventana_editar_cliente.title("Editar cliente")

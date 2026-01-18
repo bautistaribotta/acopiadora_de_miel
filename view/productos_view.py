@@ -185,8 +185,8 @@ def listado_productos():
     tabla_productos.heading("cantidad", text="Stock")
 
     tabla_productos.column("id", width=80, anchor="center")
-    tabla_productos.column("nombre", width=250, anchor="w")
-    tabla_productos.column("categoria", width=200, anchor="center")
+    tabla_productos.column("nombre", width=330, anchor="w")
+    tabla_productos.column("categoria", width=120, anchor="center")
     tabla_productos.column("precio", width=100, anchor="center")
     tabla_productos.column("cantidad", width=100, anchor="center")
 
@@ -228,7 +228,7 @@ def nuevo_producto_vista(callback):
         ventana_nuevo_producto_instancia.lift()
         return
 
-    ventana_nuevo_producto = tk.Toplevel()
+    ventana_nuevo_producto = tk.Toplevel(ventana_productos_instancia)
     ventana_nuevo_producto_instancia = ventana_nuevo_producto
 
     ventana_nuevo_producto.title("Nuevo producto")
@@ -341,7 +341,7 @@ def editar_producto_vista(id_producto, callback=None):
         ventana_editar_producto_instancia.lift()
         return
 
-    ventana_editar_producto = tk.Toplevel()
+    ventana_editar_producto = tk.Toplevel(ventana_productos_instancia)
     ventana_editar_producto_instancia = ventana_editar_producto
 
     ventana_editar_producto.title("Editar producto")
