@@ -2,6 +2,15 @@ import os
 from tkinter import ttk
 
 
+color_primario = "#2B303A"
+color_secundario = "#EEE5E9"
+color_terciario = ""
+color_zebra = "#D3D3D3"
+
+fuente_titulos = "Arial", 16, "bold"
+fuente_texto = "Arial", 12, "bold"
+
+
 def obtener_ruta_recurso(nombre_archivo):
     # Devuelvo la ruta absoluta al recurso en la carpeta 'recursos'
     directorio_actual = os.path.dirname(os.path.abspath(__file__))
@@ -23,15 +32,6 @@ def centrar_ventana_interna(ventana, aplicacion_ancho, aplicacion_alto):
     x = int(ancho / 2) - int(aplicacion_ancho / 2)
     y = int(alto / 2) - int(aplicacion_alto / 2)
     ventana.geometry(f"{aplicacion_ancho}x{aplicacion_alto}+{x}+{y}")
-
-
-color_primario = "#2B303A"
-color_secundario = "#EEE5E9"
-color_terciario = ""
-color_zebra = "#D3D3D3"
-
-fuente_titulos = "Arial", 16, "bold"
-fuente_texto = "Arial", 12, "bold"
 
 
 def configurar_estilos(root):
