@@ -304,6 +304,9 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
             except:
                 continue
             
+            # Convertimos a string para usar como clave consistente
+            item_id = str(valores[0])
+            
             if item_id in cantidades:
                 cantidades[item_id] += cantidad
             else:
@@ -328,7 +331,8 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
 
             # Calcular stock visual
             try:
-                stock_visual = int(float(p_stock_real) - en_carrito.get(p_id, 0))
+                # Convertimos explícitamente a str ambos lados para asegurar el match en el diccionario
+                stock_visual = int(float(p_stock_real) - en_carrito.get(str(p_id), 0))
             except:
                 stock_visual = 0
 

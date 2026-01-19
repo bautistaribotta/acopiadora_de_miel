@@ -1,6 +1,5 @@
 import tkinter as tk
 from tkinter import ttk
-from PIL import Image, ImageTk
 from view.estilos import color_primario, color_secundario, fuente_texto, configurar_estilos, obtener_ruta_recurso
 
 
@@ -38,20 +37,8 @@ def mostrar_logo_central(ventana):
     frame_central.grid_rowconfigure(0, weight=1)
     frame_central.grid_columnconfigure(0, weight=1)
 
-    try:
-        ruta_logo = obtener_ruta_recurso("logo_grande.ico")
-        imagen_pil = Image.open(ruta_logo)
-        # Redimensiono la imagen si es necesario
-        imagen_pil = imagen_pil.resize((400, 400), Image.Resampling.LANCZOS)
-        imagen_logo = ImageTk.PhotoImage(imagen_pil)
-        
-        label_logo = tk.Label(frame_central, image=imagen_logo, bg=color_primario)
-        label_logo.image = imagen_logo  # Mantengo referencia
-        label_logo.grid(row=0, column=0)
-    except Exception:
-        # Si falla la imagen, muestro un texto
-        tk.Label(frame_central, text="Southern Honey Group", font=("Arial", 30, "bold"), 
-                 bg=color_primario, fg=color_secundario).grid(row=0, column=0)
+    tk.Label(frame_central, text="Southern Honey Group", font=("Arial", 30, "bold"),
+                            bg=color_primario, fg=color_secundario).grid(row=0, column=0)
 
 
 def pantalla_administrador():
