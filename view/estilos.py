@@ -4,7 +4,6 @@ from tkinter import ttk
 
 color_primario = "#2B303A"
 color_secundario = "#EEE5E9"
-color_terciario = ""
 color_zebra = "#D3D3D3"
 
 fuente_titulos = "Arial", 16, "bold"
