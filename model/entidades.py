@@ -19,14 +19,13 @@ class Producto:
 
 
 class Operacion:
-    def __init__(self, id_cliente, monto_total, total_en_dolares, total_en_kilos_miel, valor_dolar, valor_kilo_miel, fecha=None):
+    def __init__(self, id_cliente, fecha, observaciones, monto_total, valor_dolar, valor_kilo_miel):
         self.id_cliente = id_cliente
+        self.fecha = fecha
+        self.observaciones = observaciones
         self.monto_total = monto_total
-        self.total_en_dolares = total_en_dolares
-        self.total_en_kilos_miel = total_en_kilos_miel
         self.valor_dolar = valor_dolar
         self.valor_kilo_miel = valor_kilo_miel
-        self.fecha = fecha
 
 
 class DetalleOperacion:

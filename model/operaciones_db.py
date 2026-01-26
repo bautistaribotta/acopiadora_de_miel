@@ -13,9 +13,7 @@ def buscar_operaciones_cliente(id_cliente):
 def nueva_operacion(operacion: Operacion, lista_detalles: list):
     with abrir_conexion() as (cursor, conexion):
         sql_operacion = """
-            INSERT INTO operaciones 
-            (id_cliente, monto_total, valor_dolar, valor_kilo_miel) 
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO operaciones (id_cliente, monto_total, valor_dolar, valor_kilo_miel) VALUES (%s, %s, %s, %s)
         """
         valores_operacion = (
             operacion.id_cliente,
@@ -40,3 +38,34 @@ def nueva_operacion(operacion: Operacion, lista_detalles: list):
 
         cursor.executemany(sql_detalle, datos_detalles)
         conexion.commit()
+
+
+def editar_operacion(id_operacion, operacion : Operacion, lista_detalles: list):
+    with abrir_conexion() as (cursor, conexion):
+        # 1 - Actualizo la operacion
+        sql_operacion = """ 
+        UPDATE operaciones SET observaciones=%s, monto_total=%s 
+        WHERE id=%s
+        """
+        valores = operacion.observaciones, operacion.monto_total
+        cursor.execute(sql_operacion, valores)
+
+        # 2 - Borro el detalle de la operacion antes de volver a crearlo
+        sql_borrar_detalle = "DELETE FROM detalle_operaciones WHERE id_operacion=%s"
+        cursor.execute(sql_borrar_detalle, id_operacion,)
+
+        # 3 - Inserto los nuevos detalles
+        sql_operacion = """
+            INSERT INTO detalle_operaciones (id_operacion, id_producto, cantidad) 
+            VALUES (%s, %s, %s)"""
+
+        datos_detalle = []
+        for detalle in lista_detalles:
+            datos_detalle.append(id_operacion, detalle.id_producto, detalle.cantidad)
+
+        cursor.executemany(datos_detalle)
+        cursor.commit()
+
+
+def eliminar_operacion():
+    pass
