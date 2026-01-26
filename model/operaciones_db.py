@@ -12,3 +12,6 @@ def buscar_operaciones_cliente(id_cliente):
         cursor.execute(intruccion_sql, id_cliente)
         resultados = cursor.fetchall()
         return resultados
+
+
+def nueva_operacion(id_cliente):

@@ -36,6 +36,14 @@ class DetalleOperacion:
         self.cantidad = cantidad
 
 
+class Pago:
+    def __init__(self, id_pago, id_operacion, fecha, monto):
+        self.id = id_pago
+        self.id_operacion = id_operacion
+        self.fecha = fecha
+        self.monto = monto
+
+
 class Remito:
     def __init__(self):
         pass
