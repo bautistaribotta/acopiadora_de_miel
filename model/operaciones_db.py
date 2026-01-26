@@ -1,11 +1,11 @@
 from model.conexion_db import abrir_conexion
-from model.entidades import Operacion, DetalleOperacion
+from model.entidades import Operacion
 
 
 def buscar_operaciones_cliente(id_cliente):
     with abrir_conexion() as (cursor, conexion):
         intruccion_sql = "SELECT * FROM operaciones WHERE id_cliente = %s"
-        cursor.execute(intruccion_sql, id_cliente)
+        cursor.execute(intruccion_sql, (id_cliente,))
         resultados = cursor.fetchall()
         return resultados
 
@@ -13,13 +13,14 @@ def buscar_operaciones_cliente(id_cliente):
 def nueva_operacion(operacion: Operacion, lista_detalles: list):
     with abrir_conexion() as (cursor, conexion):
         sql_operacion = """
-            INSERT INTO operaciones (id_cliente, monto_total, valor_dolar, valor_kilo_miel) VALUES (%s, %s, %s, %s)
+            INSERT INTO operaciones (id_cliente, monto_total, valor_dolar, valor_kilo_miel, observaciones) VALUES (%s, %s, %s, %s)
         """
         valores_operacion = (
             operacion.id_cliente,
             operacion.monto_total,
             operacion.valor_dolar,
-            operacion.valor_kilo_miel
+            operacion.valor_kilo_miel,
+            operacion.observaciones
         )
         cursor.execute(sql_operacion, valores_operacion)
 
@@ -47,12 +48,12 @@ def editar_operacion(id_operacion, operacion : Operacion, lista_detalles: list):
         UPDATE operaciones SET observaciones=%s, monto_total=%s 
         WHERE id=%s
         """
-        valores = operacion.observaciones, operacion.monto_total
+        valores = (operacion.observaciones, operacion.monto_total, id_operacion)
         cursor.execute(sql_operacion, valores)
 
         # 2 - Borro el detalle de la operacion antes de volver a crearlo
         sql_borrar_detalle = "DELETE FROM detalle_operaciones WHERE id_operacion=%s"
-        cursor.execute(sql_borrar_detalle, id_operacion,)
+        cursor.execute(sql_borrar_detalle, (id_operacion,))
 
         # 3 - Inserto los nuevos detalles
         sql_operacion = """
@@ -61,11 +62,15 @@ def editar_operacion(id_operacion, operacion : Operacion, lista_detalles: list):
 
         datos_detalle = []
         for detalle in lista_detalles:
-            datos_detalle.append(id_operacion, detalle.id_producto, detalle.cantidad)
+            datos_detalle.append((id_operacion, detalle.id_producto, detalle.cantidad))
 
-        cursor.executemany(datos_detalle)
-        cursor.commit()
+        cursor.executemany(sql_operacion, datos_detalle)
+        conexion.commit()
 
 
-def eliminar_operacion():
-    pass
+def eliminar_operacion(id_operacion):
+    with abrir_conexion() as (cursor, conexion):
+        instruccion_sql = "DELETE FROM operaciones WHERE id=%s"
+        cursor.execute(instruccion_sql, (id_operacion,))
+
+        conexion.commit()
