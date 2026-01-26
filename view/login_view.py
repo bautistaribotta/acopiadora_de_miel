@@ -12,8 +12,8 @@ def mostrar_login():
     
     try:
         ventana_login.iconbitmap(obtener_ruta_recurso("colmena.ico"))
-    except:
-        pass
+    except Exception as e:
+        messagebox.showwarning("Error", "No se pudo cargar el icono: ")
         
     configurar_estilos(ventana_login)
 
