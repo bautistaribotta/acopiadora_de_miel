@@ -13,7 +13,7 @@ def buscar_operaciones_cliente(id_cliente):
 def nueva_operacion(operacion: Operacion, lista_detalles: list):
     with abrir_conexion() as (cursor, conexion):
         sql_operacion = """
-            INSERT INTO operaciones (id_cliente, monto_total, valor_dolar, valor_kilo_miel, observaciones) VALUES (%s, %s, %s, %s)
+            INSERT INTO operaciones (id_cliente, monto_total, valor_dolar, valor_kilo_miel, observaciones) VALUES (%s, %s, %s, %s, %s)
         """
         valores_operacion = (
             operacion.id_cliente,
