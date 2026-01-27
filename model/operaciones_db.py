@@ -36,14 +36,15 @@ def obtener_detalles_operacion(id_operacion):
 def nueva_operacion(operacion: Operacion, lista_detalles: list):
     with abrir_conexion() as (cursor, conexion):
         sql_operacion = """
-            INSERT INTO operaciones (id_cliente, monto_total, valor_dolar, valor_kilo_miel, observaciones) VALUES (%s, %s, %s, %s, %s)
+            INSERT INTO operaciones (id_cliente, monto_total, valor_dolar, valor_kilo_miel, observaciones, metodo_de_pago) VALUES (%s, %s, %s, %s, %s, %s)
         """
         valores_operacion = (
             operacion.id_cliente,
             operacion.monto_total,
             operacion.valor_dolar,
             operacion.valor_kilo_miel,
-            operacion.observaciones
+            operacion.observaciones,
+            operacion.metodo_de_pago
         )
         cursor.execute(sql_operacion, valores_operacion)
 
@@ -68,10 +69,10 @@ def editar_operacion(id_operacion, operacion : Operacion, lista_detalles: list):
     with abrir_conexion() as (cursor, conexion):
         # 1 - Actualizo la operacion
         sql_operacion = """ 
-        UPDATE operaciones SET observaciones=%s, monto_total=%s 
+        UPDATE operaciones SET observaciones=%s, monto_total=%s, metodo_de_pago=%s 
         WHERE id=%s
         """
-        valores = (operacion.observaciones, operacion.monto_total, id_operacion)
+        valores = (operacion.observaciones, operacion.monto_total, operacion.metodo_de_pago, id_operacion)
         cursor.execute(sql_operacion, valores)
 
         # 2 - Borro el detalle de la operacion antes de volver a crearlo

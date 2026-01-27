@@ -2,9 +2,21 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from PIL import Image, ImageTk
 from view.estilos import *
+from model.operaciones_db import nueva_operacion
+from model.productos_db import modificar_stock_db
+from model.entidades import Operacion, DetalleOperacion
+from controller.cotizaciones import get_cotizacion_oficial_venta, get_cotizacion_miel_clara
+from controller.clientes_controlador import listar_clientes_controlador, buscador_clientes_controlador
+from controller.operaciones_controlador import crear_nueva_operacion
+from controller.productos_controlador import informacion_producto_controlador
+
+
 
 ventana_nueva_operacion_instancia = None
 ventana_editar_operacion_instancia = None
+
+
+
 
 
 def nueva_operacion(parent=None):
@@ -30,9 +42,6 @@ def nueva_operacion(parent=None):
     # Permito redimensionar para evitar problemas de visualización
     ventana_nueva_operacion.resizable(True, True)
     centrar_ventana_interna(ventana_nueva_operacion, ancho_ventana, alto_ventana)
-
-    # --- Lógica de selección de cliente ---
-    from controller.clientes_controlador import listar_clientes_controlador, buscador_clientes_controlador
     
     # Variables de estado
     cliente_seleccionado_id = None
@@ -126,8 +135,66 @@ def nueva_operacion(parent=None):
         frame_botones = tk.Frame(frame_principal, bg=color_primario)
         frame_botones.grid(row=3, column=0, columnspan=2, pady=20)
         
+        # Lógica de selección de cliente
+        def on_cliente_select(event):
+            selection = tabla_cli.selection()
+            if selection:
+                nonlocal cliente_seleccionado_id, cliente_seleccionado_nombre
+                item = tabla_cli.item(selection[0])
+                vals = item['values']
+                cliente_seleccionado_id = vals[0]
+                cliente_seleccionado_nombre = vals[1]
+                
+        tabla_cli.bind("<<TreeviewSelect>>", on_cliente_select)
+
+        # Funcionalidad del Botón Guardar
+        def guardar_y_remito():
+            if not cliente_seleccionado_id:
+                messagebox.showwarning("Error", "Seleccione un cliente.", parent=ventana_nueva_operacion)
+                return
+
+            metodo = combo_pago.get()
+            if not metodo:
+                 messagebox.showwarning("Error", "Seleccione un método de pago.", parent=ventana_nueva_operacion)
+                 return
+            
+            obs = txt_detalle.get("1.0", "end-1c")
+
+            # Armar lista_items_carrito
+            lista_items = []
+            monto_total_calc = 0.0
+            
+            for pid, cant in items_carrito.items():
+                lista_items.append({'id': pid, 'cantidad': cant})
+                # Calcular precio
+                prod = informacion_producto_controlador(pid)
+                if prod:
+                    try:
+                        stock_or_cant = float(cant)
+                        precio = float(prod.precio)
+                        monto_total_calc += precio * stock_or_cant
+                    except:
+                        pass
+
+            # Obtener cotizaciones
+            dolar = get_cotizacion_oficial_venta()
+            kilo_miel = get_cotizacion_miel_clara()
+
+            exito = crear_nueva_operacion(
+                id_cliente=cliente_seleccionado_id,
+                monto_total=monto_total_calc,
+                lista_items_carrito=lista_items,
+                valor_dolar=dolar,
+                valor_kilo_miel=kilo_miel,
+                metodo_de_pago=metodo,
+                observaciones=obs
+            )
+
+            if exito:
+                ventana_nueva_operacion.destroy()
+
         # Boton Guardar y Remito
-        btn_guardar = ttk.Button(frame_botones, text="Guardar y Remito", style="BotonSecundario.TButton")
+        btn_guardar = ttk.Button(frame_botones, text="Guardar y Remito", style="BotonSecundario.TButton", command=guardar_y_remito)
         btn_guardar.pack(side="left", padx=(0, 10))
         
         # Boton Cancelar
@@ -312,6 +379,7 @@ def setup_logica_operacion(entry_buscar, tabla_busqueda, tabla_carrito, btn_agre
             else:
                 cantidades[item_id] = cantidad
         return cantidades
+
 
     def actualizar_listado_busqueda(filtro=""):
         # Obtener lo que ya esta en el carrito para restarlo visualmente

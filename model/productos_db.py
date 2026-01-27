@@ -34,7 +34,9 @@ def eliminar_producto(id_producto):
         conexion.commit()
 
 
-def sumar_stock_db(id_producto, cantidad):
+def modificar_stock_db(id_producto, cantidad):
+    # Como siempre SUMA, si envio un numero negatico, por regla de signos
+    # deberia restar el stock
     with abrir_conexion() as (cursor, conexion):
         instruccion_sql = "UPDATE productos SET cantidad = cantidad + %s WHERE id = %s"
         valores = (cantidad, id_producto)

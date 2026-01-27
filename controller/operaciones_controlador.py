@@ -30,7 +30,7 @@ def mostrar_operacion(id_operacion):
         return None
 
 
-def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_dolar, valor_kilo_miel, observaciones=""):
+def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_dolar, valor_kilo_miel, metodo_de_pago, observaciones=""):
     # 1. Validaciones
     if not id_cliente:
         messagebox.showwarning("Error", "Debe seleccionar un cliente.")
@@ -48,6 +48,7 @@ def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_do
             monto_total=monto_total,
             valor_dolar=valor_dolar,
             valor_kilo_miel=valor_kilo_miel,
+            metodo_de_pago=metodo_de_pago,
             observaciones=observaciones
         )
 
@@ -74,7 +75,7 @@ def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_do
         return False
 
 
-def ejecutar_edicion_operacion(id_operacion, monto_total, lista_items_carrito, observaciones=""):
+def ejecutar_edicion_operacion(id_operacion, monto_total, lista_items_carrito, metodo_de_pago, observaciones=""):
     if not lista_items_carrito:
         messagebox.showwarning("Error", "El carrito de productos está vacío.")
         return False
@@ -87,7 +88,8 @@ def ejecutar_edicion_operacion(id_operacion, monto_total, lista_items_carrito, o
             observaciones=observaciones,
             monto_total=monto_total,
             valor_dolar=0,
-            valor_kilo_miel=0
+            valor_kilo_miel=0,
+            metodo_de_pago=metodo_de_pago
         )
 
         lista_detalles = []

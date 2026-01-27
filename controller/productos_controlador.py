@@ -90,7 +90,7 @@ def sumar_stock_controlador(id_producto, cantidad, ventana, callback=None):
         cantidad_float = float(cantidad)
         # Permito negativos para restar stock, solo valido que sea número
         
-        sumar_stock_db(id_producto, cantidad_float)
+        modificar_stock_db(id_producto, cantidad_float)
         messagebox.showinfo("Éxito", "Stock actualizado correctamente.", parent=ventana)
         
         if callback:
