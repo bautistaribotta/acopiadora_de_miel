@@ -3,6 +3,8 @@ from model.entidades import Operacion
 
 
 def buscar_operaciones_cliente(id_cliente):
+    # Esta funcion se utiliza para mostrar en la vista de infomarcion_cliente
+    #  un listado de todas las operaciones que hizo
     with abrir_conexion() as (cursor, conexion):
         intruccion_sql = "SELECT * FROM operaciones WHERE id_cliente = %s"
         cursor.execute(intruccion_sql, (id_cliente,))
@@ -77,6 +79,7 @@ def eliminar_operacion(id_operacion):
 
 
 def obtener_operacion_por_id(id_operacion):
+    # Esta funcion se utiliza para mostrar la informacion de una operacion
     with abrir_conexion() as (cursor, conexion):
         sql = "SELECT * FROM operaciones WHERE id = %s"
         cursor.execute(sql, (id_operacion,))
@@ -84,6 +87,7 @@ def obtener_operacion_por_id(id_operacion):
 
 
 def obtener_detalles_operacion(id_operacion):
+    # Esta funcion se utiliza para mostrar la informacion de los detalles de una operacion
     with abrir_conexion() as (cursor, conexion):
         sql = """
             SELECT do.id_producto, p.nombre, do.cantidad, p.precio 

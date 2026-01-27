@@ -4,13 +4,6 @@ from tkinter import messagebox
 
 
 def mostrar_operacion(id_operacion):
-    """
-    Retorna un diccionario con la información completa de la operación:
-    {
-        "operacion": (id, id_cliente, fecha, observaciones, monto_total, ...),
-        "detalles": [(id_producto, nombre_producto, cantidad, precio), ...]
-    }
-    """
     try:
         data_operacion = obtener_operacion_por_id(id_operacion)
         if not data_operacion:
@@ -29,18 +22,6 @@ def mostrar_operacion(id_operacion):
 
 
 def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_dolar, valor_kilo_miel, observaciones=""):
-    """
-    Recibe los datos de la vista, crea los objetos necesarios y llama a la base de datos.
-
-    :param id_cliente: ID del cliente seleccionado.
-    :param monto_total: Total de la operación (en pesos).
-    :param lista_items_carrito: Lista de objetos del carrito (deben tener .id y .cantidad).
-    :param valor_dolar: Cotización del dólar al momento de la venta.
-    :param valor_kilo_miel: Precio de la miel al momento de la venta.
-    :param observaciones: Texto opcional.
-    :return: True si se guardó con éxito, False si hubo error.
-    """
-
     # 1. Validaciones
     if not id_cliente:
         messagebox.showwarning("Error", "Debe seleccionar un cliente.")
