@@ -50,18 +50,24 @@ def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_do
         # 4. Llamar al modelo para guardar todo en una transacción
         nueva_operacion(nueva_op, lista_detalles)
 
-        messagebox.showinfo("Éxito", "Operación registrada correctamente.")
+        messagebox.showinfo("Exito", "Operación registrada correctamente.")
         return True
 
     except Exception as e:
         # Si algo falla en la base de datos, mostramos el error
-        messagebox.showerror("Error", f"Ocurrió un error al guardar la operación:\n{e}")
+        messagebox.showerror("Error", f"Ocurrió un error al guardar la operación: {e}")
         return False
 
 
-def ejecutar_eliminacion_operacion():
-    pass
+def ejecutar_eliminacion_operacion(id_operacion):
+    try:
+        eliminar_operacion(id_operacion)
+        messagebox.showinfo("Exito", "Operacion eliminada correctamente")
+        return True
+    except Exception as e:
+        messagebox.showerror("Error", f"Ocurrio un error al eliminar la operacion: {e}")
+        return False
 
 
-def ejecutar_eliminado_operacion():
+def ejecutar_edicion_operacion():
     pass
