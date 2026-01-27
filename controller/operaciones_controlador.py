@@ -3,6 +3,31 @@ from model.operaciones_db import *
 from tkinter import messagebox
 
 
+def mostrar_operacion(id_operacion):
+    """
+    Retorna un diccionario con la información completa de la operación:
+    {
+        "operacion": (id, id_cliente, fecha, observaciones, monto_total, ...),
+        "detalles": [(id_producto, nombre_producto, cantidad, precio), ...]
+    }
+    """
+    try:
+        data_operacion = obtener_operacion_por_id(id_operacion)
+        if not data_operacion:
+            return None
+
+        detalles = obtener_detalles_operacion(id_operacion)
+
+        return {
+            "operacion": data_operacion,
+            "detalles": detalles
+        }
+
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo cargar la operación: {e}")
+        return None
+
+
 def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_dolar, valor_kilo_miel, observaciones=""):
     """
     Recibe los datos de la vista, crea los objetos necesarios y llama a la base de datos.
@@ -59,6 +84,40 @@ def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_do
         return False
 
 
+def ejecutar_edicion_operacion(id_operacion, monto_total, lista_items_carrito, observaciones=""):
+    if not lista_items_carrito:
+        messagebox.showwarning("Error", "El carrito de productos está vacío.")
+        return False
+
+    # Creo el objeto Operacion y le paso "valores dummy" los cuales no
+    # seran utilizados en la consulta a la base de datos
+    try:
+        op_actualizada = Operacion(
+            id_cliente=0,
+            observaciones=observaciones,
+            monto_total=monto_total,
+            valor_dolar=0,
+            valor_kilo_miel=0
+        )
+
+        lista_detalles = []
+        for item in lista_items_carrito:
+            detalle = DetalleOperacion(
+                id_operacion=id_operacion,
+                id_producto=item['id'],
+                cantidad=item['cantidad']
+            )
+            lista_detalles.append(detalle)
+
+        editar_operacion(id_operacion, op_actualizada, lista_detalles)
+        messagebox.showinfo("Exito", "Operación editada correctamente.")
+        return True
+
+    except Exception as e:
+        messagebox.showerror("Error", f"Ocurrió un error al editar la operación: {e}")
+        return False
+
+
 def ejecutar_eliminacion_operacion(id_operacion):
     try:
         eliminar_operacion(id_operacion)
@@ -67,7 +126,3 @@ def ejecutar_eliminacion_operacion(id_operacion):
     except Exception as e:
         messagebox.showerror("Error", f"Ocurrio un error al eliminar la operacion: {e}")
         return False
-
-
-def ejecutar_edicion_operacion():
-    pass

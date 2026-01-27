@@ -74,3 +74,22 @@ def eliminar_operacion(id_operacion):
         cursor.execute(instruccion_sql, (id_operacion,))
 
         conexion.commit()
+
+
+def obtener_operacion_por_id(id_operacion):
+    with abrir_conexion() as (cursor, conexion):
+        sql = "SELECT * FROM operaciones WHERE id = %s"
+        cursor.execute(sql, (id_operacion,))
+        return cursor.fetchone()
+
+
+def obtener_detalles_operacion(id_operacion):
+    with abrir_conexion() as (cursor, conexion):
+        sql = """
+            SELECT do.id_producto, p.nombre, do.cantidad, p.precio 
+            FROM detalle_operaciones do
+            JOIN productos p ON do.id_producto = p.id
+            WHERE do.id_operacion = %s
+        """
+        cursor.execute(sql, (id_operacion,))
+        return cursor.fetchall()
