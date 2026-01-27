@@ -4,12 +4,33 @@ from model.entidades import Operacion
 
 def buscar_operaciones_cliente(id_cliente):
     # Esta funcion se utiliza para mostrar en la vista de infomarcion_cliente
-    #  un listado de todas las operaciones que hizo
+    # un listado de todas las operaciones que hizo
     with abrir_conexion() as (cursor, conexion):
         intruccion_sql = "SELECT * FROM operaciones WHERE id_cliente = %s"
         cursor.execute(intruccion_sql, (id_cliente,))
         resultados = cursor.fetchall()
         return resultados
+
+
+def obtener_operacion_por_id(id_operacion):
+    # Esta funcion se utiliza para mostrar la informacion de una operacion
+    with abrir_conexion() as (cursor, conexion):
+        sql = "SELECT * FROM operaciones WHERE id = %s"
+        cursor.execute(sql, (id_operacion,))
+        return cursor.fetchone()
+
+
+def obtener_detalles_operacion(id_operacion):
+    # Esta funcion se utiliza para mostrar la informacion de los detalles de una operacion
+    with abrir_conexion() as (cursor, conexion):
+        sql = """
+            SELECT do.id_producto, p.nombre, do.cantidad, p.precio 
+            FROM detalle_operaciones do
+            JOIN productos p ON do.id_producto = p.id
+            WHERE do.id_operacion = %s
+        """
+        cursor.execute(sql, (id_operacion,))
+        return cursor.fetchall()
 
 
 def nueva_operacion(operacion: Operacion, lista_detalles: list):
@@ -77,23 +98,3 @@ def eliminar_operacion(id_operacion):
 
         conexion.commit()
 
-
-def obtener_operacion_por_id(id_operacion):
-    # Esta funcion se utiliza para mostrar la informacion de una operacion
-    with abrir_conexion() as (cursor, conexion):
-        sql = "SELECT * FROM operaciones WHERE id = %s"
-        cursor.execute(sql, (id_operacion,))
-        return cursor.fetchone()
-
-
-def obtener_detalles_operacion(id_operacion):
-    # Esta funcion se utiliza para mostrar la informacion de los detalles de una operacion
-    with abrir_conexion() as (cursor, conexion):
-        sql = """
-            SELECT do.id_producto, p.nombre, do.cantidad, p.precio 
-            FROM detalle_operaciones do
-            JOIN productos p ON do.id_producto = p.id
-            WHERE do.id_operacion = %s
-        """
-        cursor.execute(sql, (id_operacion,))
-        return cursor.fetchall()

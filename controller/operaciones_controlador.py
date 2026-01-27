@@ -3,6 +3,15 @@ from model.operaciones_db import *
 from tkinter import messagebox
 
 
+def mostrar_listado_operaciones(id_cliente):
+    try:
+        operaciones = buscar_operaciones_cliente(id_cliente)
+        return operaciones
+    except Exception as e:
+        messagebox.showerror("Error", f"No se pudo cargar las operaciones: {e}")
+        return None
+
+
 def mostrar_operacion(id_operacion):
     try:
         data_operacion = obtener_operacion_por_id(id_operacion)
