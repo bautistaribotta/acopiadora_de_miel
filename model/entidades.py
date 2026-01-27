@@ -19,7 +19,7 @@ class Producto:
 
 
 class Operacion:
-    def __init__(self, id_cliente, fecha, observaciones, monto_total, valor_dolar, valor_kilo_miel):
+    def __init__(self, id_cliente, observaciones, monto_total, valor_dolar, valor_kilo_miel, fecha=None):
         self.id_cliente = id_cliente
         self.fecha = fecha
         self.observaciones = observaciones
