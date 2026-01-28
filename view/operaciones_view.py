@@ -22,7 +22,6 @@ def guardar_y_remito(listado_items, id_cliente, total, metodo_pago, nombre, apel
     crear_nueva_operacion(id_cliente, listado_items, total, metodo_pago, valor_dolar, valor_kilo_miel, observaciones)
 
 
-
 def nueva_operacion(parent=None):
     global ventana_nueva_operacion_instancia
     if ventana_nueva_operacion_instancia is not None and ventana_nueva_operacion_instancia.winfo_exists():
@@ -566,29 +565,29 @@ def editar_operacion():
         ventana_editar_operacion_instancia.lift()
         return
 
-    ventana_nueva_operacion = tk.Toplevel()
-    ventana_editar_operacion_instancia = ventana_nueva_operacion
+    ventana_editar_operacion = tk.Toplevel()
+    ventana_editar_operacion_instancia = ventana_editar_operacion
 
-    ventana_nueva_operacion.title("Editar operacion")
-    ventana_nueva_operacion.config(bg=color_primario)
-    ventana_nueva_operacion.resizable(False, False)
+    ventana_editar_operacion.title("Editar operacion")
+    ventana_editar_operacion.config(bg=color_primario)
+    ventana_editar_operacion.resizable(False, False)
     try:
-        ventana_nueva_operacion.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+        ventana_editar_operacion.iconbitmap(obtener_ruta_recurso("colmena.ico"))
     except:
         pass
 
     ancho_ventana = 900
     alto_ventana = 600
-    centrar_ventana_interna(ventana_nueva_operacion, ancho_ventana, alto_ventana)
+    centrar_ventana_interna(ventana_editar_operacion, ancho_ventana, alto_ventana)
 
     # Configuro el grid principal
-    ventana_nueva_operacion.grid_rowconfigure(0, weight=0)  # Header con título, observaciones, búsqueda y botones
-    ventana_nueva_operacion.grid_rowconfigure(1, weight=1)  # Tabla productos
-    ventana_nueva_operacion.grid_rowconfigure(2, weight=0)  # Botones finales
-    ventana_nueva_operacion.grid_columnconfigure(0, weight=1)
+    ventana_editar_operacion.grid_rowconfigure(0, weight=0)  # Header con título, observaciones, búsqueda y botones
+    ventana_editar_operacion.grid_rowconfigure(1, weight=1)  # Tabla productos
+    ventana_editar_operacion.grid_rowconfigure(2, weight=0)  # Botones finales
+    ventana_editar_operacion.grid_columnconfigure(0, weight=1)
 
     # ==================== Configuro Frame Superior - Matriz 2x2 ====================
-    frame_superior = tk.Frame(ventana_nueva_operacion, bg=color_primario)
+    frame_superior = tk.Frame(ventana_editar_operacion, bg=color_primario)
     frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=(20, 10))
 
     # Configuro el grid del frame superior (2 columnas)
@@ -596,7 +595,7 @@ def editar_operacion():
     frame_superior.grid_columnconfigure(1, weight=1)
 
     # Fila 0, Columna 0 - Título
-    label_titulo_tabla = tk.Label(frame_superior, text="Nueva operacion",
+    label_titulo_tabla = tk.Label(frame_superior, text="Editar operación",
                                   font=fuente_titulos, bg=color_primario, fg=color_secundario)
     label_titulo_tabla.grid(row=0, column=0, sticky="w", pady=(0, 15))
 
@@ -624,7 +623,7 @@ def editar_operacion():
     boton_quitar_producto.pack(side="left", padx=5)
 
     # ==================== Configuro Frame Tabla - Productos Agregados ====================
-    frame_tabla = tk.Frame(ventana_nueva_operacion, bg=color_primario)
+    frame_tabla = tk.Frame(ventana_editar_operacion, bg=color_primario)
     frame_tabla.grid(row=1, column=0, sticky="nsew", padx=20, pady=(10, 10))
 
     # Configuro el frame contenedor del Treeview
@@ -658,7 +657,7 @@ def editar_operacion():
     scrollbar_tabla.config(command=tabla_productos.yview)
 
     # ==================== Configuro Frame Botones Finales ====================
-    frame_botones_finales = tk.Frame(ventana_nueva_operacion, bg=color_primario)
+    frame_botones_finales = tk.Frame(ventana_editar_operacion, bg=color_primario)
     frame_botones_finales.grid(row=2, column=0, pady=(10, 20))
 
     # Botón Guardar
@@ -669,8 +668,118 @@ def editar_operacion():
     # Botón Cancelar
     boton_cancelar = ttk.Button(frame_botones_finales, text="Cancelar", style="BotonSecundario.TButton")
     boton_cancelar.config(cursor="hand2",
-                               command=ventana_nueva_operacion.destroy)
+                               command=ventana_editar_operacion.destroy)
     boton_cancelar.pack(side="left", padx=10)
+
+
+
+
+def ver_detalle_operacion(id_operacion):
+    from controller.operaciones_controlador import mostrar_operacion
+    import datetime
+    
+    data = mostrar_operacion(id_operacion)
+    if not data:
+        return
+
+    op = data['operacion']
+    # op structure assumption based on existing code:
+    # 0: id, 1: id_cliente, 2: fecha, 3: observaciones, 4: monto_total, 5: valor_dolar, 6: valor_kilo_miel, 7: metodo_de_pago
+    
+    op_id = op[0]
+    fecha_val = op[2]
+    
+    if isinstance(fecha_val, str):
+         fecha_str = fecha_val
+    elif isinstance(fecha_val, datetime.date) or isinstance(fecha_val, datetime.datetime):
+         fecha_str = fecha_val.strftime("%d/%m/%Y")
+    else:
+         fecha_str = str(fecha_val)
+         
+    obs = op[3] if len(op) > 3 else ""
+    val_dolar = op[4] if len(op) > 4 else 0
+    metodo_pago = op[5] if len(op) > 5 else "N/A"
+    val_miel = op[6] if len(op) > 6 else 0
+    # op[7] is monto_total
+
+    ventana_detalle = tk.Toplevel()
+    ventana_detalle.title(f"Detalle Operación #{id_operacion}")
+    ventana_detalle.config(bg=color_primario)
+    
+    ancho_ventana = 800
+    alto_ventana = 600
+    centrar_ventana_interna(ventana_detalle, ancho_ventana, alto_ventana)
+    
+    try:
+        ventana_detalle.iconbitmap(obtener_ruta_recurso("colmena.ico"))
+    except:
+        pass
+
+    # Main Layout
+    ventana_detalle.grid_rowconfigure(0, weight=0) # Info Superior
+    ventana_detalle.grid_rowconfigure(1, weight=1) # Table
+    ventana_detalle.grid_rowconfigure(2, weight=0) # Bottom Spacer/Frame
+    ventana_detalle.grid_columnconfigure(0, weight=1)
+
+    # --- FRAME SUPERIOR ---
+    frame_superior = tk.Frame(ventana_detalle, bg=color_primario)
+    frame_superior.grid(row=0, column=0, sticky="ew", padx=20, pady=20)
+    
+    # Styles
+    estilo_lbl_titulo = {"font": ("Arial", 10, "bold"), "bg": color_primario, "fg": "white"}
+    estilo_lbl_valor = {"font": ("Arial", 10), "bg": color_primario, "fg": "white"}
+
+    # Grid Info
+    # Row 0: ID | Fecha | Metodo Pago
+    tk.Label(frame_superior, text="ID Operación:", **estilo_lbl_titulo).grid(row=0, column=0, sticky="w", padx=5, pady=5)
+    tk.Label(frame_superior, text=str(op_id), **estilo_lbl_valor).grid(row=0, column=1, sticky="w", padx=(0, 20), pady=5)
+
+    tk.Label(frame_superior, text="Fecha:", **estilo_lbl_titulo).grid(row=0, column=2, sticky="w", padx=5, pady=5)
+    tk.Label(frame_superior, text=fecha_str, **estilo_lbl_valor).grid(row=0, column=3, sticky="w", padx=(0, 20), pady=5)
+
+    tk.Label(frame_superior, text="Método de Pago:", **estilo_lbl_titulo).grid(row=0, column=4, sticky="w", padx=5, pady=5)
+    tk.Label(frame_superior, text=str(metodo_pago), **estilo_lbl_valor).grid(row=0, column=5, sticky="w", padx=5, pady=5)
+
+    # Row 1: Valor Dolar | Valor Miel (Swapped with Observations)
+    tk.Label(frame_superior, text="Valor Dólar:", **estilo_lbl_titulo).grid(row=1, column=0, sticky="w", padx=5, pady=5)
+    tk.Label(frame_superior, text=f"$ {val_dolar}", **estilo_lbl_valor).grid(row=1, column=1, sticky="w", padx=(0, 20), pady=5)
+    
+    tk.Label(frame_superior, text="Valor Kilo Miel:", **estilo_lbl_titulo).grid(row=1, column=2, sticky="w", padx=5, pady=5)
+    tk.Label(frame_superior, text=f"$ {val_miel}", **estilo_lbl_valor).grid(row=1, column=3, sticky="w", padx=(0, 20), pady=5)
+
+    # Row 2: Observaciones (Full Width)
+    tk.Label(frame_superior, text="Observaciones:", **estilo_lbl_titulo).grid(row=2, column=0, sticky="w", padx=5, pady=5)
+    lbl_obs = tk.Label(frame_superior, text=str(obs), **estilo_lbl_valor, wraplength=600, justify="left")
+    lbl_obs.grid(row=2, column=1, columnspan=5, sticky="w", padx=(0, 5), pady=5)
+
+    # --- FRAME MEDIO (TABLA) ---
+    frame_medio = tk.Frame(ventana_detalle, bg=color_primario)
+    frame_medio.grid(row=1, column=0, sticky="nsew", padx=20, pady=(0, 10))
+    
+    # Scrollbar
+    scrollbar_det = ttk.Scrollbar(frame_medio)
+    scrollbar_det.pack(side="right", fill="y")
+    
+    # Treeview
+    cols_det = ("id_prod", "nombre", "cantidad")
+    tabla_detalles = ttk.Treeview(frame_medio, columns=cols_det, show="headings", yscrollcommand=scrollbar_det.set)
+    
+    tabla_detalles.heading("id_prod", text="ID Producto")
+    tabla_detalles.heading("nombre", text="Nombre Producto")
+    tabla_detalles.heading("cantidad", text="Cantidad")
+    
+    tabla_detalles.column("id_prod", width=80, anchor="center")
+    tabla_detalles.column("nombre", width=300, anchor="w")
+    tabla_detalles.column("cantidad", width=100, anchor="center")
+    
+    tabla_detalles.pack(side="left", fill="both", expand=True)
+    scrollbar_det.config(command=tabla_detalles.yview)
+
+
+    # --- FRAME INFERIOR (VACIO) ---
+    frame_inferior = tk.Frame(ventana_detalle, bg=color_primario, height=50)
+    frame_inferior.grid(row=2, column=0, sticky="ew", padx=20, pady=10)
+    # Placeholder vacío
 
 
 if __name__ == "__main__":

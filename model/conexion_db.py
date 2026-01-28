@@ -16,23 +16,24 @@ def abrir_conexion():
     Context manager para gestionar la conexión a la base de datos de manera eficiente.
     Abre la conexión, crea el cursor y se asegura de cerrarlos 
     correctamente incluso si ocurre un error (usando try/finally).
-    
-    Uso:
-        with abrir_conexion() as (cursor, conexion):
-            cursor.execute(...)
-            ...
-    (No olvidar hacer conexion.commit() si modifica datos)
+
+    (No olvidar hacer conexion.commit() si modifico datos)
     """
     conexion = None
     cursor = None
     try:
+        # "**" asteriscos se usan para desglosar un diccionario
         conexion = mysql.connector.connect(**db_configuracion)
         cursor = conexion.cursor()
+        # Yield pausa la ejecucion de la conexion y entrega las variables de la conexion
         yield cursor, conexion
-    except mysql.connector.Error as err:
+
+    except mysql.connector.Error as e:
         if conexion:
+            # Rollback permite deshacer los cambios si algo sale mal
             conexion.rollback()
-        raise err
+        raise e
+
     finally:
         if cursor:
             cursor.close()

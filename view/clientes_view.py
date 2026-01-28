@@ -2,6 +2,8 @@ from view.operaciones_view import *
 from view.estilos import *
 from controller.validaciones import *
 from controller.clientes_controlador import *
+from PIL import Image, ImageTk
+
 
 ventana_clientes_instancia = None
 ventana_nuevo_cliente_instancia = None
@@ -609,7 +611,7 @@ def editar_cliente_vista(id_cliente, callback=None):
 
 def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=None, on_close=None):
     global ventana_info_cliente_instancia
-    from PIL import Image, ImageTk
+
     
     # Si ya existe una instancia, la destruyo para crear la nueva con el nuevo cliente
     if ventana_info_cliente_instancia is not None and ventana_info_cliente_instancia.winfo_exists():
@@ -772,7 +774,8 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     frame_medio.pack(side="top", fill="both", expand=True, padx=20, pady=(10, 30))
 
     # TREEVIEW
-    columnas = ("fecha", "detalle", "debe", "haber")
+    # TREEVIEW
+    columnas = ("id", "fecha", "detalle", "debe", "haber")
     tabla_transacciones = ttk.Treeview(frame_medio, columns=columnas, show="headings")
 
     # Configuro el estilo para el Treeview
@@ -780,13 +783,15 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     estilo.configure("Treeview", font=("Arial", 10), rowheight=22)
     estilo.configure("Treeview.Heading", font=("Arial", 11, "bold"))
 
+    tabla_transacciones.heading("id", text="ID")
     tabla_transacciones.heading("fecha", text="Fecha")
     tabla_transacciones.heading("detalle", text="Detalle")
     tabla_transacciones.heading("debe", text="Debe")
     tabla_transacciones.heading("haber", text="Haber")
 
+    tabla_transacciones.column("id", width=50, anchor="center")
     tabla_transacciones.column("fecha", width=100, anchor="center")
-    tabla_transacciones.column("detalle", width=350, anchor="w")
+    tabla_transacciones.column("detalle", width=300, anchor="w")
     tabla_transacciones.column("debe", width=150, anchor="e")
     tabla_transacciones.column("haber", width=150, anchor="e")
 
@@ -795,6 +800,24 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
 
     tabla_transacciones.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
+
+
+    def abrir_detalle_transaccion(event):
+        selection = tabla_transacciones.selection()
+        if not selection:
+            return
+        
+        # Obtener datos de la fila
+        # values = (id, fecha, detalle, debe, haber)
+        item = tabla_transacciones.item(selection[0])
+        valores = item['values']
+        op_id = valores[0]
+        
+        if op_id:
+            ver_detalle_operacion(op_id)
+
+    tabla_transacciones.bind("<Double-1>", abrir_detalle_transaccion)
+
 
     # --- Lógica para cargar las operaciones ---
     from controller.operaciones_controlador import mostrar_listado_operaciones
@@ -820,14 +843,14 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
                 # Formato fecha
                 fecha_str = fecha.strftime("%d/%m/%Y")
                 
-                # Detalle concatenado
-                detalle_str = f"#{op_id} - {obs}"
+                # Detalle solo observaciones
+                detalle_str = obs
                 
                 # Debe / Haber vacios por ahora
                 debe_str = ""
                 haber_str = ""
                 
-                tabla_transacciones.insert("", "end", values=(fecha_str, detalle_str, debe_str, haber_str))
+                tabla_transacciones.insert("", "end", values=(op_id, fecha_str, detalle_str, debe_str, haber_str))
 
     llenar_tabla_transacciones()
 
