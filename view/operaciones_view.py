@@ -697,9 +697,9 @@ def ver_detalle_operacion(id_operacion):
          fecha_str = str(fecha_val)
          
     obs = op[3] if len(op) > 3 else ""
-    val_dolar = op[4] if len(op) > 4 else 0
+    val_dolar = op[6] if len(op) > 6 else 0
     metodo_pago = op[5] if len(op) > 5 else "N/A"
-    val_miel = op[6] if len(op) > 6 else 0
+    val_miel = op[7] if len(op) > 7 else 0
     # op[7] is monto_total
 
     ventana_detalle = tk.Toplevel()
