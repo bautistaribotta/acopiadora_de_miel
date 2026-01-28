@@ -1,21 +1,25 @@
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import messagebox
 from PIL import Image, ImageTk
 from view.estilos import *
-from model.operaciones_db import nueva_operacion
-from model.productos_db import modificar_stock_db
-from model.entidades import Operacion, DetalleOperacion
 from controller.cotizaciones import get_cotizacion_oficial_venta, get_cotizacion_miel_clara
 from controller.clientes_controlador import listar_clientes_controlador, buscador_clientes_controlador
 from controller.operaciones_controlador import crear_nueva_operacion
 from controller.productos_controlador import informacion_producto_controlador
 
 
-
 ventana_nueva_operacion_instancia = None
 ventana_editar_operacion_instancia = None
 
 
+def guardar_y_remito(listado_items, id_cliente, total, metodo_pago, nombre, apellido, telefono, localidad, domicilio, observaciones):
+    valor_dolar = get_cotizacion_oficial_venta()
+    valor_kilo_miel = get_cotizacion_miel_clara()
+
+    # Desgloso el carrito, resto            # --- NUEVO: El stock se descuenta automáticamente en la transacción de DB ---
+
+    # Llamo al controlador para que cree la operacion y los detalles de la misma
+    crear_nueva_operacion(id_cliente, listado_items, total, metodo_pago, valor_dolar, valor_kilo_miel, observaciones)
 
 
 
@@ -125,7 +129,7 @@ def nueva_operacion(parent=None):
         txt_detalle = tk.Text(frame_detalles, font=fuente_texto, height=8, width=40)
         txt_detalle.pack(fill="x", pady=(0, 10))
 
-        # Método de Pago
+        # Metodo de Pago
         tk.Label(frame_detalles, text="Método de Pago:", font=fuente_texto, bg=color_primario, fg="white").pack(anchor="w", pady=(10, 5))
         combo_pago = ttk.Combobox(frame_detalles, values=["Contado", "Cuenta Corriente"], state="readonly", font=fuente_texto)
         combo_pago.pack(fill="x", pady=(0, 20))

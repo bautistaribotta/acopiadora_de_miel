@@ -1,4 +1,4 @@
-from model.entidades import Producto
+from controller.entidades import Producto
 from model.conexion_db import abrir_conexion
 
 

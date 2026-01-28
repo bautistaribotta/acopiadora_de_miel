@@ -1,4 +1,3 @@
-from model.entidades import Cliente
 from model.clientes_db import *
 from tkinter import messagebox
 

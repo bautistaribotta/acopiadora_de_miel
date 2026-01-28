@@ -488,7 +488,7 @@ def modificar_stock_vista(id_producto, nombre_producto, callback=None):
     
     def confirmar(event=None):
         cantidad = entry_cantidad.get()
-        sumar_stock_controlador(id_producto, cantidad, ventana_stock, callback)
+        modificar_stock_controlador(id_producto, cantidad, ventana_stock, callback)
         
     # Bind Enter key
     ventana_stock.bind('<Return>', confirmar)

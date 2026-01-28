@@ -1,4 +1,3 @@
-from model.entidades import Producto
 from model.productos_db import *
 from tkinter import messagebox
 
@@ -85,12 +84,16 @@ def editar_producto_controlador(id_producto, nombre, categoria, unidad_medida, p
         messagebox.showerror("Error", f"No se pudo editar el producto: {e}", parent=ventana)
 
 
-def sumar_stock_controlador(id_producto, cantidad, ventana, callback=None):
+def modificar_stock_controlador_general(id_producto, cantidad):
+    modificar_stock_db(id_producto, cantidad)
+
+
+def modificar_stock_controlador(id_producto, cantidad, ventana, callback=None):
     try:
-        cantidad_float = float(cantidad)
+        cantidad_int = int(cantidad)
         # Permito negativos para restar stock, solo valido que sea número
         
-        modificar_stock_db(id_producto, cantidad_float)
+        modificar_stock_db(id_producto, cantidad_int)
         messagebox.showinfo("Éxito", "Stock actualizado correctamente.", parent=ventana)
         
         if callback:

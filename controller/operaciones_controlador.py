@@ -1,4 +1,4 @@
-from model.entidades import Operacion, DetalleOperacion
+from controller.entidades import DetalleOperacion
 from model.operaciones_db import *
 from tkinter import messagebox
 
@@ -30,7 +30,7 @@ def mostrar_operacion(id_operacion):
         return None
 
 
-def crear_nueva_operacion(id_cliente, monto_total, lista_items_carrito, valor_dolar, valor_kilo_miel, metodo_de_pago, observaciones=""):
+def crear_nueva_operacion(id_cliente, lista_items_carrito, monto_total, metodo_de_pago, valor_dolar, valor_kilo_miel, observaciones=""):
     # 1. Validaciones
     if not id_cliente:
         messagebox.showwarning("Error", "Debe seleccionar un cliente.")

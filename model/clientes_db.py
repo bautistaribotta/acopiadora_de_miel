@@ -1,4 +1,4 @@
-from model.entidades import Cliente
+from controller.entidades import Cliente
 from model.conexion_db import abrir_conexion
 
 

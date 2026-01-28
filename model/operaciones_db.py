@@ -1,5 +1,5 @@
 from model.conexion_db import abrir_conexion
-from model.entidades import Operacion
+from controller.entidades import Operacion
 
 
 def buscar_operaciones_cliente(id_cliente):
@@ -62,6 +62,17 @@ def nueva_operacion(operacion: Operacion, lista_detalles: list):
             datos_detalles.append((id_nueva_operacion, detalle.id_producto, detalle.cantidad))
 
         cursor.executemany(sql_detalle, datos_detalles)
+
+        # 4. Descontar Stock (Dentro de la misma transacción)
+        sql_stock = "UPDATE productos SET cantidad = cantidad - %s WHERE id = %s"
+        
+        datos_stock = []
+        for detalle in lista_detalles:
+            # detalle.cantidad es positivo, restamos esa cantidad
+            datos_stock.append((detalle.cantidad, detalle.id_producto))
+            
+        cursor.executemany(sql_stock, datos_stock)
+
         conexion.commit()
 
 
@@ -98,4 +109,3 @@ def eliminar_operacion(id_operacion):
         cursor.execute(instruccion_sql, (id_operacion,))
 
         conexion.commit()
-
