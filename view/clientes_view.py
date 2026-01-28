@@ -796,6 +796,41 @@ def informacion_cliente_vista(id_cliente, ventana_clientes, x_pos=None, y_pos=No
     tabla_transacciones.pack(side="left", fill="both", expand=True)
     scrollbar.pack(side="right", fill="y")
 
+    # --- Lógica para cargar las operaciones ---
+    from controller.operaciones_controlador import mostrar_listado_operaciones
+    
+    def llenar_tabla_transacciones():
+        # Limpio la tabla
+        for item in tabla_transacciones.get_children():
+            tabla_transacciones.delete(item)
+            
+        operaciones = mostrar_listado_operaciones(id_cliente)
+        
+        if operaciones:
+            # Ordeno por fecha (la consulta SQL puede no garantizalo si no tiene ORDER BY)
+            # Asumo que viene en orden de insercion o lo ordeno aqui.
+            # operaciones.sort(key=lambda x: x[2], reverse=True) # Ordenar por fecha desc
+            
+            for op in operaciones:
+                # op structure: (id, id_cliente, fecha, observaciones, ...)
+                op_id = op[0]
+                fecha = op[2]
+                obs = op[3] if op[3] else ""
+                
+                # Formato fecha
+                fecha_str = fecha.strftime("%d/%m/%Y")
+                
+                # Detalle concatenado
+                detalle_str = f"#{op_id} - {obs}"
+                
+                # Debe / Haber vacios por ahora
+                debe_str = ""
+                haber_str = ""
+                
+                tabla_transacciones.insert("", "end", values=(fecha_str, detalle_str, debe_str, haber_str))
+
+    llenar_tabla_transacciones()
+
 
 if __name__ == "__main__":
     listado_clientes()
